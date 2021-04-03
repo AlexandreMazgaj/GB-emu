@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "*.toml": "toml",
+        "array": "cpp",
+        "functional": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "optional": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "gb_cpu.h": "c",
+        "gb_mmu.h": "c"
+    }
+}

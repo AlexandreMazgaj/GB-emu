@@ -1,0 +1,5 @@
+#define INSTRUCTIONS_SIZE 256
+#define RAM_SIZE 8*1024
+#define ROM_BANK_SIZE 16*1024
+#define OAM_SIZE 200
+#define HIGH_RAM_SIZE 200
