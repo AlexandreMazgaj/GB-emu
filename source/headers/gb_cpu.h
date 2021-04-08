@@ -7,15 +7,36 @@
 #define SETHFLAG(value) (registers.f = registers.f | ((value) << 5))
 #define SETCFLAG(value) (registers.f = registers.f | ((value) << 4))
 
-
 #define GETZFLAG(value) (registers.f & (1 << 7))
 #define GETNFLAG(value) (registers.f & (1 << 6))
 #define GETHFlAG(value) (registers.f & (1 << 5))
 #define GETCFLAG(value) (registers.f & (1 << 4))
 
 
-// typedef uint8_t (*Operation)(void);
+// Definition of macros for interrupts
+#define VBLANK_BIT (1 << 0)
+#define LCD_STAT_BIT (1 << 1)
+#define TIMER_BIT (1 << 2)
+#define SERIAL_BIT (1 << 3)
+#define JOYPAD_BIT (1 << 4)
 
+#define VBLANK_ADDR (0x40)
+#define LCD_STAT_ADDR (0x48)
+#define TIMER_ADDR (0x50)
+#define SERIAL_ADDR (0x58)
+#define JOYPAD_ADDR (0x60)
+
+
+
+
+// Interrupt Master enable flag
+extern uint8_t IME;
+// interrupt enable
+extern uint8_t IE;
+// interrupt request
+extern uint8_t IF;
+
+// typedef uint8_t (*Operation)(void);
 
 
 struct registers {
@@ -64,7 +85,16 @@ void CPU_init();
 // } const extern instructions[INSTRUCTIONS_SIZE];
 
 
+// CPU functions
+void clock();
 
+
+// interrupt functions
+void checkInterrupts();
+
+
+
+// Math functions
 void add_a(uint8_t reg);
 void sub_a(uint8_t reg);
 
