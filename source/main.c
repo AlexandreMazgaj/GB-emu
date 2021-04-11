@@ -7,23 +7,22 @@ int main() {
 
     CPU_init();
 
-    loadRom("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
+    // loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
 
-    IME = 1;
+    registers.af = 0;
+    registers.bc = 0;
 
-    // writing IE, enabling timer interrupt
-    writeByte(0xffff, 0x06);
-    // IF
-    writeByte(0xff0f, 0x06);
+    registers.b = 0xff;
 
-    checkInterrupts();
+    printRegFlags();
 
-    uint8_t ie = readByte(0xffff);
-    uint8_t iF = readByte(0xff0f);
+    printf("register b: %X\n", registers.b);
 
+    inc8bReg(&registers.b);
 
-    printf("ie = %X\n", ie);
-    printf("iF = %X\n", iF);
+    printf("register b: %X\n", registers.b);
+
+    printRegFlags();
 
     
 

@@ -3,3 +3,4 @@
 #define ROM_BANK_SIZE 32*1024
 #define OAM_SIZE 200
 #define HIGH_RAM_SIZE 200
+#define MAX_CARTRIDGE_SIZE 8*1024*1024 // 8Mibs

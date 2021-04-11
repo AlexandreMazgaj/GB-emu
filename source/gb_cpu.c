@@ -107,7 +107,7 @@ void add_a(uint8_t reg) {
     SETNFLAG(0);
         printf("f: %X\n", registers.f);
 
-    SETHFLAG(((registers.a & 0xf) + (reg & 0xf)) == 0x10);
+    SETHFLAG((((registers.a & 0xf) + (reg & 0xf)) & 0x10) == 0x10);
 
 
     printf("f: %X\n", registers.f);
@@ -120,7 +120,7 @@ void sub_a(uint8_t reg) {
     SETZFLAG(temp == 0);
     SETCFLAG(temp < 0);
     SETNFLAG(1);
-    SETHFLAG(((registers.a & 0xf) - (reg & 0xf)) & 0x10 == 0x10);
+    SETHFLAG((((registers.a & 0xf) - (reg & 0xf)) & 0x10) == 0x10);
 
     registers.a = registers.a - reg;
 }
@@ -130,7 +130,7 @@ void adc_a(uint8_t reg) {
     SETZFLAG(temp == 0);
     SETCFLAG(temp > 255);
     SETNFLAG(0);
-    SETHFLAG(((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf)) & 0x10 == 0x10);
+    SETHFLAG((((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf)) & 0x10) == 0x10);
 
     registers.a = (uint8_t)(temp & 0x00ff);
 }
@@ -140,7 +140,53 @@ void sbc_a(uint8_t reg) {
     SETZFLAG(temp == 0);
     SETCFLAG(temp < 0);
     SETNFLAG(1);
-    SETHFLAG(((registers.a & 0xf) - (reg & 0xf) - (GETCFLAG() & 0xf)) & 0x10 == 0x10);
+    SETHFLAG((((registers.a & 0xf) - (reg & 0xf) - (GETCFLAG() & 0xf)) & 0x10) == 0x10);
 
     registers.a = registers.a - reg - GETCFLAG();
+}
+
+void inc8bReg(uint8_t* reg) {
+    SETZFLAG((uint8_t)((*reg) + 1) == 0);
+    SETNFLAG(0);
+    SETHFLAG(((((*reg) & 0xf) + (1 & 0xf)) & 0x10) == 0x10);
+
+    (*reg)++;
+}
+
+void dec8bReg(uint8_t* reg) {
+    SETZFLAG((uint8_t)((*reg) - 1) == 0);
+    SETNFLAG(0);
+    SETHFLAG(((((*reg) & 0xf) - (1 & 0xf)) & 0x10) == 0x10);
+
+    (*reg--);
+}
+
+
+void rotateLeft(uint8_t* reg) {
+
+}
+
+void rotateRight(uint8_t* reg) {
+
+}
+
+void rotateLeftCarry(uint8_t* reg) {
+
+}
+
+void rotateRightCarry(uint8_t* reg) {
+    
+}
+
+
+
+// ---------------
+// DEBUG FUNCTIONS
+// ---------------
+
+void printRegFlags() {
+    printf("Z flag: %X\n", GETZFLAG());
+    printf("N flag: %X\n", GETNFLAG());
+    printf("H flag: %X\n", GETHFlAG());
+    printf("C flag: %X\n", GETCFLAG());
 }

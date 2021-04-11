@@ -7,10 +7,10 @@
 #define SETHFLAG(value) (registers.f = registers.f | ((value) << 5))
 #define SETCFLAG(value) (registers.f = registers.f | ((value) << 4))
 
-#define GETZFLAG(value) (registers.f & (1 << 7))
-#define GETNFLAG(value) (registers.f & (1 << 6))
-#define GETHFlAG(value) (registers.f & (1 << 5))
-#define GETCFLAG(value) (registers.f & (1 << 4))
+#define GETZFLAG() ((registers.f & (1 << 7)) >> 7)
+#define GETNFLAG() ((registers.f & (1 << 6)) >> 6)
+#define GETHFlAG() ((registers.f & (1 << 5)) >> 5)
+#define GETCFLAG() ((registers.f & (1 << 4)) >> 4)
 
 
 // Definition of macros for interrupts
@@ -36,7 +36,6 @@ extern uint8_t IE;
 // interrupt request
 extern uint8_t IF;
 
-// typedef uint8_t (*Operation)(void);
 
 
 struct registers {
@@ -80,10 +79,6 @@ struct registers {
 
 void CPU_init();
 
-// struct {
-
-// } const extern instructions[INSTRUCTIONS_SIZE];
-
 
 // CPU functions
 void clock();
@@ -101,3 +96,16 @@ void sub_a(uint8_t reg);
 void adc_a(uint8_t reg);
 void sbc_a(uint8_t reg);
 
+void inc8bReg(uint8_t* reg);
+void dec8bReg(uint8_t* reg);
+
+void rotateLeft(uint8_t* reg);
+void rotateRight(uint8_t* reg);
+
+void rotateLeftCarry(uint8_t* reg);
+void rotateRightCarry(uint8_t* reg);
+
+
+
+// Debug functions
+void printRegFlags();

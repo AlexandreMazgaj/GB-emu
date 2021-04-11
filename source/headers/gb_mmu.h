@@ -8,13 +8,19 @@ struct mmu {
     uint8_t work_ram[RAM_SIZE];
     uint8_t high_ram[HIGH_RAM_SIZE];
 
+    // holds the data of the cartridge
+    uint8_t cartridge_data[MAX_CARTRIDGE_SIZE];
+
+    // mbc attributes
+    uint8_t mbc_type;
+    uint8_t mbc_useRam;
 
 } extern mmu;
 
 
 MMU_init();
 
-void loadRom(char* path);
+void loadCartridge(char* path);
 
 
 uint8_t readByte(uint16_t addr);

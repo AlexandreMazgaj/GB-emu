@@ -9,6 +9,10 @@ struct mmu mmu;
 
 
 MMU_init() {
+
+    mmu.mbc_type = 0;
+    mmu.mbc_useRam = 0;
+
     for (int i = 0; i < ROM_BANK_SIZE; i++) {
         mmu.rom[i] = 0;
     }
@@ -23,26 +27,45 @@ MMU_init() {
     }
 }
 
-void loadRom(char* path) {
-    FILE *romPtr;
+void loadCartridge(char* path) {
+    FILE *cartridgePtr;
 
-    romPtr = fopen(path, "rb"); // b is for binary
+    cartridgePtr = fopen(path, "rb"); // b is for binary
 
-    if (romPtr == NULL)
+    if (cartridgePtr == NULL)
         printf("Could not open the file\n");
 
-    fseek(romPtr, 0, SEEK_END);
+    fseek(cartridgePtr, 0, SEEK_END);
 
-    size_t size = ftell(romPtr);
+    size_t size = ftell(cartridgePtr);
 
-    fseek(romPtr, 0L, SEEK_SET);
+    fseek(cartridgePtr, 0L, SEEK_SET);
 
     for (unsigned int i = 0; i < size; ++i) {
-        uint8_t c = fgetc(romPtr);
-        mmu.rom[i] = c;
+        uint8_t c = fgetc(cartridgePtr);
+        mmu.cartridge_data[i] = c;
     }
 
-    fclose(romPtr);
+    fclose(cartridgePtr);
+
+    // we check the mbc type
+    uint8_t mbc_type = mmu.cartridge_data[0x0147];
+    switch (mbc_type) {
+        case 0x00: mmu.mbc_type = 0; break;
+        case 0x01: mmu.mbc_type = 1; break;
+        case 0x02: mmu.mbc_type = 1; mmu.mbc_useRam = 1; break;
+        case 0x05: mmu.mbc_type = 2; break;
+        default: printf("You should implement more memory banks\n");
+                 break;
+    }
+
+    // if the type is 0, we load the cartridge directly in the rom
+    if (mmu.mbc_type == 0) {
+        printf("It is a type 0 mbc\n");
+        for (int i = 0; i < ROM_BANK_SIZE; i++) {
+            mmu.rom[i] = mmu.cartridge_data[i];
+        }
+    }
 }
 
 
