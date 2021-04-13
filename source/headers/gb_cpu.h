@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 #include "constants.h"
 
@@ -95,6 +97,8 @@ void sub_a(uint8_t reg);
 
 void adc_a(uint8_t reg);
 void sbc_a(uint8_t reg);
+
+void add_hl(uint16_t reg);
 
 void inc8bReg(uint8_t* reg);
 void dec8bReg(uint8_t* reg);

@@ -1,3 +1,5 @@
+#pragma once
+
 #define INSTRUCTIONS_SIZE 256
 #define RAM_SIZE 8*1024
 #define ROM_BANK_SIZE 32*1024

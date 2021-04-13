@@ -145,6 +145,16 @@ void sbc_a(uint8_t reg) {
     registers.a = registers.a - reg - GETCFLAG();
 }
 
+
+void add_hl(uint16_t reg) {
+    uint32_t temp = (uint32_t)registers.hl + (uint32_t)reg;
+    SETCFLAG(temp > 0xffff);
+    SETNFLAG(0);
+    SETHFLAG(((registers.hl & 0x07ff) + (reg & 0x07ff)) > 0x07ff);
+
+    registers.hl = (uint16_t)(temp & 0x0000ffff);
+}
+
 void inc8bReg(uint8_t* reg) {
     SETZFLAG((uint8_t)((*reg) + 1) == 0);
     SETNFLAG(0);
@@ -158,16 +168,26 @@ void dec8bReg(uint8_t* reg) {
     SETNFLAG(0);
     SETHFLAG(((((*reg) & 0xf) - (1 & 0xf)) & 0x10) == 0x10);
 
-    (*reg--);
+    (*reg)--;
 }
 
 
 void rotateLeft(uint8_t* reg) {
-
+    uint8_t hiBit = ((*reg) >> 7) & 1;
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETZFLAG(0);
+    (*reg) = ((*reg) << 1) | hiBit;
+    SETCFLAG((*reg) & 1);
 }
 
 void rotateRight(uint8_t* reg) {
-
+    uint8_t loBit = (*reg) & 1;
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETZFLAG(0);
+    (*reg) = ((*reg) >> 1) | (loBit << 7);
+    SETCFLAG(((*reg) & 0x80) >> 7);
 }
 
 void rotateLeftCarry(uint8_t* reg) {
@@ -175,7 +195,7 @@ void rotateLeftCarry(uint8_t* reg) {
 }
 
 void rotateRightCarry(uint8_t* reg) {
-    
+
 }
 
 
