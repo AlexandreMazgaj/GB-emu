@@ -8,21 +8,31 @@ int main() {
 
     CPU_init();
 
-    // loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
+    SETCFLAG(0);
+
     registers.f = 0;
 
     registers.a = 0x7f;
 
+    SETCFLAG(1);
 
-    printf("before: %X\n", registers.a);
+    rotateLeftCarry(&registers.a);
+
+    printf("reg: %x\n", registers.a);
+
+    SETCFLAG(0);
 
     printRegFlags();
 
-    exe_rrca();
 
-    printRegFlags();
+    printBinary(registers.f);
 
-    printf("after: %X\n", registers.a);
+    // SETCFLAG(0);
+    printBinary(registers.f);
+
+
+
+
 
     return 0;
 }

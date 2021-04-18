@@ -98,3 +98,42 @@ uint8_t exe_rrca() {
     return 0;
 }
 
+uint8_t exe_stop() {
+    stopped = 1;
+    return 0;
+}
+
+uint8_t exe_ldded16() {
+    registers.de = readWord(++registers.pc);
+    return 0;
+}
+
+uint8_t exe_ldpdea() {
+    writeByte(registers.de, registers.a);
+    return 0;
+}
+
+uint8_t exe_incde() {
+    registers.de++;
+    return 0;
+}
+
+uint8_t exe_incd() {
+    inc8bReg(&registers.d);
+    return 0;
+}
+
+uint8_t exe_decd() {
+    dec8bReg(&registers.d);
+    return 0;
+}
+
+uint8_t exe_ldd8() {
+    registers.d = readByte(++registers.pc);
+    return 0;
+}
+
+uint8_t exe_rla() {
+
+    return 0;
+}

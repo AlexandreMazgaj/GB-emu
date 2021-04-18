@@ -5,6 +5,7 @@ struct registers registers;
 uint8_t IME;
 uint8_t IE;
 uint8_t IF;
+uint8_t stopped;
 
 void CPU_init() {
     registers.af = 0x01b0;
@@ -17,6 +18,8 @@ void CPU_init() {
     IME = 0;
     IE = 0;
     IF = 0;
+
+    stopped = 0;
 
 }
 
@@ -191,11 +194,21 @@ void rotateRight(uint8_t* reg) {
 }
 
 void rotateLeftCarry(uint8_t* reg) {
-
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETZFLAG(0);
+    uint8_t hiBit = ((*reg) >> 7) & 1;
+    (*reg) = ((*reg) << 1) | GETCFLAG();
+    SETCFLAG(hiBit);
 }
 
 void rotateRightCarry(uint8_t* reg) {
-
+    uint8_t loBit = (*reg) & 1;
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETZFLAG(0);
+    (*reg) = ((*reg) >> 1) | (GETCFLAG() << 7);
+    SETCFLAG(loBit);
 }
 
 
@@ -209,4 +222,15 @@ void printRegFlags() {
     printf("N flag: %X\n", GETNFLAG());
     printf("H flag: %X\n", GETHFlAG());
     printf("C flag: %X\n", GETCFLAG());
+}
+
+
+void printBinary(uint8_t hex) {
+    printf("%x", (hex >> 7) & 1);
+    printf("%x", (hex >> 6) & 1);
+    printf("%x", (hex >> 5) & 1);
+    printf("%x", (hex >> 4) & 1);
+    printf("%x", (hex >> 3) & 1);
+    printf("%x", (hex >> 2) & 1);
+    printf("%x\n", (hex >> 1) & 1);
 }

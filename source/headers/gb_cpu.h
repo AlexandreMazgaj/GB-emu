@@ -4,6 +4,7 @@
 #include "constants.h"
 
 // Definition of macros for flags
+// TODO A CORRIGER!!!!!!!!!!!
 #define SETZFLAG(value) (registers.f = registers.f | ((value) << 7))
 #define SETNFLAG(value) (registers.f = registers.f | ((value) << 6))
 #define SETHFLAG(value) (registers.f = registers.f | ((value) << 5))
@@ -37,6 +38,10 @@ extern uint8_t IME;
 extern uint8_t IE;
 // interrupt request
 extern uint8_t IF;
+
+
+// stop CPU flag
+extern uint8_t stopped;
 
 
 
@@ -82,6 +87,9 @@ struct registers {
 void CPU_init();
 
 
+// CPU flag functions
+
+
 // CPU functions
 void clock();
 
@@ -113,3 +121,4 @@ void rotateRightCarry(uint8_t* reg);
 
 // Debug functions
 void printRegFlags();
+void printBinary(uint8_t hex);
