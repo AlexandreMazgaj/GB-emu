@@ -4,11 +4,10 @@
 #include "constants.h"
 
 // Definition of macros for flags
-// TODO A CORRIGER!!!!!!!!!!!
-#define SETZFLAG(value) (registers.f = registers.f | ((value) << 7))
-#define SETNFLAG(value) (registers.f = registers.f | ((value) << 6))
-#define SETHFLAG(value) (registers.f = registers.f | ((value) << 5))
-#define SETCFLAG(value) (registers.f = registers.f | ((value) << 4))
+#define SETZFLAG(value) (registers.f = ((value==0)?registers.f & (~(1 << 7)): registers.f | (1 << 7)))
+#define SETNFLAG(value) (registers.f = ((value==0)?registers.f & (~(1 << 6)): registers.f | (1 << 6)))
+#define SETHFLAG(value) (registers.f = ((value==0)?registers.f & (~(1 << 5)): registers.f | (1 << 5)))
+#define SETCFLAG(value) (registers.f = ((value==0)?registers.f & (~(1 << 4)): registers.f | (1 << 4)))
 
 #define GETZFLAG() ((registers.f & (1 << 7)) >> 7)
 #define GETNFLAG() ((registers.f & (1 << 6)) >> 6)
@@ -86,8 +85,6 @@ struct registers {
 
 void CPU_init();
 
-
-// CPU flag functions
 
 
 // CPU functions

@@ -8,7 +8,6 @@ int main() {
 
     CPU_init();
 
-    SETCFLAG(0);
 
     registers.f = 0;
 
@@ -16,19 +15,23 @@ int main() {
 
     SETCFLAG(1);
 
-    rotateLeftCarry(&registers.a);
+    printf("%x",GETCFLAG());
 
-    printf("reg: %x\n", registers.a);
+    printBinary(registers.a);
 
-    SETCFLAG(0);
+    rotateRightCarry(&registers.a);
+
+    printf("%x",GETCFLAG());
+    printBinary(registers.a);
+
 
     printRegFlags();
 
 
-    printBinary(registers.f);
-
-    // SETCFLAG(0);
-    printBinary(registers.f);
+    rotateRightCarry(&registers.a);
+    printf("%x",GETCFLAG());
+    printBinary(registers.a);
+    printRegFlags();
 
 
 
