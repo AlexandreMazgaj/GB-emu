@@ -134,6 +134,48 @@ uint8_t exe_ldd8() {
 }
 
 uint8_t exe_rla() {
+    rotateLeftCarry(&registers.a);
+    return 0;
+}
 
+uint8_t exe_jri8() {
+    uint8_t offset = readByte(++registers.pc);
+    registers.pc += offset;
+    return 0;
+}
+
+uint8_t exe_addhlde() {
+    add_hl(registers.de);
+    return 0;
+}
+
+
+uint8_t exe_ldapde() {
+    registers.a = readByte(registers.de);
+    return 0;
+}
+
+uint8_t exe_decde() {
+    registers.de--;
+    return 0;
+}
+
+uint8_t exe_ince() {
+    inc8bReg(&registers.e);
+    return 0;
+}
+
+uint8_t exe_dece() {
+    dec8bReg(&registers.e);
+    return 0;
+}
+
+uint8_t exe_lded8() {
+    registers.e = readByte(++registers.pc);
+    return 0;
+}
+
+uint8_t exe_rra() {
+    rotateRightCarry(&registers.a);
     return 0;
 }
