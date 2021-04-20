@@ -1,25 +1,19 @@
 #include <stdio.h>
 #include "headers/gb_cpu.h"
 #include "headers/gb_mmu.h"
-#include "headers/opcodes.h"
+// #include "headers/opcodes.h"
 
 
 int main() {
 
     CPU_init();
-    registers.f = 0;
+    MMU_init();
+
+    loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
 
 
-    SETCFLAG(0);
-
-    registers.a = 0xff;
-
-    printf("%X", GETCFLAG());
-    printBinary(registers.a);
-
-    exe_rra();
-    printf("%X", GETCFLAG());
-    printBinary(registers.a);
+    for (int i = 0; i < 100; ++i)
+        clock();
 
 
 

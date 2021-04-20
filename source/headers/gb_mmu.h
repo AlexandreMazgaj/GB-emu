@@ -16,6 +16,7 @@ struct mmu {
     // mbc attributes
     uint8_t mbc_type;
     uint8_t mbc_useRam;
+    uint8_t mbc_bank;
 
 } extern mmu;
 

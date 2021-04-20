@@ -87,9 +87,9 @@ void CPU_init();
 
 
 
-// CPU functions
+// CPU functions and attributes
 void clock();
-
+extern uint8_t cycle;
 
 // interrupt functions
 void checkInterrupts();

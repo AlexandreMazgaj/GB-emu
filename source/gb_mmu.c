@@ -108,12 +108,15 @@ uint16_t readWord(uint16_t addr) {
 
 // TODO finish writeByte function
 void writeByte(uint16_t addr, uint8_t val) {
+    // BEGIN ROM
+    // should not be able to write here
     if (addr >= 0x0000 &&  addr <= 0x3fff) {
         mmu.rom[addr] = val;
     }
     else if (addr >= 0x4000 && addr <= 0x7fff) {
         mmu.rom[addr - 0x4000] = val;
     }
+    //END ROM
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         mmu.video_ram[addr - 0x8000] = val;
     }

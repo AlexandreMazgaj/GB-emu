@@ -1,11 +1,13 @@
 #include "headers/gb_cpu.h"
 #include "headers/gb_mmu.h"
+#include "headers/opcodes.h"
 
 struct registers registers;
 uint8_t IME;
 uint8_t IE;
 uint8_t IF;
 uint8_t stopped;
+uint8_t cycle;
 
 void CPU_init() {
     registers.af = 0x01b0;
@@ -28,10 +30,41 @@ void CPU_init() {
 // CPU FUNCTIONS
 // -------------
 void clock() {
+
+    //
     checkInterrupts();
 
-    // uint8_t clock
-    uint8_t op = readByte(registers.pc);
+    // if we have finished the 
+    if (cycle == 0) {
+        // uint8_t clock
+        uint8_t op = readByte(registers.pc);
+
+        if (op > MAX_KNOWN_OPCODE) {
+            handleUnknownOp(op);
+            registers.pc++;
+            cycle = 1;
+
+        } else {
+            struct instruction instr = instructions[op];
+
+            printf("instruction: %s\n", instr.mnemonic);
+
+            cycle = instr.nb_cycles + instr.execute();
+
+            if (instr.size_operand == 2)
+                registers.pc += 2;
+            else
+                registers.pc++;
+        
+        }
+        
+
+    }
+
+    // if (cycle != 0)
+    //     printf("Still doing the op\n");
+
+    cycle--;
 
 }
 
@@ -44,7 +77,6 @@ void checkInterrupts() {
     uint8_t IE = readByte(0xffff);
     uint8_t IF = readByte(0xff0f);
 
-    printf("Sorting right after the write ie = %X, if = %X\n", IE, IF);
     if (IME) {
         // Checking if VBLANK enabled and if requested
         if ((IE & VBLANK_BIT) == VBLANK_BIT && (IF & VBLANK_BIT) == VBLANK_BIT) {
