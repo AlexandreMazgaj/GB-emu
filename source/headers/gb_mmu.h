@@ -21,7 +21,15 @@ struct mmu {
 } extern mmu;
 
 
-MMU_init();
+void MMU_init();
+
+
+void MBC1_writeToRom(uint16_t addr, uint8_t data);
+
+void MBC2_writeToRom(uint16_t addr, uint8_t data);
+
+void MBC3_writeToRom(uint16_t addr, uint8_t data);
+
 
 void loadCartridge(char* path);
 

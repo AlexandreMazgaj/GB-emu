@@ -8,7 +8,7 @@ struct mmu mmu;
 
 
 
-MMU_init() {
+void MMU_init() {
 
     mmu.mbc_type = 0;
     mmu.mbc_useRam = 0;
@@ -26,6 +26,20 @@ MMU_init() {
         mmu.high_ram[i] = 0;
     }
 }
+
+
+void MBC1_writeToRom(uint16_t addr, uint8_t data) {
+    if ()
+}
+
+void MBC2_writeToRom(uint16_t addr, uint8_t data) {
+
+}
+
+void MBC3_writeToRom(uint16_t addr, uint8_t data) {
+
+}
+
 
 void loadCartridge(char* path) {
     FILE *cartridgePtr;
@@ -110,12 +124,24 @@ uint16_t readWord(uint16_t addr) {
 void writeByte(uint16_t addr, uint8_t val) {
     // BEGIN ROM
     // should not be able to write here
-    if (addr >= 0x0000 &&  addr <= 0x3fff) {
-        mmu.rom[addr] = val;
+
+    if (addr >= 0x0000 && addr <= 0x7fff) {
+        if (mmu.mbc_type == 1) {
+            MBC1_writeToRom(addr, val);
+        }
+        else if (mmu.mbc_type == 2) {
+            MBC2_writeToRom(addr, val);
+        }
+        else if (mmu.mbc_type == 3) {
+            MBC3_writeToRom(addr, val);
+        }
     }
-    else if (addr >= 0x4000 && addr <= 0x7fff) {
-        mmu.rom[addr - 0x4000] = val;
-    }
+    // if (addr >= 0x0000 &&  addr <= 0x3fff) {
+    //     mmu.rom[addr] = val;
+    // }
+    // else if (addr >= 0x4000 && addr <= 0x7fff) {
+    //     mmu.rom[addr - 0x4000] = val;
+    // }
     //END ROM
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         mmu.video_ram[addr - 0x8000] = val;
