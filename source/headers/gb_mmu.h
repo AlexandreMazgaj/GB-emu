@@ -15,8 +15,10 @@ struct mmu {
 
     // mbc attributes
     uint8_t mbc_type;
-    uint8_t mbc_useRam;
-    uint8_t mbc_bank;
+    uint8_t mbc_hasRam;
+    uint8_t mbc_isRamActive;
+    uint8_t mbc_romBank;
+    uint8_t mbc_ramBank;
 
 } extern mmu;
 
@@ -24,11 +26,11 @@ struct mmu {
 void MMU_init();
 
 
-void MBC1_writeToRom(uint16_t addr, uint8_t data);
+void MBC1_writeToRom(uint16_t addr, uint8_t val);
 
-void MBC2_writeToRom(uint16_t addr, uint8_t data);
+void MBC2_writeToRom(uint16_t addr, uint8_t val);
 
-void MBC3_writeToRom(uint16_t addr, uint8_t data);
+void MBC3_writeToRom(uint16_t addr, uint8_t val);
 
 
 void loadCartridge(char* path);

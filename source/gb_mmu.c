@@ -12,6 +12,8 @@ void MMU_init() {
 
     mmu.mbc_type = 0;
     mmu.mbc_useRam = 0;
+    mmu.mbc_isRamActive = 0;
+    mmu.mbc_romBank = 1;
 
     for (int i = 0; i < ROM_BANK_SIZE; i++) {
         mmu.rom[i] = 0;
@@ -28,15 +30,38 @@ void MMU_init() {
 }
 
 
-void MBC1_writeToRom(uint16_t addr, uint8_t data) {
-    if ()
+void MBC1_writeToRom(uint16_t addr, uint8_t val) {
+    if (addr >= 0x0000 && addr <= 0x1fff) {
+        if (val == 0x00)
+            mmu.mbc_isRamActive = 0;
+        else
+            mmu.mbc_isRamActive = 1;
+    }
+    else if (addr >= 0x2000 && addr <= 0x3fff) {
+        if (val == 0x00) { mmu.mbc_romBank = 0x01; return; }
+        if (val == 0x20) { mmu.mbc_romBank = 0x21; return; }
+        if (val == 0x40) { mmu.mbc_romBank = 0x41; return; }
+        if (val == 0x60) { mmu.mbc_romBank = 0x61; return; }
+
+        mmu.mbc_romBank = 0x1f & val;
+    }
+    else if (addr >= 0x4000 && addr <= 0x5fff) {
+        if (mmu.mbc_hasRam) {
+            mmu.mbc_ramBank = val & 0x03;
+        }
+        else
+            printf("Should implement bigger ROM for MBC1\n");
+    }
+    else if (addr >= 0x6000 && addr <= 0x7fff) {
+        printf("Should implement ram mode for MBC1\n");
+    }
 }
 
-void MBC2_writeToRom(uint16_t addr, uint8_t data) {
+void MBC2_writeToRom(uint16_t addr, uint8_t val) {
 
 }
 
-void MBC3_writeToRom(uint16_t addr, uint8_t data) {
+void MBC3_writeToRom(uint16_t addr, uint8_t val) {
 
 }
 
@@ -67,7 +92,7 @@ void loadCartridge(char* path) {
     switch (mbc_type) {
         case 0x00: mmu.mbc_type = 0; break;
         case 0x01: mmu.mbc_type = 1; break;
-        case 0x02: mmu.mbc_type = 1; mmu.mbc_useRam = 1; break;
+        case 0x02: mmu.mbc_type = 1; mmu.mbc_hasRam = 1; break;
         case 0x05: mmu.mbc_type = 2; break;
         default: printf("You should implement more memory banks\n");
                  break;
