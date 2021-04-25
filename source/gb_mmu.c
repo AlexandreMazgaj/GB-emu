@@ -11,11 +11,11 @@ struct mmu mmu;
 void MMU_init() {
 
     mmu.mbc_type = 0;
-    mmu.mbc_useRam = 0;
+    mmu.mbc_hasRam = 0;
     mmu.mbc_isRamActive = 0;
     mmu.mbc_romBank = 1;
 
-    for (int i = 0; i < ROM_BANK_SIZE; i++) {
+    for (int i = 0; i < MAX_CARTRIDGE_SIZE; i++) {
         mmu.rom[i] = 0;
     }
 
@@ -26,6 +26,10 @@ void MMU_init() {
 
     for (int i = 0; i < HIGH_RAM_SIZE; i++) {
         mmu.high_ram[i] = 0;
+    }
+
+    for (int i =0; i < MAX_RAM_SIZE; i++) {
+        mmu.external_ram[i] = 0;
     }
 }
 
@@ -50,15 +54,33 @@ void MBC1_writeToRom(uint16_t addr, uint8_t val) {
             mmu.mbc_ramBank = val & 0x03;
         }
         else
-            printf("Should implement bigger ROM for MBC1\n");
+            mmu.mbc_romBank = (mmu.mbc_romBank & 0x1fff) | ((val & 0x03) << 5);
     }
     else if (addr >= 0x6000 && addr <= 0x7fff) {
-        printf("Should implement ram mode for MBC1\n");
+        mmu.mbc_ramMode = (val & 0x01);
     }
 }
 
-void MBC2_writeToRom(uint16_t addr, uint8_t val) {
+uint8_t MBC1_readRom(uint16_t addr) {
+    return mmu.rom[(addr-0x4000) + mmu.mbc_romBank*0x4000];
+}
 
+uint8_t MBC1_readRam(uint16_t addr) {
+    if (!mmu.mbc_isRamActive) return 0;
+    if (mmu.mbc_ramMode == 0) {
+        return mmu.external_ram[addr - 0xa000];
+    }
+    
+    return mmu.external_ram[(addr - 0xa000) + (mmu.mbc_ramBank*0x2000)];
+
+}
+
+void MBC2_writeToRom(uint16_t addr, uint8_t val) {
+    
+}
+
+uint8_t MBC2_readRom(uint16_t addr) {
+    return mmu.rom[(addr-0x4000) + mmu.mbc_romBank*0x4000];
 }
 
 void MBC3_writeToRom(uint16_t addr, uint8_t val) {
@@ -82,13 +104,13 @@ void loadCartridge(char* path) {
 
     for (unsigned int i = 0; i < size; ++i) {
         uint8_t c = fgetc(cartridgePtr);
-        mmu.cartridge_data[i] = c;
+        mmu.rom[i] = c;
     }
 
     fclose(cartridgePtr);
 
     // we check the mbc type
-    uint8_t mbc_type = mmu.cartridge_data[0x0147];
+    uint8_t mbc_type = mmu.rom[0x0147];
     switch (mbc_type) {
         case 0x00: mmu.mbc_type = 0; break;
         case 0x01: mmu.mbc_type = 1; break;
@@ -98,13 +120,6 @@ void loadCartridge(char* path) {
                  break;
     }
 
-    // if the type is 0, we load the cartridge directly in the rom
-    if (mmu.mbc_type == 0) {
-        printf("It is a type 0 mbc\n");
-        for (int i = 0; i < ROM_BANK_SIZE; i++) {
-            mmu.rom[i] = mmu.cartridge_data[i];
-        }
-    }
 }
 
 
@@ -115,13 +130,14 @@ uint8_t readByte(uint16_t addr) {
         return mmu.rom[addr];
     }
     else if (addr >= 0x4000 && addr <= 0x7fff) {
-        return mmu.rom[addr - 0x4000];
+        if (mmu.mbc_type == 1) return MBC1_readRom(addr);
+        if (mmu.mbc_type == 2) return MBC2_readRom(addr);
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         return mmu.video_ram[addr - 0x8000];
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {
-        return mmu.external_ram[addr - 0xa000];
+        if (mmu.mbc_type == 1) return MBC1_readRam(addr);
     }
     else if (addr >= 0xc000 && addr <= 0xdfff) {
         return mmu.work_ram[addr - 0xc000];

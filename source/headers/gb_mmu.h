@@ -4,14 +4,13 @@
 #include "constants.h"
 
 struct mmu {
-    uint8_t rom[ROM_BANK_SIZE];
+    uint8_t rom[MAX_CARTRIDGE_SIZE];
+
     uint8_t video_ram[RAM_SIZE];
-    uint8_t external_ram[RAM_SIZE];
+    uint8_t external_ram[MAX_RAM_SIZE];
     uint8_t work_ram[RAM_SIZE];
     uint8_t high_ram[HIGH_RAM_SIZE];
 
-    // holds the data of the cartridge
-    uint8_t cartridge_data[MAX_CARTRIDGE_SIZE];
 
     // mbc attributes
     uint8_t mbc_type;
@@ -20,6 +19,8 @@ struct mmu {
     uint8_t mbc_romBank;
     uint8_t mbc_ramBank;
 
+    uint8_t mbc_ramMode;
+
 } extern mmu;
 
 
@@ -27,10 +28,16 @@ void MMU_init();
 
 
 void MBC1_writeToRom(uint16_t addr, uint8_t val);
+uint8_t MBC1_readRom(uint16_t addr);
+uint8_t MBC1_readRam(uint16_t addr);
 
 void MBC2_writeToRom(uint16_t addr, uint8_t val);
+uint8_t MBC2_readRom(uint16_t addr);
+uint8_t MBC2_readRam(uint16_t addr);
 
 void MBC3_writeToRom(uint16_t addr, uint8_t val);
+uint8_t MBC3_readRom(uint16_t addr);
+uint8_t MBC3_readRam(uint16_t addr);
 
 
 void loadCartridge(char* path);
