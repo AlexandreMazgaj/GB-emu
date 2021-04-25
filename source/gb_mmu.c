@@ -34,6 +34,8 @@ void MMU_init() {
 }
 
 
+// MBC 1 FUNCTIONS
+// ---------------
 void MBC1_writeToRom(uint16_t addr, uint8_t val) {
     if (addr >= 0x0000 && addr <= 0x1fff) {
         if (val == 0x00)
@@ -61,6 +63,17 @@ void MBC1_writeToRom(uint16_t addr, uint8_t val) {
     }
 }
 
+void MBC1_writeRam(uint16_t addr, uint8_t val) {
+    if (!mmu.mbc_isRamActive) return;
+
+    if (mmu.mbc_ramMode == 0) {
+        mmu.external_ram[addr - 0xa000] = val;
+    }
+    
+    mmu.external_ram[(addr - 0xa000) + (mmu.mbc_ramBank*0x2000)] = val;
+    
+}
+
 uint8_t MBC1_readRom(uint16_t addr) {
     return mmu.rom[(addr-0x4000) + mmu.mbc_romBank*0x4000];
 }
@@ -75,18 +88,54 @@ uint8_t MBC1_readRam(uint16_t addr) {
 
 }
 
+
+// MBC 2 FUNCTION
+// --------------
 void MBC2_writeToRom(uint16_t addr, uint8_t val) {
-    
+    printf("MBC2_writeToRom to implement\n");
 }
+
+void MBC2_writeRam(uint16_t addr, uint8_t val) {
+    printf("MBC2_writeRam to implement\n");
+}
+
 
 uint8_t MBC2_readRom(uint16_t addr) {
     return mmu.rom[(addr-0x4000) + mmu.mbc_romBank*0x4000];
 }
 
-void MBC3_writeToRom(uint16_t addr, uint8_t val) {
-
+uint8_t MBC2_readRam(uint16_t addr) {
+    printf("MBC2_readRam to implement\n");
+    return 0;
 }
 
+
+
+// MBC 3 FUNCTIONS
+// ---------------
+void MBC3_writeToRom(uint16_t addr, uint8_t val) {
+    printf("MBC3_writeToRom to implement\n");
+}
+
+void MBC3_writeRam(uint16_t addr, uint8_t val) {
+    printf("MBC3_writeRam to implement\n");
+}
+
+uint8_t MBC3_readRom(uint16_t addr) {
+    printf("MBC3_readRom to implement\n");
+    return 0;
+}
+
+
+uint8_t MBC3_readRam(uint16_t addr) {
+    printf("MBC3_readRam to implement\n");
+    return 0;
+}
+
+
+
+// MEMORY UNIT FUNCTIONS
+// ---------------------
 
 void loadCartridge(char* path) {
     FILE *cartridgePtr;
@@ -132,6 +181,7 @@ uint8_t readByte(uint16_t addr) {
     else if (addr >= 0x4000 && addr <= 0x7fff) {
         if (mmu.mbc_type == 1) return MBC1_readRom(addr);
         if (mmu.mbc_type == 2) return MBC2_readRom(addr);
+        if (mmu.mbc_type == 3) return MBC3_readRom(addr);
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         return mmu.video_ram[addr - 0x8000];
@@ -188,7 +238,9 @@ void writeByte(uint16_t addr, uint8_t val) {
         mmu.video_ram[addr - 0x8000] = val;
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {
-        mmu.external_ram[addr - 0xa000] = val;
+        if (mmu.mbc_type == 1) MBC1_writeRam(addr, val);
+        if (mmu.mbc_type == 2) MBC2_writeRam(addr, val);
+        if (mmu.mbc_type == 3) MBC3_writeRam(addr, val);
     }
     else if (addr >= 0xc000 && addr <= 0xdfff) {
         mmu.work_ram[addr - 0xc000] = val;

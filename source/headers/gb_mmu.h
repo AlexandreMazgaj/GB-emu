@@ -28,14 +28,17 @@ void MMU_init();
 
 
 void MBC1_writeToRom(uint16_t addr, uint8_t val);
+void MBC1_writeRam(uint16_t addr, uint8_t val);
 uint8_t MBC1_readRom(uint16_t addr);
 uint8_t MBC1_readRam(uint16_t addr);
 
 void MBC2_writeToRom(uint16_t addr, uint8_t val);
+void MBC2_writeRam(uint16_t addr, uint8_t val);
 uint8_t MBC2_readRom(uint16_t addr);
 uint8_t MBC2_readRam(uint16_t addr);
 
 void MBC3_writeToRom(uint16_t addr, uint8_t val);
+void MBC3_writeRam(uint16_t addr, uint8_t val);
 uint8_t MBC3_readRom(uint16_t addr);
 uint8_t MBC3_readRam(uint16_t addr);
 
