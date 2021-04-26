@@ -19,6 +19,8 @@ struct mmu {
     uint8_t mbc_romBank;
     uint8_t mbc_ramBank;
 
+    uint8_t mbc_nbRomBank;
+
     uint8_t mbc_ramMode;
 
 } extern mmu;

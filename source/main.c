@@ -9,11 +9,10 @@ int main() {
     CPU_init();
     MMU_init();
 
-    loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
+    loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/ducktales.gb");
 
+    printf("nb rom banks: %d\n", mmu.mbc_nbRomBank);
 
-    for (int i = 0; i < 100; ++i)
-        clock();
 
 
 

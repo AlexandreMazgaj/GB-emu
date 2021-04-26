@@ -38,25 +38,21 @@ void MMU_init() {
 // ---------------
 void MBC1_writeToRom(uint16_t addr, uint8_t val) {
     if (addr >= 0x0000 && addr <= 0x1fff) {
-        if (val == 0x00)
-            mmu.mbc_isRamActive = 0;
-        else
-            mmu.mbc_isRamActive = 1;
+        mmu.mbc_isRamActive = ((val & 0xf) == 0xa);
     }
     else if (addr >= 0x2000 && addr <= 0x3fff) {
-        if (val == 0x00) { mmu.mbc_romBank = 0x01; return; }
-        if (val == 0x20) { mmu.mbc_romBank = 0x21; return; }
-        if (val == 0x40) { mmu.mbc_romBank = 0x41; return; }
-        if (val == 0x60) { mmu.mbc_romBank = 0x61; return; }
+        if ((val & 0xf) == 0)
+            val += 1;
 
-        mmu.mbc_romBank = 0x1f & val;
+        mmu.mbc_romBank = (mmu.mbc_romBank & 0x60) | (0x1f & val);
     }
     else if (addr >= 0x4000 && addr <= 0x5fff) {
-        if (mmu.mbc_hasRam) {
+        if (mmu.mbc_ramMode) {
             mmu.mbc_ramBank = val & 0x03;
         }
-        else
-            mmu.mbc_romBank = (mmu.mbc_romBank & 0x1fff) | ((val & 0x03) << 5);
+        else {
+            mmu.mbc_romBank = (mmu.mbc_romBank & 0x1f) | ((val & 0x03) << 5);
+        }
     }
     else if (addr >= 0x6000 && addr <= 0x7fff) {
         mmu.mbc_ramMode = (val & 0x01);
@@ -68,6 +64,7 @@ void MBC1_writeRam(uint16_t addr, uint8_t val) {
 
     if (mmu.mbc_ramMode == 0) {
         mmu.external_ram[addr - 0xa000] = val;
+        return;
     }
     
     mmu.external_ram[(addr - 0xa000) + (mmu.mbc_ramBank*0x2000)] = val;
@@ -75,13 +72,17 @@ void MBC1_writeRam(uint16_t addr, uint8_t val) {
 }
 
 uint8_t MBC1_readRom(uint16_t addr) {
-    return mmu.rom[(addr-0x4000) + mmu.mbc_romBank*0x4000];
+    // we mask the bank number to the number of banks available
+    uint8_t bank = mmu.mbc_romBank & (mmu.mbc_nbRomBank + 1);
+
+    return mmu.rom[(addr-0x4000) + bank*0x4000];
 }
 
 uint8_t MBC1_readRam(uint16_t addr) {
     if (!mmu.mbc_isRamActive) return 0;
     if (mmu.mbc_ramMode == 0) {
-        return mmu.external_ram[addr - 0xa000];
+        mmu.external_ram[addr - 0xa000];
+        return;
     }
     
     return mmu.external_ram[(addr - 0xa000) + (mmu.mbc_ramBank*0x2000)];
@@ -101,7 +102,8 @@ void MBC2_writeRam(uint16_t addr, uint8_t val) {
 
 
 uint8_t MBC2_readRom(uint16_t addr) {
-    return mmu.rom[(addr-0x4000) + mmu.mbc_romBank*0x4000];
+    // the same than for MBC1
+    return MBC1_readRom(addr);
 }
 
 uint8_t MBC2_readRam(uint16_t addr) {
@@ -167,6 +169,16 @@ void loadCartridge(char* path) {
         case 0x05: mmu.mbc_type = 2; break;
         default: printf("You should implement more memory banks\n");
                  break;
+    }
+
+    // we get the number of rom banks
+    uint8_t romSizeType = mmu.rom[0x0148];
+    switch(romSizeType) {
+        case 0x00: mmu.mbc_nbRomBank = 0; break; // no extra rom
+        case 0x01: mmu.mbc_nbRomBank = 2; break; // 32kib more --> 2 banks extra
+        case 0x02: mmu.mbc_nbRomBank = 6; break; // 96kib more --> 6 banks extra
+        case 0x03: mmu.mbc_nbRomBank = 14; break; // 224kib more --> 14 banks extra
+        case 0x04: mmu.mbc_nbRomBank = 30; break; // 480kib more --> 30 banks extra
     }
 
 }
