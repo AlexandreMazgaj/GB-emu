@@ -260,6 +260,13 @@ void writeByte(uint16_t addr, uint8_t val) {
     else if (addr >= 0xfe00 && addr <= 0xfe9f) {
         ppu.oam[addr - 0xfe00] = val;
     }
+    // 0xff00 controller
+    // 0xff01 - 02 communication
+    // 0xff04 - 07 Divider and timer
+    //
+    else if (addr >= 0xff40 && addr <= 0xff69) {
+        writeLCDC(addr, val);
+    }
     else if (addr >= 0xff80 && addr <= 0xfffe) {
         mmu.high_ram[addr - 0xff80] = val;
     }
