@@ -48,6 +48,8 @@ uint8_t MBC3_readRam(uint16_t addr);
 void loadCartridge(char* path);
 
 
+void oam_dma(uint8_t hi);
+
 uint8_t readByte(uint16_t addr);
 uint16_t readWord(uint16_t addr);
 

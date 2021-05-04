@@ -185,6 +185,18 @@ void loadCartridge(char* path) {
 
 
 
+void oam_dma(uint8_t hi) {
+    printf("should be going here\n");
+    for (uint16_t i = 0x00; i < 0x9f + 1; i++) {
+        uint16_t readAddr = ((uint16_t) hi << 8) | i;
+        uint16_t oamAddr = ((uint16_t) 0xfe << 8) | i;
+        writeByte(oamAddr, readByte(readAddr));
+    }
+    
+}
+
+
+
 // TODO Finish readByte function
 uint8_t readByte(uint16_t addr) {
     if (addr >= 0x0000 &&  addr <= 0x3fff) {
@@ -206,6 +218,13 @@ uint8_t readByte(uint16_t addr) {
     }
     else if (addr >= 0xfe00 && addr <= 0xfe9f) {
         return ppu.oam[addr - 0xfe00];
+    }
+    // 0xff00 controller
+    // 0xff01 - 02 communication
+    // 0xff04 - 07 Divider and timer
+    //
+    else if (addr >= 0xff40 && addr <= 0xff69) {
+        return readPPU(addr);
     }
     else if (addr >= 0xff80 && addr <= 0xfffe) {
         return mmu.high_ram[addr - 0xff80];
@@ -265,7 +284,13 @@ void writeByte(uint16_t addr, uint8_t val) {
     // 0xff04 - 07 Divider and timer
     //
     else if (addr >= 0xff40 && addr <= 0xff69) {
-        writeLCDC(addr, val);
+        // OAM DMA
+        if (addr == 0xff46) {
+            oam_dma(val);
+        }
+        else {
+            writePPU(addr, val);
+        }
     }
     else if (addr >= 0xff80 && addr <= 0xfffe) {
         mmu.high_ram[addr - 0xff80] = val;

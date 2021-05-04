@@ -19,6 +19,9 @@
 
 
 struct ppu {
+
+    uint8_t screen[SCREEN_HEIGHT][SCREEN_WIDTH];
+
     uint8_t oam[OAM_SIZE];
 
     uint8_t reg_lcdc;
@@ -32,7 +35,24 @@ struct ppu {
     uint8_t WY;
     uint8_t WX;
 
+
+    // Color palettes
+
+    uint8_t bg_pal[3];
+    uint8_t ob_pal0[3];
+    uint8_t ob_pal1[3];
+
+    uint8_t bg_palValue;
+    uint8_t ob_pal0Value;
+    uint8_t ob_pal1Value;
+
 } extern ppu;
 
 
+void PPU_init();
+
 void writePPU(uint16_t addr, uint8_t val);
+
+uint8_t readPPU(uint16_t addr);
+
+uint8_t getGBColorFromValue(uint8_t val);

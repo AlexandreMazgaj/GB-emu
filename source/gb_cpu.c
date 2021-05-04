@@ -264,5 +264,6 @@ void printBinary(uint8_t hex) {
     printf("%x", (hex >> 4) & 1);
     printf("%x", (hex >> 3) & 1);
     printf("%x", (hex >> 2) & 1);
-    printf("%x\n", (hex >> 1) & 1);
+    printf("%x", (hex >> 1) & 1);
+    printf("%x\n", hex & 1);
 }
