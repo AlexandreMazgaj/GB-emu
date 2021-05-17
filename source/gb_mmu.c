@@ -20,7 +20,6 @@ void MMU_init() {
     }
 
     for (int i = 0; i < RAM_SIZE; i++) {
-        mmu.video_ram[i] = 0;
         mmu.external_ram[i] = 0;
     }
 
@@ -208,7 +207,7 @@ uint8_t readByte(uint16_t addr) {
         if (mmu.mbc_type == 3) return MBC3_readRom(addr);
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
-        return mmu.video_ram[addr - 0x8000];
+        return ppu.video_ram[addr - 0x8000];
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {
         if (mmu.mbc_type == 1) return MBC1_readRam(addr);
@@ -266,7 +265,8 @@ void writeByte(uint16_t addr, uint8_t val) {
     // }
     //END ROM
     else if (addr >= 0x8000 && addr <= 0x9fff) {
-        mmu.video_ram[addr - 0x8000] = val;
+        ppu.video_ram[addr - 0x8000] = val;
+        updateTile(addr, val);
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {
         if (mmu.mbc_type == 1) MBC1_writeRam(addr, val);

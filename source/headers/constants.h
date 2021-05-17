@@ -9,3 +9,4 @@
 #define MAX_RAM_SIZE 32*1024
 #define SCREEN_HEIGHT 160
 #define SCREEN_WIDTH 144
+#define TILE_SET_SIZE 384
