@@ -34,9 +34,10 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"INC E", &exe_ince, 4, 0},
     {"DEC E", &exe_dece, 4, 0},
     {"LD E, d8", &exe_lded8, 8, 1},
-    {"RRA", &exe_rra, 4, 0}
+    {"RRA", &exe_rra, 4, 0},
     //0x2
-
+    {"JR NZ, R8", &exe_jrnzr8, 8, 1},
+    {"LD HL, d16", &exe_ldhld16, 12, 2}
 };
 
 
@@ -48,13 +49,13 @@ void handleUnknownOp(uint8_t opcode) {
 
 uint8_t exe_nop() {
     // registers.pc++;
+    asm("nop"::);
     return 0;
 }
 
 
 uint8_t exe_ldbcd16() {
-    uint16_t data = readWord(++registers.pc);
-    registers.bc = data;
+    registers.bc = readWord(++registers.pc);
     return 0;
 }
 
@@ -209,4 +210,25 @@ uint8_t exe_lded8() {
 uint8_t exe_rra() {
     rotateRightCarry(&registers.a);
     return 0;
+}
+
+uint8_t exe_jrnzr8() {
+    if (!GETZFLAG()) {
+        registers.pc += readByte(++registers.pc);
+        return 4;
+    }
+    return 0;
+}
+
+uint8_t exe_ldhld16() {
+    registers.hl = readWord(++registers.pc);
+    return 0;
+}
+
+uint8_t exe_ldphlpa() {
+
+}
+
+uint8_t exe_inchl() {
+
 }

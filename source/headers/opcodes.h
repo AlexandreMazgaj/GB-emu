@@ -88,3 +88,10 @@ uint8_t exe_rra();
 
 
 // 0x2
+uint8_t exe_jrnzr8();
+
+uint8_t exe_ldhld16();
+
+uint8_t exe_ldphlpa();
+
+uint8_t exe_inchl();

@@ -41,7 +41,7 @@ struct ppu {
     uint8_t scrollX;
     uint8_t scrollY;
 
-    uint8_t LY;
+    // scan line compare
     uint8_t LYC;
     uint8_t WY;
     uint8_t WX;
@@ -77,3 +77,5 @@ void updateTile(uint16_t addr, uint8_t val);
 uint8_t readPPU(uint16_t addr);
 
 uint8_t getGBColorFromValue(uint8_t val);
+
+void renderScanline();
