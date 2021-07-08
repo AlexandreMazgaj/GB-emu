@@ -207,6 +207,43 @@ void dec8bReg(uint8_t* reg) {
 }
 
 
+void and_a(uint8_t reg) {
+    registers.a &= reg;
+
+    SETZFLAG(registers.a == 0);
+    SETNFLAG(0);
+    SETHFLAG(1);
+    SETCFLAG(0);
+}
+
+void xor_a(uint8_t reg) {
+    registers.a ^= reg;
+
+    SETZFLAG(registers.a == 0);
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETCFLAG(0);
+}
+
+void or_a(uint8_t reg) {
+    registers.a |= reg;
+
+    SETZFLAG(registers.a == 0);
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETCFLAG(0);
+}
+
+void cp_a(uint8_t reg) {
+    int cp_val = registers.a - reg;
+
+    SETZFLAG(cp_val == 0);
+    SETNFLAG(1);
+    SETHFLAG((((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf)) & 0x10) == 0x10);
+    SETCFLAG(cp_val < 0);
+}
+
+
 void rotateLeft(uint8_t* reg) {
     uint8_t hiBit = ((*reg) >> 7) & 1;
     SETNFLAG(0);

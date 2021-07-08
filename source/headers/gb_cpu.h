@@ -98,16 +98,37 @@ void checkInterrupts();
 
 
 // Math functions
+// --------------
+
+// a = a + reg
 void add_a(uint8_t reg);
+// a = a - reg
 void sub_a(uint8_t reg);
 
+// a = a + reg + carry
 void adc_a(uint8_t reg);
+// a = a - reg - carry
 void sbc_a(uint8_t reg);
 
+// hl = hl + reg
 void add_hl(uint16_t reg);
 
 void inc8bReg(uint8_t* reg);
 void dec8bReg(uint8_t* reg);
+
+
+
+// Logic functions
+// ---------------
+
+// logical AND between the reg passed in parameter and register a, the value is stored in a
+void and_a(uint8_t reg);
+// logical XOR between the reg passed in parameter and register a, the value is stored in a
+void xor_a(uint8_t reg);
+// logical OR between the reg passed in parameter and register a, the value is stored in a
+void or_a(uint8_t reg);
+// comparison (a - reg) between register a and reg passed in parameter
+void cp_a(uint8_t reg);
 
 void rotateLeft(uint8_t* reg);
 void rotateRight(uint8_t* reg);
