@@ -20,395 +20,395 @@ struct instruction {
 void handleUnknownOp(uint8_t opcode);
 
 // 0x0
-uint8_t exe_nop();
+uint8_t exe_nop();          // OK
 
-uint8_t exe_ldbcd16();
+uint8_t exe_ldbcd16();      // OK
 
-uint8_t exe_ldpbca();
+uint8_t exe_ldpbca();       // OK
 
-uint8_t exe_incbc();
+uint8_t exe_incbc();        // OK
 
-uint8_t exe_incb();
+uint8_t exe_incb();         // OK
 
-uint8_t exe_decb();
+uint8_t exe_decb();         // OK
 
-uint8_t exe_ldbd8();
+uint8_t exe_ldbd8();        // OK
 
-uint8_t exe_rlca();
+uint8_t exe_rlca();         // OK
 
-uint8_t exe_ldpa16sp();
+uint8_t exe_ldpa16sp();     // OK
 
-uint8_t exe_addhlbc();
+uint8_t exe_addhlbc();      // OK
 
-uint8_t exe_ldapbc();
+uint8_t exe_ldapbc();       // OK
 
-uint8_t exe_decbc();
+uint8_t exe_decbc();        // OK
 
-uint8_t exe_incc();
+uint8_t exe_incc();         // OK
 
-uint8_t exe_decc();
+uint8_t exe_decc();         // OK
 
-uint8_t exe_ldcd8();
+uint8_t exe_ldcd8();        // OK
 
-uint8_t exe_rrca();
+uint8_t exe_rrca();         // OK
 
 
 // 0x1
-uint8_t exe_stop();
+uint8_t exe_stop();         // OK
 
-uint8_t exe_ldded16();
+uint8_t exe_ldded16();      // OK
 
-uint8_t exe_ldpdea();
+uint8_t exe_ldpdea();       // OK
 
-uint8_t exe_incde();
+uint8_t exe_incde();        // OK
 
-uint8_t exe_incd();
+uint8_t exe_incd();         // OK
 
-uint8_t exe_decd();
+uint8_t exe_decd();         // OK
 
-uint8_t exe_lddd8();
+uint8_t exe_lddd8();        // OK
 
-uint8_t exe_rla();
+uint8_t exe_rla();          // OK
 
-uint8_t exe_jri8();
+uint8_t exe_jri8();         // OK
 
-uint8_t exe_addhlde();
+uint8_t exe_addhlde();      // OK
 
-uint8_t exe_ldapde();
+uint8_t exe_ldapde();       // OK
 
-uint8_t exe_decde();
+uint8_t exe_decde();        // OK
 
-uint8_t exe_ince();
+uint8_t exe_ince();         // OK
 
-uint8_t exe_dece();
+uint8_t exe_dece();         // OK
 
-uint8_t exe_lded8();
+uint8_t exe_lded8();        // OK
 
-uint8_t exe_rra();
+uint8_t exe_rra();          // OK
 
 
 // 0x2
-uint8_t exe_jrnzr8();
+uint8_t exe_jrnzr8();       // OK
 
-uint8_t exe_ldhld16();
+uint8_t exe_ldhld16();      // OK
 
-uint8_t exe_ldphlia();
+uint8_t exe_ldphlia();      // OK
 
-uint8_t exe_inchl();
+uint8_t exe_inchl();        // OK
 
-uint8_t exe_inch();
+uint8_t exe_inch();         // OK  
 
-uint8_t exe_dech();
+uint8_t exe_dech();         // OK
 
-uint8_t exe_ldhd8();
+uint8_t exe_ldhd8();        // OK
 
-uint8_t exe_daa();
+uint8_t exe_daa();          // TO SEE
 
-uint8_t exe_jrzr8();
+uint8_t exe_jrzr8();        // OK
 
-uint8_t exe_addhlhl();
+uint8_t exe_addhlhl();      // OK
 
-uint8_t exe_ldaphli();
+uint8_t exe_ldaphli();      // OK
 
-uint8_t exe_dechl();
+uint8_t exe_dechl();        // OK
 
-uint8_t exe_incl();
+uint8_t exe_incl();         // OK
 
-uint8_t exe_decl();
+uint8_t exe_decl();         // OK
 
-uint8_t exe_ldld8();
+uint8_t exe_ldld8();        // OK
 
-uint8_t exe_cpl();
+uint8_t exe_cpl();          // OK
 
 
 // 0x3
-uint8_t exe_jrncr8();
+uint8_t exe_jrncr8();       // OK
 
-uint8_t exe_ldspd16();
+uint8_t exe_ldspd16();      // OK
 
-uint8_t exe_ldphlda();
+uint8_t exe_ldphlda();      // OK
 
-uint8_t exe_incsp();
+uint8_t exe_incsp();        // OK
 
-uint8_t exe_incphl();
+uint8_t exe_incphl();       // OK
 
-uint8_t exe_decphl();
+uint8_t exe_decphl();       // OK
 
-uint8_t exe_ldphld8();
+uint8_t exe_ldphld8();      // OK
 
-uint8_t exe_scf();
+uint8_t exe_scf();          // OK
 
-uint8_t exe_jrcr8();
+uint8_t exe_jrcr8();        // OK
 
-uint8_t exe_addhlsp();
+uint8_t exe_addhlsp();      // OK
 
-uint8_t exe_ldaphld();
+uint8_t exe_ldaphld();      // OK
 
-uint8_t exe_decsp();
+uint8_t exe_decsp();        // OK
 
-uint8_t exe_inca();
+uint8_t exe_inca();         // OK
 
-uint8_t exe_deca();
+uint8_t exe_deca();         // OK
 
-uint8_t exe_ldad8();
+uint8_t exe_ldad8();        // OK
 
-uint8_t exe_ccf();
+uint8_t exe_ccf();          // OK
 
 
 // 0x4
-uint8_t exe_ldbb();
+uint8_t exe_ldbb();         // OK
 
-uint8_t exe_ldbc();
+uint8_t exe_ldbc();         // OK
 
-uint8_t exe_ldbd();
+uint8_t exe_ldbd();         // OK
 
-uint8_t exe_ldbe();
+uint8_t exe_ldbe();         // OK
 
-uint8_t exe_ldbh();
+uint8_t exe_ldbh();         // OK
 
-uint8_t exe_ldbl();
+uint8_t exe_ldbl();         // OK
 
-uint8_t exe_ldbphl();
+uint8_t exe_ldbphl();       // OK
 
-uint8_t exe_ldba();
+uint8_t exe_ldba();         // OK
 
-uint8_t exe_ldcb();
+uint8_t exe_ldcb();         // OK
 
-uint8_t exe_ldcc();
+uint8_t exe_ldcc();         // OK
 
-uint8_t exe_ldcd();
+uint8_t exe_ldcd();         // OK
 
-uint8_t exe_ldce();
+uint8_t exe_ldce();         // OK
 
-uint8_t exe_ldch();
+uint8_t exe_ldch();         // OK
 
-uint8_t exe_ldcl();
+uint8_t exe_ldcl();         // OK
 
-uint8_t exe_ldcphl();
+uint8_t exe_ldcphl();       // OK
 
-uint8_t exe_ldca();
+uint8_t exe_ldca();         // OK
 
 
 // 0x5
-uint8_t exe_lddb();
+uint8_t exe_lddb();         // OK
 
-uint8_t exe_lddc();
+uint8_t exe_lddc();         // OK
 
-uint8_t exe_lddd();
+uint8_t exe_lddd();         // OK
 
-uint8_t exe_ldde();
+uint8_t exe_ldde();         // OK
 
-uint8_t exe_lddh();
+uint8_t exe_lddh();         // OK
 
-uint8_t exe_lddl();
+uint8_t exe_lddl();         // OK
 
-uint8_t exe_lddphl();
+uint8_t exe_lddphl();       // OK
 
-uint8_t exe_ldda();
+uint8_t exe_ldda();         // OK
 
-uint8_t exe_ldeb();
+uint8_t exe_ldeb();         // OK
 
-uint8_t exe_ldec();
+uint8_t exe_ldec();         // OK
 
-uint8_t exe_lded();
+uint8_t exe_lded();         // OK
 
-uint8_t exe_ldee();
+uint8_t exe_ldee();         // OK
 
-uint8_t exe_ldeh();
+uint8_t exe_ldeh();         // OK   
 
-uint8_t exe_ldel();
+uint8_t exe_ldel();         // OK
 
-uint8_t exe_ldephl();
+uint8_t exe_ldephl();       // OK
 
-uint8_t exe_ldea();
+uint8_t exe_ldea();         // OK
 
 
 // 0x6
-uint8_t exe_ldhb();
+uint8_t exe_ldhb();         // OK
 
-uint8_t exe_ldhc();
+uint8_t exe_ldhc();         // OK
 
-uint8_t exe_ldhd();
+uint8_t exe_ldhd();         // OK
 
-uint8_t exe_ldhe();
+uint8_t exe_ldhe();         // OK
 
-uint8_t exe_ldhh();
+uint8_t exe_ldhh();         // OK
 
-uint8_t exe_ldhl();
+uint8_t exe_ldhl();         // OK
 
-uint8_t exe_ldhphl();
+uint8_t exe_ldhphl();       // OK
 
-uint8_t exe_ldha();
+uint8_t exe_ldha();         // OK
 
-uint8_t exe_ldlb();
+uint8_t exe_ldlb();         // OK
 
-uint8_t exe_ldlc();
+uint8_t exe_ldlc();         // OK
 
-uint8_t exe_ldld();
+uint8_t exe_ldld();         // OK
 
-uint8_t exe_ldle();
+uint8_t exe_ldle();         // OK
 
-uint8_t exe_ldlh();
+uint8_t exe_ldlh();         // OK
 
-uint8_t exe_ldll();
+uint8_t exe_ldll();         // OK
 
-uint8_t exe_ldlphl();
+uint8_t exe_ldlphl();       // OK
 
-uint8_t exe_ldla();
+uint8_t exe_ldla();         // OK
 
 
 // 0x7
-uint8_t exe_ldphlb();
+uint8_t exe_ldphlb();       // OK
 
-uint8_t exe_ldphlc();
+uint8_t exe_ldphlc();       // OK
 
-uint8_t exe_ldphld();
+uint8_t exe_ldphld();       // OK
 
-uint8_t exe_ldphle();
+uint8_t exe_ldphle();       // OK
 
-uint8_t exe_ldphlh();
+uint8_t exe_ldphlh();       // OK
 
-uint8_t exe_ldphll();
+uint8_t exe_ldphll();       // OK
 
-uint8_t exe_halt();
+uint8_t exe_halt();         // OK
 
-uint8_t exe_ldphla();
+uint8_t exe_ldphla();       // OK
 
-uint8_t exe_ldab();
+uint8_t exe_ldab();         // OK
 
-uint8_t exe_ldac();
+uint8_t exe_ldac();         // OK
 
-uint8_t exe_ldad();
+uint8_t exe_ldad();         // OK
 
-uint8_t exe_ldae();
+uint8_t exe_ldae();         // OK
 
-uint8_t exe_ldah();
+uint8_t exe_ldah();         // OK
 
-uint8_t exe_ldal();
+uint8_t exe_ldal();         // OK
 
-uint8_t exe_ldaphl();
+uint8_t exe_ldaphl();       // OK
 
-uint8_t exe_ldaa();
+uint8_t exe_ldaa();         // OK
 
 
 // 0x8
-uint8_t exe_addab();
+uint8_t exe_addab();        // OK
 
-uint8_t exe_addac();
+uint8_t exe_addac();        // OK
 
-uint8_t exe_addad();
+uint8_t exe_addad();        // OK
 
-uint8_t exe_addae();
+uint8_t exe_addae();        // OK
 
-uint8_t exe_addah();
+uint8_t exe_addah();        // OK
 
-uint8_t exe_addal();
+uint8_t exe_addal();        // OK
 
-uint8_t exe_addaphl();
+uint8_t exe_addaphl();      // OK
 
-uint8_t exe_addaa();
+uint8_t exe_addaa();        // OK
 
-uint8_t exe_adcab();
+uint8_t exe_adcab();        // OK
 
-uint8_t exe_adcac();
+uint8_t exe_adcac();        // OK
 
-uint8_t exe_adcad();
+uint8_t exe_adcad();        // OK
 
-uint8_t exe_adcae();
+uint8_t exe_adcae();        // OK
 
-uint8_t exe_adcah();
+uint8_t exe_adcah();        // OK
 
-uint8_t exe_adcal();
+uint8_t exe_adcal();        // OK
 
-uint8_t exe_adcaphl();
+uint8_t exe_adcaphl();      // OK
 
-uint8_t exe_adcaa();
+uint8_t exe_adcaa();        // OK
 
 
 // 0x9
-uint8_t exe_subab();
+uint8_t exe_subab();        // OK
 
-uint8_t exe_subac();
+uint8_t exe_subac();        // OK
 
-uint8_t exe_subad();
+uint8_t exe_subad();        // OK
 
-uint8_t exe_subae();
+uint8_t exe_subae();        // OK
 
-uint8_t exe_subah();
+uint8_t exe_subah();        // OK
 
-uint8_t exe_subal();
+uint8_t exe_subal();        // OK
 
-uint8_t exe_subaphl();
+uint8_t exe_subaphl();      // OK
 
-uint8_t exe_subaa();
+uint8_t exe_subaa();        // OK
 
-uint8_t exe_sbcab();
+uint8_t exe_sbcab();        // OK
 
-uint8_t exe_sbcac();
+uint8_t exe_sbcac();        // OK
 
-uint8_t exe_sbcad();
+uint8_t exe_sbcad();        // OK
 
-uint8_t exe_sbcae();
+uint8_t exe_sbcae();        // OK
 
-uint8_t exe_sbcah();
+uint8_t exe_sbcah();        // OK
 
-uint8_t exe_sbcal();
+uint8_t exe_sbcal();        // OK
 
-uint8_t exe_sbcaphl();
+uint8_t exe_sbcaphl();      // OK
 
-uint8_t exe_sbcaa();
+uint8_t exe_sbcaa();        // OK
 
 
 // 0xa
-uint8_t exe_andab();
+uint8_t exe_andab();        // OK
 
-uint8_t exe_andac();
+uint8_t exe_andac();        // OK
 
-uint8_t exe_andad();
+uint8_t exe_andad();        // OK
 
-uint8_t exe_andae();
+uint8_t exe_andae();        // OK
 
-uint8_t exe_andah();
+uint8_t exe_andah();        // OK
 
-uint8_t exe_andal();
+uint8_t exe_andal();        // OK
 
-uint8_t exe_andaphl();
+uint8_t exe_andaphl();      // OK
 
-uint8_t exe_andaa();
+uint8_t exe_andaa();        // OK
 
-uint8_t exe_xorab();
+uint8_t exe_xorab();        // OK
 
-uint8_t exe_xorac();
+uint8_t exe_xorac();        // OK
 
-uint8_t exe_xorad();
+uint8_t exe_xorad();        // OK
 
-uint8_t exe_xorae();
+uint8_t exe_xorae();        // OK
 
-uint8_t exe_xorah();
+uint8_t exe_xorah();        // OK
 
-uint8_t exe_xoral();
+uint8_t exe_xoral();        // OK
 
-uint8_t exe_xoraphl();
+uint8_t exe_xoraphl();      // OK
 
-uint8_t exe_xoraa();
+uint8_t exe_xoraa();        // OK
 
 
 // 0xb
-uint8_t exe_orab();
+uint8_t exe_orab();         // OK
 
-uint8_t exe_orac();
+uint8_t exe_orac();         // OK
 
-uint8_t exe_orad();
+uint8_t exe_orad();         // OK
 
-uint8_t exe_orae();
+uint8_t exe_orae();         // OK
 
-uint8_t exe_orah();
+uint8_t exe_orah();         // OK
 
-uint8_t exe_oral();
+uint8_t exe_oral();         // OK
 
-uint8_t exe_oraphl();
+uint8_t exe_oraphl();       // OK
 
-uint8_t exe_oraa();
+uint8_t exe_oraa();         // OK
 
 uint8_t exe_cpab();
 
@@ -425,3 +425,22 @@ uint8_t exe_cpal();
 uint8_t exe_cpaphl();
 
 uint8_t exe_cpaa();
+
+
+
+// 0xc
+uint8_t exe_retnz();
+
+uint8_t exe_popbc();
+
+uint8_t exe_jpnza16();
+
+uint8_t exe_jpa16();
+
+uint8_t exe_callnza16();
+
+uint8_t exe_pushbc();
+
+uint8_t exe_addad8();
+
+uint8_t exe_rst00h();

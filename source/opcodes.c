@@ -491,7 +491,7 @@ uint8_t exe_ldld8() {
 }
 
 uint8_t exe_cpl() {
-    registers.a = !registers.a;
+    registers.a = ~registers.a;
     return 0;
 }
 
@@ -537,7 +537,7 @@ uint8_t exe_decphl() {
 }
 
 uint8_t exe_ldphld8() {
-    writeByte(registers.hl, ++registers.pc);
+    writeByte(registers.hl, readByte(++registers.pc));
     return 0;
 }
 
@@ -1261,5 +1261,61 @@ uint8_t exe_cpaphl() {
 
 uint8_t exe_cpaa() {
     cp_a(registers.a);
+    return 0;
+}
+
+
+// #######
+// # 0xc #
+// #######
+
+uint8_t exe_retnz() {
+    if (!GETZFLAG()) {
+        registers.pc = popWordStack();
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_popbc() {
+    registers.bc = popWordStack();
+    return 0;
+}
+
+uint8_t exe_jpnza16() {
+    if (!GETZFLAG()) {
+        registers.pc = readWord(++registers.pc) - 1; // we remove 1 because it will be added at the end of the clock function
+        return 4;
+    }
+    return 0;
+}
+
+uint8_t exe_jpa16() {
+    registers.pc = readWord(++registers.pc) - 1; // we remove 1 because it will be added at the end of the clock function
+    return 0;
+}
+
+uint8_t exe_callnza16() {
+    if (!GETZFLAG()) {
+        uint16_t addr = readWord(++registers.pc);
+        pushWordStack(registers.pc);
+        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_pushbc() {
+    pushWordStack(registers.bc);
+    return 0;
+}
+
+uint8_t exe_addad8() {
+    add_a(readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst00h() {
+    registers.pc = 0xffff;
     return 0;
 }
