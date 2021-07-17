@@ -205,6 +205,40 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"CP A, L", &exe_cpal, 4, 0},
     {"CP A, (HL)", &exe_cpaphl, 8, 0},
     {"CP A, A", &exe_cpaa, 4, 0},
+    // 0xc
+    {"RET NZ", &exe_retnz, 8, 0},
+    {"POP BC", &exe_popbc, 12, 0},
+    {"JP NZ, a16", &exe_jpnza16, 12, 2},
+    {"JP a16", &exe_jpa16, 16, 2},
+    {"CALL NZ, a16", &exe_callnza16, 12, 2},
+    {"PUSH BC", &exe_pushbc, 16, 0},
+    {"ADD A, d8", &exe_addad8, 8, 1},
+    {"RST 00H", &exe_rst00h, 16, 0},
+    {"RET Z", &exe_retz, 8, 0},
+    {"RET", &exe_ret, 16, 0},
+    {"JP Z, a16", &exe_jpza16, 12, 2},
+    {"PREFIX", &exe_cbprefix, 4, 0},
+    {"CALL Z, a16", &exe_callza16, 12, 2},
+    {"CALL a16", &exe_calla16, 24, 2},
+    {"ADC A, d8", &exe_adcad8, 8, 1},
+    {"RST 08H", &exe_rst08h, 16, 0},
+    // 0xd
+    {"RET NC", &exe_retnc, 8, 0},
+    {"POP DE", &exe_popde, 12, 0},
+    {"JP NC, a16", &exe_jpnca16, 12, 2},
+    {"NOT A FUNCTION", 0, 0, 0},
+    {"CALL NC, a16", &exe_callnca16, 12, 2},
+    {"PUSH DE", &exe_pushde, 16, 0},
+    {"SUB d8", &exe_subad8, 8, 1},
+    {"RST 10H", &exe_rst10h, 16, 0},
+    {"RET C", &exe_retc, 8, 0},
+    {"RETI", &exe_reti, 16, 0},
+    {"JP C, a16", &exe_jpca16, 12, 2},
+    {"NOT A FUNCTION", 0, 0, 0},
+    {"CALL C, a16", &exe_callca16, 12, 2},
+    {"NOT A FUNCTION", 0, 0, 0},
+    {"SBC A, d8", &exe_sbcad8, 8, 1},
+    {"RST 18H", &exe_rst18h, 16, 0},
     {}
 };
 
@@ -1298,7 +1332,7 @@ uint8_t exe_jpa16() {
 uint8_t exe_callnza16() {
     if (!GETZFLAG()) {
         uint16_t addr = readWord(++registers.pc);
-        pushWordStack(registers.pc);
+        pushWordStack(registers.pc+1);
         registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
         return 12;
     }
@@ -1317,5 +1351,152 @@ uint8_t exe_addad8() {
 
 uint8_t exe_rst00h() {
     registers.pc = 0xffff;
+    return 0;
+}
+
+uint8_t exe_retz() {
+    if (GETZFLAG()) {
+        registers.pc = popWordStack();
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_ret() {
+    registers.pc = popWordStack();
+    return 0;
+}
+
+uint8_t exe_jpza16() {
+    if (GETZFLAG()) {
+        registers.pc = readWord(registers.pc + 1) - 1; // we remove 1 because it will be added at the end of the clock function
+        return 4;
+    }
+    return 0;
+}
+
+uint8_t exe_cbprefix() {
+    // IMPLEMENT CB opcodes
+    return 0;
+}
+
+uint8_t exe_callza16() {
+    if (GETZFLAG()) {
+        uint16_t addr = readWord(++registers.pc);
+        pushWordStack(registers.pc+1); // In order to skip 
+        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_calla16() {
+    uint16_t addr = readWord(++registers.pc);
+    pushWordStack(registers.pc+1); // In order to skip 
+    registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+    return 0;
+}
+
+uint8_t exe_adcad8() {
+    adc_a(readByte(++registers.pc));
+
+    return 0;
+}
+
+uint8_t exe_rst08h() {
+    registers.pc = 0x08 -1;
+    return 0;
+}
+
+
+// #######
+// # 0xd #
+// #######
+
+uint8_t exe_retnc() {
+    if (!GETCFLAG()) {
+        registers.pc = popWordStack();
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_popde() {
+    registers.de = popWordStack();
+    return 0;
+}
+
+uint8_t exe_jpnca16() {
+    if (!GETCFLAG()) {
+        registers.pc = readWord(registers.pc + 1) - 1; // we remove 1 because it will be added at the end of the clock function
+        return 4;
+    }
+    return 0;
+}
+
+uint8_t exe_callnca16() {
+    if (!GETCFLAG()) {
+        uint16_t addr = readWord(++registers.pc);
+        pushWordStack(registers.pc+1); // In order to skip 
+        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_pushde() {
+    pushWordStack(registers.de);
+    return 0;
+}
+
+uint8_t exe_subad8() {
+    sub_a(readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst10h() {
+    registers.pc = 0x10 - 1;
+    return 0;
+}
+
+uint8_t exe_retc() {
+    if (GETCFLAG()) {
+        registers.pc = popWordStack();
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_reti() {
+    registers.pc = popWordStack();
+    IME = 1;
+    return 0;
+}
+
+uint8_t exe_jpca16() {
+    if (GETCFLAG()) {
+        registers.pc = readWord(registers.pc + 1) - 1; // we remove 1 because it will be added at the end of the clock function
+        return 4;
+    }
+    return 0;
+}
+
+uint8_t exe_callca16() {
+    if (GETCFLAG()) {
+        uint16_t addr = readWord(++registers.pc);
+        pushWordStack(registers.pc+1); // In order to skip 
+        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        return 12;
+    }
+    return 0;
+}
+
+uint8_t exe_sbcad8() {
+    sbc_a(readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst18h() {
+    registers.pc = 0x18 - 1;
     return 0;
 }

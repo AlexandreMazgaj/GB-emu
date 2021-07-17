@@ -410,37 +410,81 @@ uint8_t exe_oraphl();       // OK
 
 uint8_t exe_oraa();         // OK
 
-uint8_t exe_cpab();
+uint8_t exe_cpab();         // OK
 
-uint8_t exe_cpac();
+uint8_t exe_cpac();         // OK
 
-uint8_t exe_cpad();
+uint8_t exe_cpad();         // OK
 
-uint8_t exe_cpae();
+uint8_t exe_cpae();         // OK
 
-uint8_t exe_cpah();
+uint8_t exe_cpah();         // OK
 
-uint8_t exe_cpal();
+uint8_t exe_cpal();         // OK
 
-uint8_t exe_cpaphl();
+uint8_t exe_cpaphl();       // OK
 
-uint8_t exe_cpaa();
+uint8_t exe_cpaa();         // OK
 
 
 
 // 0xc
-uint8_t exe_retnz();
+uint8_t exe_retnz();        // OK
 
-uint8_t exe_popbc();
+uint8_t exe_popbc();        // OK
 
-uint8_t exe_jpnza16();
+uint8_t exe_jpnza16();      // OK
 
-uint8_t exe_jpa16();
+uint8_t exe_jpa16();        // OK
 
-uint8_t exe_callnza16();
+uint8_t exe_callnza16();    // OK
 
-uint8_t exe_pushbc();
+uint8_t exe_pushbc();       // OK
 
-uint8_t exe_addad8();
+uint8_t exe_addad8();       // OK
 
 uint8_t exe_rst00h();
+
+uint8_t exe_retz();
+
+uint8_t exe_ret();
+
+uint8_t exe_jpza16();
+
+uint8_t exe_cbprefix();
+
+uint8_t exe_callza16();
+
+uint8_t exe_calla16();
+
+uint8_t exe_adcad8();
+
+uint8_t exe_rst08h();
+
+
+// Oxd
+uint8_t exe_retnc();
+
+uint8_t exe_popde();
+
+uint8_t exe_jpnca16();
+
+uint8_t exe_callnca16();
+
+uint8_t exe_pushde();
+
+uint8_t exe_subad8();
+
+uint8_t exe_rst10h();
+
+uint8_t exe_retc();
+
+uint8_t exe_reti();
+
+uint8_t exe_jpca16();
+
+uint8_t exe_callca16();
+
+uint8_t exe_sbcad8();
+
+uint8_t exe_rst18h();
