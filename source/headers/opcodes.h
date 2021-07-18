@@ -18,6 +18,7 @@ struct instruction {
 
 // unknown opcode
 void handleUnknownOp(uint8_t opcode);
+uint8_t unknown_op();
 
 // 0x0
 uint8_t exe_nop();          // OK
@@ -488,3 +489,28 @@ uint8_t exe_callca16();
 uint8_t exe_sbcad8();
 
 uint8_t exe_rst18h();
+
+
+
+// Oxe
+uint8_t exe_ldhpa8a();
+
+uint8_t exe_pophl();
+
+uint8_t exe_ldpca();
+
+uint8_t exe_pushhl();
+
+uint8_t exe_andad8();
+
+uint8_t exe_rst20h();
+
+uint8_t exe_addspr8();
+
+uint8_t exe_jphl();
+
+uint8_t exe_ldpa16a();
+
+uint8_t exe_xorad8();
+
+uint8_t exe_rst28h();

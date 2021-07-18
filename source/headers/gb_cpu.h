@@ -113,6 +113,9 @@ void sbc_a(uint8_t reg);
 // hl = hl + reg
 void add_hl(uint16_t reg);
 
+// sp = sp + signed value
+void add_sp(int8_t val);
+
 void inc8bReg(uint8_t* reg);
 void dec8bReg(uint8_t* reg);
 

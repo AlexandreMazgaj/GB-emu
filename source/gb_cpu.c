@@ -186,6 +186,21 @@ void add_hl(uint16_t reg) {
     registers.hl = (uint16_t)(temp & 0x0000ffff);
 }
 
+
+void add_sp(int8_t val) {
+    int32_t temp = registers.sp + (int32_t)val;
+    SETZFLAG(0);
+    SETNFLAG(0);
+    SETCFLAG((temp & 0xffff) > 255);
+    if (val >= 0)
+        SETHFLAG((((registers.sp & 0xf) + (val & 0xf)) & 0x10) == 0x10);
+    else
+        SETHFLAG((((registers.sp & 0xf) - ((uint8_t)val & 0xf)) & 0x10) == 0x10);
+
+    registers.sp = (uint32_t)temp;
+}
+
+
 void inc8bReg(uint8_t* reg) {
     SETZFLAG((uint8_t)((*reg) + 1) == 0);
     SETNFLAG(0);
@@ -193,6 +208,7 @@ void inc8bReg(uint8_t* reg) {
 
     (*reg)++;
 }
+
 
 void dec8bReg(uint8_t* reg) {
     SETZFLAG((uint8_t)((*reg) - 1) == 0);

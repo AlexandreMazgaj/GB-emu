@@ -226,7 +226,7 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"RET NC", &exe_retnc, 8, 0},
     {"POP DE", &exe_popde, 12, 0},
     {"JP NC, a16", &exe_jpnca16, 12, 2},
-    {"NOT A FUNCTION", 0, 0, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"CALL NC, a16", &exe_callnca16, 12, 2},
     {"PUSH DE", &exe_pushde, 16, 0},
     {"SUB d8", &exe_subad8, 8, 1},
@@ -234,11 +234,28 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"RET C", &exe_retc, 8, 0},
     {"RETI", &exe_reti, 16, 0},
     {"JP C, a16", &exe_jpca16, 12, 2},
-    {"NOT A FUNCTION", 0, 0, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"CALL C, a16", &exe_callca16, 12, 2},
     {"NOT A FUNCTION", 0, 0, 0},
     {"SBC A, d8", &exe_sbcad8, 8, 1},
     {"RST 18H", &exe_rst18h, 16, 0},
+    // 0xe
+    {"LDH (a8), A", &exe_ldhpa8a, 12, 1},
+    {"POP HL", &exe_pophl, 12, 0},
+    {"LD (C), A", &exe_ldpca, 8, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"PUSH HL", &exe_pushhl, 16, 0},
+    {"AND A, d8", &exe_andad8, 8, 1},
+    {"RST 20H", &exe_rst20h, 16, 0},
+    {"ADD SP, r8", &exe_addspr8, 16, 1},
+    {"JP HL", &exe_jphl, 4, 0},
+    {"LD (a16), A", &exe_ldpa16a, 16, 2},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"XOR A, d8", &exe_xorad8, 8, 1},
+    {"RST 28H", &exe_rst28h, 16, 0},
     {}
 };
 
@@ -247,6 +264,10 @@ void handleUnknownOp(uint8_t opcode) {
     printf("unknown opcode: %X\n", opcode);
 }
 
+uint8_t unknown_op() {
+    printf("This is an unknown operation\n");
+    return 0;
+}
 
 
 // #######
@@ -1499,4 +1520,64 @@ uint8_t exe_sbcad8() {
 uint8_t exe_rst18h() {
     registers.pc = 0x18 - 1;
     return 0;
+}
+
+
+// #######
+// # 0xe #
+// #######
+
+
+uint8_t exe_ldhpa8a() {
+    writeByte(0xff00 + (uint16_t)readByte(++registers.pc), registers.a);
+    return 0;
+}
+
+uint8_t exe_pophl() {
+    registers.hl = popWordStack();
+    return 0;
+}
+
+uint8_t exe_ldpca() {
+    writeByte(0xff00 + (uint16_t)GETCFLAG(), registers.a);
+    return 0;
+}
+
+uint8_t exe_pushhl() {
+    pushWordStack(registers.hl);
+    return 0;
+}
+
+uint8_t exe_andad8() {
+    and_a(readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst20h() {
+    registers.pc = 0x20 - 1;
+    return 0;
+}
+
+uint8_t exe_addspr8() {
+    add_sp((int8_t)readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_jphl() {
+    registers.pc = registers.hl - 1;
+    return 0;
+}
+
+uint8_t exe_ldpa16a() {
+    writeByte(readWord(++registers.pc), registers.a);
+    return 0;
+}
+
+uint8_t exe_xorad8() {
+    xor_a(readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst28h() {
+    registers.pc = 0x28 - 1;
 }
