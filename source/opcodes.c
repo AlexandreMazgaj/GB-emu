@@ -256,7 +256,23 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"XOR A, d8", &exe_xorad8, 8, 1},
     {"RST 28H", &exe_rst28h, 16, 0},
-    {}
+    // 0xf
+    {"LDH A, (a8)", &exe_ldhapa8, 12, 1},
+    {"POP AF", &exe_popaf, 12, 0},
+    {"LD A, (C)", &exe_ldapc, 8, 0},
+    {"DI", &exe_di, 4, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"PUSH AF", &exe_pushaf, 16, 0},
+    {"OR A, d8", &exe_orad8, 8, 1},
+    {"RST 30H", &exe_rst30h, 16, 0},
+    {"LD HL, SP + r8", &exe_ldhlspaddr8, 12, 1},
+    {"LD SP, HL", &exe_ldsphl, 8, 0},
+    {"LD A, (a16)", &exe_ldapa16, 16, 2},
+    {"EI", &exe_ei, 4, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"UNKNOWN OPCODE", &unknown_op, 0, 0},
+    {"CP A, d8", &exe_cpad8, 8, 1},
+    {"RST 38H", &exe_rst38h, 16, 0}
 };
 
 
@@ -279,7 +295,6 @@ uint8_t exe_nop() {
     // asm("nop"::);
     return 0;
 }
-
 
 uint8_t exe_ldbcd16() {
     registers.bc = readWord(++registers.pc);
@@ -404,7 +419,7 @@ uint8_t exe_rla() {
 }
 
 uint8_t exe_jri8() {
-    uint8_t offset = readByte(++registers.pc);
+    uint8_t offset = readByte(++registers.pc); // we do not need to remove 1 because the offset is added to the address of the next operation
     registers.pc += offset;
     return 0;
 }
@@ -452,9 +467,10 @@ uint8_t exe_rra() {
 
 uint8_t exe_jrnzr8() {
     if (!GETZFLAG()) {
-        registers.pc += readByte(++registers.pc);
+        registers.pc += readByte(registers.pc + 1); // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4;
     }
+    registers.pc++;
     return 0;
 }
 
@@ -507,9 +523,10 @@ uint8_t exe_daa() {
 
 uint8_t exe_jrzr8() {
     if (GETZFLAG()) {
-        registers.pc += readByte(++registers.pc);
+        registers.pc += readByte(registers.pc + 1); // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
+    registers.pc++;
     return 0;
 }
 
@@ -556,9 +573,10 @@ uint8_t exe_cpl() {
 
 uint8_t exe_jrncr8() {
     if (!GETCFLAG()) {
-        registers.pc += readByte(++registers.pc);
+        registers.pc += readByte(registers.pc+1); // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
+    registers.pc++;
     return 0;
 }
 
@@ -605,9 +623,10 @@ uint8_t exe_scf() {
 
 uint8_t exe_jrcr8() {
     if (GETCFLAG()) {
-        registers.pc += readByte(++registers.pc);
+        registers.pc += readByte(registers.pc+1); // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
+    registers.pc++;
     return 0;
 }
 
@@ -1326,7 +1345,7 @@ uint8_t exe_cpaa() {
 
 uint8_t exe_retnz() {
     if (!GETZFLAG()) {
-        registers.pc = popWordStack();
+        registers.pc = popWordStack() - 1;
         return 12;
     }
     return 0;
@@ -1339,24 +1358,26 @@ uint8_t exe_popbc() {
 
 uint8_t exe_jpnza16() {
     if (!GETZFLAG()) {
-        registers.pc = readWord(++registers.pc) - 1; // we remove 1 because it will be added at the end of the clock function
+        registers.pc = readWord(registers.pc+1) - 2; // we remove 2 because it will be added at the end of the clock function
         return 4;
     }
+    registers.pc++;
     return 0;
 }
 
 uint8_t exe_jpa16() {
-    registers.pc = readWord(++registers.pc) - 1; // we remove 1 because it will be added at the end of the clock function
+    registers.pc = readWord(++registers.pc) - 2; // we remove 2 because it will be added at the end of the clock function
     return 0;
 }
 
 uint8_t exe_callnza16() {
     if (!GETZFLAG()) {
-        uint16_t addr = readWord(++registers.pc);
-        pushWordStack(registers.pc+1);
-        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        uint16_t addr = readWord(registers.pc+1);
+        pushWordStack(registers.pc+3);
+        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
         return 12;
     }
+    registers.pc++;
     return 0;
 }
 
@@ -1377,22 +1398,23 @@ uint8_t exe_rst00h() {
 
 uint8_t exe_retz() {
     if (GETZFLAG()) {
-        registers.pc = popWordStack();
+        registers.pc = popWordStack() - 1;
         return 12;
     }
     return 0;
 }
 
 uint8_t exe_ret() {
-    registers.pc = popWordStack();
+    registers.pc = popWordStack() - 1;
     return 0;
 }
 
 uint8_t exe_jpza16() {
     if (GETZFLAG()) {
-        registers.pc = readWord(registers.pc + 1) - 1; // we remove 1 because it will be added at the end of the clock function
+        registers.pc = readWord(registers.pc + 1) - 2; // we remove 2 because it will be added at the end of the clock function
         return 4;
     }
+    registers.pc++;
     return 0;
 }
 
@@ -1403,18 +1425,19 @@ uint8_t exe_cbprefix() {
 
 uint8_t exe_callza16() {
     if (GETZFLAG()) {
-        uint16_t addr = readWord(++registers.pc);
-        pushWordStack(registers.pc+1); // In order to skip 
-        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        uint16_t addr = readWord(registers.pc+1);
+        pushWordStack(registers.pc+3); // In order to skip 
+        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
         return 12;
     }
+    registers.pc++;
     return 0;
 }
 
 uint8_t exe_calla16() {
     uint16_t addr = readWord(++registers.pc);
-    pushWordStack(registers.pc+1); // In order to skip 
-    registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+    pushWordStack(registers.pc+2); // In order to skip 
+    registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
     return 0;
 }
 
@@ -1436,7 +1459,7 @@ uint8_t exe_rst08h() {
 
 uint8_t exe_retnc() {
     if (!GETCFLAG()) {
-        registers.pc = popWordStack();
+        registers.pc = popWordStack() - 1;
         return 12;
     }
     return 0;
@@ -1449,19 +1472,21 @@ uint8_t exe_popde() {
 
 uint8_t exe_jpnca16() {
     if (!GETCFLAG()) {
-        registers.pc = readWord(registers.pc + 1) - 1; // we remove 1 because it will be added at the end of the clock function
+        registers.pc = readWord(registers.pc + 1) - 2; // we remove 2 because it will be added at the end of the clock function
         return 4;
     }
+    registers.pc++;
     return 0;
 }
 
 uint8_t exe_callnca16() {
     if (!GETCFLAG()) {
-        uint16_t addr = readWord(++registers.pc);
-        pushWordStack(registers.pc+1); // In order to skip 
-        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        uint16_t addr = readWord(registers.pc+1);
+        pushWordStack(registers.pc+3); // In order to skip 
+        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
         return 12;
     }
+    registers.pc++;
     return 0;
 }
 
@@ -1482,37 +1507,40 @@ uint8_t exe_rst10h() {
 
 uint8_t exe_retc() {
     if (GETCFLAG()) {
-        registers.pc = popWordStack();
+        registers.pc = popWordStack() - 1;
         return 12;
     }
     return 0;
 }
 
 uint8_t exe_reti() {
-    registers.pc = popWordStack();
+    registers.pc = popWordStack() - 1;
     IME = 1;
     return 0;
 }
 
 uint8_t exe_jpca16() {
     if (GETCFLAG()) {
-        registers.pc = readWord(registers.pc + 1) - 1; // we remove 1 because it will be added at the end of the clock function
+        registers.pc = readWord(registers.pc + 1) - 2; // we remove 2 because it will be added at the end of the clock function
         return 4;
     }
+    registers.pc++;
     return 0;
 }
 
 uint8_t exe_callca16() {
     if (GETCFLAG()) {
-        uint16_t addr = readWord(++registers.pc);
-        pushWordStack(registers.pc+1); // In order to skip 
-        registers.pc = addr - 1; // we remove 1 because it will be added at the end of the clock function
+        uint16_t addr = readWord(registers.pc+1);
+        pushWordStack(registers.pc+3); // In order to skip 
+        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
         return 12;
     }
+    registers.pc++;
     return 0;
 }
 
 uint8_t exe_sbcad8() {
+    printf("The byte: %X\n", readByte(registers.pc+1));
     sbc_a(readByte(++registers.pc));
     return 0;
 }
@@ -1564,7 +1592,7 @@ uint8_t exe_addspr8() {
 }
 
 uint8_t exe_jphl() {
-    registers.pc = registers.hl - 1;
+    registers.pc = registers.hl - 1; // We remove 1 because it will be added at the end of the clock function
     return 0;
 }
 
@@ -1580,4 +1608,77 @@ uint8_t exe_xorad8() {
 
 uint8_t exe_rst28h() {
     registers.pc = 0x28 - 1;
+}
+
+
+// #######
+// # 0xf #
+// #######
+
+uint8_t exe_ldhapa8() {
+    registers.a = readByte(0xff00 + (uint16_t)readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_popaf() {
+    registers.af = popWordStack();
+    return 0;
+}
+
+uint8_t exe_ldapc() {
+    registers.a = readByte(0xff00 + (uint16_t)GETCFLAG());
+    return 0;
+}
+
+uint8_t exe_di() {
+    IME = 0;
+    return 0;
+}
+
+uint8_t exe_pushaf() {
+    pushWordStack(registers.af);
+    return 0;
+}
+
+uint8_t exe_orad8() {
+    or_a(readByte(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst30h() {
+    registers.pc = 0x30 - 1;
+    return 0;
+}
+
+uint8_t exe_ldhlspaddr8() {
+    uint16_t temp = registers.sp;
+    add_sp(readByte(++registers.pc));
+    registers.hl = registers.sp;
+    registers.sp = temp;
+    return 0;
+}
+
+uint8_t exe_ldsphl() {
+    registers.sp = registers.hl;
+    return 0;
+}
+
+uint8_t exe_ldapa16() {
+    registers.a = readByte(readWord(++registers.pc));
+    return 0;
+}
+
+uint8_t exe_ei() {
+    IME = 1;
+    return 0;
+}
+
+uint8_t exe_cpad8() {
+    cp_a(readByte(+registers.pc));
+    return 0;
+}
+
+uint8_t exe_rst38h() {
+    registers.pc = 0x38 - 1;
+    return 0;
 }

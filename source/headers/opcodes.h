@@ -444,64 +444,64 @@ uint8_t exe_pushbc();       // OK
 
 uint8_t exe_addad8();       // OK
 
-uint8_t exe_rst00h();
+uint8_t exe_rst00h();       // OK
 
-uint8_t exe_retz();
+uint8_t exe_retz();         // OK
 
-uint8_t exe_ret();
+uint8_t exe_ret();          // OK
 
-uint8_t exe_jpza16();
+uint8_t exe_jpza16();       // OK
 
-uint8_t exe_cbprefix();
+uint8_t exe_cbprefix();     // TODO
 
-uint8_t exe_callza16();
+uint8_t exe_callza16();     // OK
 
-uint8_t exe_calla16();
+uint8_t exe_calla16();      // OK
 
-uint8_t exe_adcad8();
+uint8_t exe_adcad8();       // OK
 
-uint8_t exe_rst08h();
+uint8_t exe_rst08h();       // OK
 
 
 // Oxd
-uint8_t exe_retnc();
+uint8_t exe_retnc();        // OK
 
-uint8_t exe_popde();
+uint8_t exe_popde();        // OK
 
-uint8_t exe_jpnca16();
+uint8_t exe_jpnca16();      // OK
 
-uint8_t exe_callnca16();
+uint8_t exe_callnca16();    // OK
 
-uint8_t exe_pushde();
+uint8_t exe_pushde();       // OK
 
-uint8_t exe_subad8();
+uint8_t exe_subad8();       // OK
 
-uint8_t exe_rst10h();
+uint8_t exe_rst10h();       // OK
 
-uint8_t exe_retc();
+uint8_t exe_retc();         // OK
 
-uint8_t exe_reti();
+uint8_t exe_reti();         // OK
 
-uint8_t exe_jpca16();
+uint8_t exe_jpca16();       // OK
 
-uint8_t exe_callca16();
+uint8_t exe_callca16();     // OK
 
-uint8_t exe_sbcad8();
+uint8_t exe_sbcad8();       // OK
 
-uint8_t exe_rst18h();
+uint8_t exe_rst18h();       // OK
 
 
 
 // Oxe
-uint8_t exe_ldhpa8a();
+uint8_t exe_ldhpa8a();      // OK
 
-uint8_t exe_pophl();
+uint8_t exe_pophl();        // OK
 
-uint8_t exe_ldpca();
+uint8_t exe_ldpca();        // NOT SURE
 
-uint8_t exe_pushhl();
+uint8_t exe_pushhl();       // OK
 
-uint8_t exe_andad8();
+uint8_t exe_andad8();       // 
 
 uint8_t exe_rst20h();
 
@@ -514,3 +514,31 @@ uint8_t exe_ldpa16a();
 uint8_t exe_xorad8();
 
 uint8_t exe_rst28h();
+
+
+// 0xf
+uint8_t exe_ldhapa8();
+
+uint8_t exe_popaf();
+
+uint8_t exe_ldapc();
+
+uint8_t exe_di();
+
+uint8_t exe_pushaf();
+
+uint8_t exe_orad8();
+
+uint8_t exe_rst30h();
+
+uint8_t exe_ldhlspaddr8();
+
+uint8_t exe_ldsphl();
+
+uint8_t exe_ldapa16();
+
+uint8_t exe_ei();
+
+uint8_t exe_cpad8();
+
+uint8_t exe_rst38h();
