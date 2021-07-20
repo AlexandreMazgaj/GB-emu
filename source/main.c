@@ -9,31 +9,35 @@ int main() {
     CPU_init();
     MMU_init();
 
-    // loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/ducktales.gb");
+    loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/ducktales.gb");
 
-    SETCFLAG(1);
-    SETHFLAG(0);
-    SETNFLAG(0);
-    SETZFLAG(0);
+    for (int i = 0; i < 100; i++) {
+        clock();
+    }
 
-    registers.pc = 0;
+    // SETCFLAG(1);
+    // SETHFLAG(0);
+    // SETNFLAG(0);
+    // SETZFLAG(0);
 
-    registers.sp = 0xff;
+    // registers.pc = 0;
 
-    registers.e = 0;
+    // registers.sp = 0xff;
 
-    registers.a = 0xff;
+    // registers.e = 0;
 
-    registers.b = 0x0;
+    // registers.a = 0xff;
 
-    // mmu.rom[1] = 0xdd;
+    // registers.b = 0x0;
 
-    exe_adcab();
+    // // mmu.rom[1] = 0xdd;
+
+    // exe_adcab();
 
 
-    printf("%X\n", registers.a);
+    // printf("%X\n", registers.a);
 
-    printRegFlags();
+    // printRegFlags();
 
     // printf("%X\n", registers.hl);
 

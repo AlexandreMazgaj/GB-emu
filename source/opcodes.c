@@ -2,107 +2,107 @@
 
 const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     // 0x0
-    {"NOP", &exe_nop, 4, 0},
-    {"LD BC, d16", &exe_ldbcd16, 12, 2},
-    {"LD (BC), A", &exe_ldpbca, 8, 0},
-    {"INC BC", &exe_incbc, 8, 0},
-    {"INC B", &exe_incb, 4, 0},
-    {"DEC B", &exe_decb, 4, 0},
-    {"LD B, d8", &exe_ldbd8, 8, 1},
-    {"RLCA", &exe_rlca, 4, 0},
-    {"LD (a16), SP", &exe_ldpa16sp, 20, 2},
-    {"ADD HL, BC", &exe_addhlbc, 8, 0},
-    {"LD A, (BC)", &exe_ldapbc, 8, 0},
-    {"DEC BC", &exe_decbc, 8, 0},
-    {"INC C", &exe_incc, 4, 0},
-    {"DEC C", &exe_decc, 4, 0},
-    {"LD C, d8", &exe_ldcd8, 8, 1},
-    {"RRCA", &exe_rrca, 4, 0},
-    // 0x1
-    {"STOP", &exe_stop, 4, 1},
-    {"LD DE, d16", &exe_ldded16, 12, 2},
-    {"LD (DE), A", &exe_ldpdea, 8, 0},
-    {"INC DE", &exe_incde, 8, 0},
-    {"INC D", &exe_incd, 4, 0},
-    {"DEC D", &exe_decd, 4, 0},
-    {"LD D, d8", &exe_lddd8, 8, 1},
-    {"RLA", &exe_rla, 4, 0},
-    {"JR i8", &exe_jri8, 12, 1},
-    {"ADD HL, DE", &exe_addhlde, 8, 0},
-    {"LD A, (DE)", &exe_ldapde, 8, 0},
-    {"DEC DE", &exe_decde, 8, 0},
-    {"INC E", &exe_ince, 4, 0},
-    {"DEC E", &exe_dece, 4, 0},
-    {"LD E, d8", &exe_lded8, 8, 1},
-    {"RRA", &exe_rra, 4, 0},
+    {"NOP", &exe_nop, 4, 0},                            // 0
+    {"LD BC, d16", &exe_ldbcd16, 12, 2},                // 1
+    {"LD (BC), A", &exe_ldpbca, 8, 0},                  // 2
+    {"INC BC", &exe_incbc, 8, 0},                       // 3
+    {"INC B", &exe_incb, 4, 0},                         // 4
+    {"DEC B", &exe_decb, 4, 0},                         // 5
+    {"LD B, d8", &exe_ldbd8, 8, 1},                     // 6
+    {"RLCA", &exe_rlca, 4, 0},                          // 7
+    {"LD (a16), SP", &exe_ldpa16sp, 20, 2},             // 8
+    {"ADD HL, BC", &exe_addhlbc, 8, 0},                 // 9
+    {"LD A, (BC)", &exe_ldapbc, 8, 0},                  // a
+    {"DEC BC", &exe_decbc, 8, 0},                       // b
+    {"INC C", &exe_incc, 4, 0},                         // c
+    {"DEC C", &exe_decc, 4, 0},                         // d
+    {"LD C, d8", &exe_ldcd8, 8, 1},                     // e
+    {"RRCA", &exe_rrca, 4, 0},                          // f
+    // 0x1          
+    {"STOP", &exe_stop, 4, 1},                          // 0
+    {"LD DE, d16", &exe_ldded16, 12, 2},                // 1
+    {"LD (DE), A", &exe_ldpdea, 8, 0},                  // 2
+    {"INC DE", &exe_incde, 8, 0},                       // 3
+    {"INC D", &exe_incd, 4, 0},                         // 4
+    {"DEC D", &exe_decd, 4, 0},                         // 5
+    {"LD D, d8", &exe_lddd8, 8, 1},                     // 6
+    {"RLA", &exe_rla, 4, 0},                            // 7
+    {"JR i8", &exe_jri8, 12, 1},                        // 8
+    {"ADD HL, DE", &exe_addhlde, 8, 0},                 // 9
+    {"LD A, (DE)", &exe_ldapde, 8, 0},                  // a
+    {"DEC DE", &exe_decde, 8, 0},                       // b
+    {"INC E", &exe_ince, 4, 0},                         // c
+    {"DEC E", &exe_dece, 4, 0},                         // d
+    {"LD E, d8", &exe_lded8, 8, 1},                     // e
+    {"RRA", &exe_rra, 4, 0},                            // f
     // 0x2
-    {"JR NZ, R8", &exe_jrnzr8, 8, 1},
-    {"LD HL, d16", &exe_ldhld16, 12, 2},
-    {"LD (HL+), A", &exe_ldphlia, 8, 0},
-    {"INC HL", &exe_inchl, 8, 0},
-    {"INC H", &exe_inch, 4, 0},
-    {"DEC H", &exe_dech, 4, 0},
-    {"LD H, d8", &exe_ldhd8, 8, 1},
-    {"DAA", &exe_daa, 4, 0},
-    {"JR z, r8", &exe_jrzr8, 8, 1},
-    {"ADD HL, HL", &exe_addhlhl, 8, 0},
-    {"LD A, (HL+)", &exe_ldaphli, 8, 0},
-    {"DEC HL", &exe_dechl, 8, 0},
-    {"INC L", &exe_incl, 4, 0},
-    {"DEC L", &exe_decl, 4, 0},
-    {"LD L, d8", &exe_ldld8, 8, 1},
-    {"CPL", &exe_cpl, 4, 0},
+    {"JR NZ, R8", &exe_jrnzr8, 8, 1},                   // 0
+    {"LD HL, d16", &exe_ldhld16, 12, 2},                // 1
+    {"LD (HL+), A", &exe_ldphlia, 8, 0},                // 2
+    {"INC HL", &exe_inchl, 8, 0},                       // 3
+    {"INC H", &exe_inch, 4, 0},                         // 4
+    {"DEC H", &exe_dech, 4, 0},                         // 5
+    {"LD H, d8", &exe_ldhd8, 8, 1},                     // 6
+    {"DAA", &exe_daa, 4, 0},                            // 7
+    {"JR z, r8", &exe_jrzr8, 8, 1},                     // 8
+    {"ADD HL, HL", &exe_addhlhl, 8, 0},                 // 9
+    {"LD A, (HL+)", &exe_ldaphli, 8, 0},                // a
+    {"DEC HL", &exe_dechl, 8, 0},                       // b
+    {"INC L", &exe_incl, 4, 0},                         // c
+    {"DEC L", &exe_decl, 4, 0},                         // d
+    {"LD L, d8", &exe_ldld8, 8, 1},                     // e
+    {"CPL", &exe_cpl, 4, 0},                            // f
     // 0x3
-    {"JR NZ, r8", &exe_jrncr8, 8, 1},
-    {"LD SP, d16", &exe_ldspd16, 12, 2},
-    {"LD (HL-), A", &exe_ldphlda, 8, 0},
-    {"INC SP", &exe_incsp, 8, 0},
-    {"INC (HL)", &exe_incphl, 12, 0},
-    {"DEC (HL)", &exe_decphl, 12, 0},
-    {"LD (HL), d8", &exe_ldphld8, 12, 0},
-    {"SCF", &exe_scf, 4, 0},
-    {"JR C, r8", &exe_jrcr8, 8, 1},
-    {"ADD HL, SP", &exe_addhlsp, 8, 0},
-    {"LD A, (HL-)", &exe_ldaphld, 8, 0},
-    {"DEC SP", &exe_decsp, 8, 0},
-    {"INC A", &exe_inca, 4, 0},
-    {"DEC A", &exe_deca, 4, 0},
-    {"LD A, d8", &exe_ldad8, 8, 1},
-    {"CCF", &exe_ccf, 4, 0},
+    {"JR NZ, r8", &exe_jrncr8, 8, 1},                   // 0
+    {"LD SP, d16", &exe_ldspd16, 12, 2},                // 1
+    {"LD (HL-), A", &exe_ldphlda, 8, 0},                // 2
+    {"INC SP", &exe_incsp, 8, 0},                       // 3
+    {"INC (HL)", &exe_incphl, 12, 0},                   // 4
+    {"DEC (HL)", &exe_decphl, 12, 0},                   // 5
+    {"LD (HL), d8", &exe_ldphld8, 12, 0},               // 6
+    {"SCF", &exe_scf, 4, 0},                            // 7
+    {"JR C, r8", &exe_jrcr8, 8, 1},                     // 8
+    {"ADD HL, SP", &exe_addhlsp, 8, 0},                 // 9
+    {"LD A, (HL-)", &exe_ldaphld, 8, 0},                // a
+    {"DEC SP", &exe_decsp, 8, 0},                       // b
+    {"INC A", &exe_inca, 4, 0},                         // c
+    {"DEC A", &exe_deca, 4, 0},                         // d
+    {"LD A, d8", &exe_ldad8, 8, 1},                     // e
+    {"CCF", &exe_ccf, 4, 0},                            // f
     // 0x4
-    {"LD B, B", &exe_ldbb, 4, 0},
-    {"LD B, C", &exe_ldbc, 4, 0},
-    {"LD B, D", &exe_ldbd, 4, 0},
-    {"LD B, E", &exe_ldbe, 4, 0},
-    {"LD B, H", &exe_ldbh, 4, 0},
-    {"LD B, L", &exe_ldbl, 4, 0},
-    {"LD B, (HL)", &exe_ldbphl, 8, 0},
-    {"LD B, A", &exe_ldba, 4, 0},
-    {"LD C, B", &exe_ldcb, 4, 0},
-    {"LD C, C", &exe_ldcc, 4, 0},
-    {"LD C, D", &exe_ldcd, 4, 0},
-    {"LD C, E", &exe_ldce, 4, 0},
-    {"LD C, H", &exe_ldch, 4, 0},
-    {"LD C, L", &exe_ldcl, 4, 0},
-    {"LD C, (HL)", &exe_ldcphl, 8, 0},
-    {"LD C, A", &exe_ldca, 4, 0},
+    {"LD B, B", &exe_ldbb, 4, 0},                       // 0
+    {"LD B, C", &exe_ldbc, 4, 0},                       // 1
+    {"LD B, D", &exe_ldbd, 4, 0},                       // 2
+    {"LD B, E", &exe_ldbe, 4, 0},                       // 3
+    {"LD B, H", &exe_ldbh, 4, 0},                       // 4
+    {"LD B, L", &exe_ldbl, 4, 0},                       // 5
+    {"LD B, (HL)", &exe_ldbphl, 8, 0},                  // 6
+    {"LD B, A", &exe_ldba, 4, 0},                       // 7
+    {"LD C, B", &exe_ldcb, 4, 0},                       // 8
+    {"LD C, C", &exe_ldcc, 4, 0},                       // 9
+    {"LD C, D", &exe_ldcd, 4, 0},                       // a
+    {"LD C, E", &exe_ldce, 4, 0},                       // b
+    {"LD C, H", &exe_ldch, 4, 0},                       // c
+    {"LD C, L", &exe_ldcl, 4, 0},                       // d
+    {"LD C, (HL)", &exe_ldcphl, 8, 0},                  // e
+    {"LD C, A", &exe_ldca, 4, 0},                       // f
     // 0x5
-    {"LD D, B", &exe_lddb, 4, 0},
-    {"LD D, C", &exe_lddc, 4, 0},
-    {"LD D, D", &exe_lddd, 4, 0},
-    {"LD D, E", &exe_ldde, 4, 0},
-    {"LD D, H", &exe_lddh, 4, 0},
-    {"LD D, L", &exe_lddl, 4, 0},
-    {"LD D, (HL)", &exe_lddphl, 8, 0},
-    {"LD D, A", &exe_ldda, 4, 0},
-    {"LD E, B", &exe_ldeb, 4, 0},
-    {"LD E, C", &exe_ldec, 4, 0},
-    {"LD E, D", &exe_lded, 4, 0},
-    {"LD E, E", &exe_ldee, 4, 0},
-    {"LD E, H", &exe_ldeh, 4, 0},
-    {"LD E, L", &exe_ldel, 4, 0},
-    {"LD E, (HL)", &exe_ldephl, 8, 0},
-    {"LD E, A", &exe_ldea, 4, 0},
+    {"LD D, B", &exe_lddb, 4, 0},                       // 0
+    {"LD D, C", &exe_lddc, 4, 0},                       // 1
+    {"LD D, D", &exe_lddd, 4, 0},                       // 2
+    {"LD D, E", &exe_ldde, 4, 0},                       // 3
+    {"LD D, H", &exe_lddh, 4, 0},                       // 4
+    {"LD D, L", &exe_lddl, 4, 0},                       // 5
+    {"LD D, (HL)", &exe_lddphl, 8, 0},                  // 6
+    {"LD D, A", &exe_ldda, 4, 0},                       // 7
+    {"LD E, B", &exe_ldeb, 4, 0},                       // 8
+    {"LD E, C", &exe_ldec, 4, 0},                       // 9
+    {"LD E, D", &exe_lded, 4, 0},                       // a
+    {"LD E, E", &exe_ldee, 4, 0},                       // b
+    {"LD E, H", &exe_ldeh, 4, 0},                       // c
+    {"LD E, L", &exe_ldel, 4, 0},                       // d
+    {"LD E, (HL)", &exe_ldephl, 8, 0},                  // e
+    {"LD E, A", &exe_ldea, 4, 0},                       // f
     // 0x6
     {"LD H, B", &exe_ldhb, 4, 0},
     {"LD H, C", &exe_ldhc, 4, 0},

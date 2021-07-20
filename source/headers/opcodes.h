@@ -4,7 +4,7 @@
 #include "gb_mmu.h"
 #include "constants.h"
 
-#define MAX_KNOWN_OPCODE 0x1f
+#define MAX_KNOWN_OPCODE 0xff
 
 typedef uint8_t (*Operation)(void);
 
