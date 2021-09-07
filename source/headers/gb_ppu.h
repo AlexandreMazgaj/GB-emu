@@ -27,7 +27,7 @@
 
 struct ppu {
 
-    uint8_t screen[SCREEN_HEIGHT][SCREEN_WIDTH];
+    uint8_t screen[SCREEN_HEIGHT * SCREEN_WIDTH];
 
     uint8_t oam[OAM_SIZE];
     uint8_t video_ram[RAM_SIZE];

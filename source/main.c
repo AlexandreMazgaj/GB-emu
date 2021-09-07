@@ -2,6 +2,24 @@
 #include "headers/gb_cpu.h"
 #include "headers/gb_mmu.h"
 #include "headers/opcodes.h"
+#include "headers/gb_ppu.h"
+#include <SDL2/SDL.h>
+
+
+
+void drawScreen(SDL_Surface *surface)
+{
+    SDL_LockSurface(surface);
+    uint32_t *pixels = (uint32_t *)surface->pixels;
+    for (int i = 0; i < SCREEN_HEIGHT; i++) {
+        for (int j = 0; j < SCREEN_WIDTH; j++) {
+            pixels[i*SCREEN_WIDTH + j] = ppu.screen[i][j] == 0 ? 0 : 0xFFFFFFFF;
+        }
+    }
+    SDL_UnlockSurface(surface);
+}
+
+
 
 
 int main() {
@@ -9,7 +27,7 @@ int main() {
     CPU_init();
     MMU_init();
 
-    loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/ducktales.gb");
+    loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
 
     for (int i = 0; i < 100; i++) {
         clock();

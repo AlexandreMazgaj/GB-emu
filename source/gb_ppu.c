@@ -8,7 +8,7 @@ struct ppu ppu;
 void PPU_init() {
     for (int i = 0; i < SCREEN_HEIGHT; i++) {
         for (int j = 0; j < SCREEN_WIDTH; i++) {
-            ppu.screen[i][j] = 0;
+            ppu.screen[i + j*SCREEN_HEIGHT] = 0;
         }
     }
 
@@ -146,7 +146,67 @@ uint8_t getGBColorFromValue(uint8_t val) {
 
 
 void renderScanline() {
+
     uint16_t mapOffset = LCDC_GET_BG_TILEMAP_AREA() ? 0x1c00 : 0x1800;
 
     mapOffset += ((ppu.scanline + ppu.scrollY) & 0xff) >> 3;
+
+    uint8_t lineOffset = (ppu.scrollX >> 3);
+
+    uint8_t x = ppu.scrollX & 7;
+    uint8_t y = ppu.scrollY & 7;
+
+    int pixelOffset = ppu.scanline * SCREEN_HEIGHT;
+
+    uint16_t tile = (uint16_t)ppu.video_ram[mapOffset + lineOffset];
+
+    uint8_t scanLineRow[160];
+
+    // render background
+    for (int i = 0; i < SCREEN_HEIGHT; i++) {
+        uint8_t color = ppu.tileSet[tile][y][x];
+
+        // keep the colour for the line for tests
+        scanLineRow[i] = color;
+        // put the colours in the frame buffer
+        ppu.screen[pixelOffset] = color;
+
+        pixelOffset++;
+
+        x++;
+        if (x == 8) {
+            x = 0;
+            lineOffset = (lineOffset + 1) & 31;
+            tile = ppu.video_ram[mapOffset + lineOffset];
+        }
+    }
+
+
+    for (int i = 0; i < 40; i++) {
+        uint8_t sprite_y = ppu.oam[i] - 16;
+        uint8_t sprite_x = ppu.oam[i + 1] - 8;
+        uint8_t sprite_tile_index = ppu.oam[i + 2];
+        uint8_t sprite_flags = ppu.oam[i + 3];
+
+        // check if the sprite falls on this scanline
+        if (sprite_y <= ppu.scanline && (sprite_flags + 8) > ppu.scanline) {
+            uint8_t palette = ((sprite_flags & 0x8) >> 0x8)? ppu.ob_pal1 : ppu.ob_pal0;
+            uint8_t pixOffset =  ppu.scanline * SCREEN_HEIGHT + sprite_x;
+
+            uint8_t tileRow;
+            if ((sprite_flags & 0x20) >> 0x20)
+                tileRow = 7 - (ppu.scanline - sprite_x);
+            else
+                tileRow = (ppu.scanline - sprite_x);
+
+            for (int o_x = 0; o_x < 8; o_x++) {
+                uint8_t priority = ((sprite_flags && 0x80) >> 0x80);
+                if ((sprite_x + o_x) >= 0 && (sprite_x + o_x) < 160 && (~priority || !scanLineRow[sprite_x + o_x])) {
+                    uint8_t color;
+                    // TODO
+                }
+            }
+
+        }
+    }
 }
