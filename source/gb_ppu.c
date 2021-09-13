@@ -190,20 +190,29 @@ void renderScanline() {
 
         // check if the sprite falls on this scanline
         if (sprite_y <= ppu.scanline && (sprite_flags + 8) > ppu.scanline) {
-            uint8_t palette = ((sprite_flags & 0x8) >> 0x8)? ppu.ob_pal1 : ppu.ob_pal0;
+            uint8_t* palette = ((sprite_flags & 0x8) >> 0x8)? ppu.ob_pal1 : ppu.ob_pal0;
             uint8_t pixOffset =  ppu.scanline * SCREEN_HEIGHT + sprite_x;
 
             uint8_t tileRow;
-            if ((sprite_flags & 0x20) >> 0x20)
+            if ((sprite_flags & 0x40) >> 0x40)
                 tileRow = 7 - (ppu.scanline - sprite_x);
             else
                 tileRow = (ppu.scanline - sprite_x);
 
             for (int o_x = 0; o_x < 8; o_x++) {
                 uint8_t priority = ((sprite_flags && 0x80) >> 0x80);
-                if ((sprite_x + o_x) >= 0 && (sprite_x + o_x) < 160 && (~priority || !scanLineRow[sprite_x + o_x])) {
+                if ((sprite_x + o_x) >= 0 && (sprite_x + o_x) < 160 && (~priority || !scanLineRow[sprite_x + o_x])) {
                     uint8_t color;
-                    // TODO
+
+                    if ((sprite_flags & 0x20) >> 0x20)
+                        color = ppu.tileSet[sprite_tile_index][tileRow][7 - o_x];
+                    else
+                        color = ppu.tileSet[sprite_tile_index][tileRow][o_x];
+
+                    if (color) {
+                        ppu.screen[pixelOffset] = palette[color];
+                    }
+                    pixelOffset++;
                 }
             }
 

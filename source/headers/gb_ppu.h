@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "constants.h"
 
-// PPPU Modes
+// PPU Modes
 #define PPU_MODE_HORIZONTAL_BLANKING 0
 #define PPU_MODE_VERTICAL_BLANKING 1
 #define PPU_MODE_SEARCHING_OAM 2

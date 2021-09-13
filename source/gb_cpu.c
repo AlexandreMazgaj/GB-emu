@@ -29,7 +29,7 @@ void CPU_init() {
 // -------------
 // CPU FUNCTIONS
 // -------------
-void clock() {
+void CPU_clock() {
 
     //
     checkInterrupts();

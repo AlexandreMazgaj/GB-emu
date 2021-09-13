@@ -13,7 +13,7 @@ void drawScreen(SDL_Surface *surface)
     uint32_t *pixels = (uint32_t *)surface->pixels;
     for (int i = 0; i < SCREEN_HEIGHT; i++) {
         for (int j = 0; j < SCREEN_WIDTH; j++) {
-            pixels[i*SCREEN_WIDTH + j] = ppu.screen[i][j] == 0 ? 0 : 0xFFFFFFFF;
+            pixels[i*SCREEN_WIDTH + j] = ppu.screen[i*SCREEN_WIDTH + j] == 0 ? 0 : 0xFFFFFFFF;
         }
     }
     SDL_UnlockSurface(surface);
@@ -30,7 +30,9 @@ int main() {
     loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/tetris.gb");
 
     for (int i = 0; i < 100; i++) {
-        clock();
+        CPU_clock();
+
+        PPU_clock();
     }
 
     // SETCFLAG(1);
