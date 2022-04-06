@@ -32,19 +32,24 @@ void PPU_clock() {
     // mode 2 Searching OAM for OBJS whos (X, Y) coordinates overlap this line
     // mode 3 Reading OAM and VRAM to generate the picture
     if (ppu.mode == PPU_MODE_SEARCHING_OAM) {
+        // printf("PPU SEARCHING OAM");
         if (ppu.ticks >= 80) {
             ppu.ticks = 0;
             ppu.mode = PPU_MODE_READING_OAM;
         }
     }
     else if (ppu.mode == PPU_MODE_READING_OAM) {
+        // printf("PPU READING OAM");
         if (ppu.ticks >= 172) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.ticks = 0;
             // TODO Render scanline, write a scanline to the framebuffer
+            renderScanline();
+
         }
     }
     else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
+        // printf("PPU HORIZONTAL BLANKING");
         if (ppu.ticks >= 204) {
             ppu.scanline++;
             ppu.ticks = 0;
@@ -59,6 +64,7 @@ void PPU_clock() {
         }
     }
     else if (ppu.mode = PPU_MODE_VERTICAL_BLANKING) {
+        // printf("PPU VERTICAL BLANKING");
         if (ppu.ticks >= 456) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.scanline++;
@@ -101,7 +107,7 @@ void writePPU(uint16_t addr, uint8_t val) {
     if (addr == 0xff47) {
         ppu.bg_palValue = val;
         for (int colorIndex = 0; colorIndex < 4; colorIndex++) {
-            printf("value color: %X\n", (val >> (2*colorIndex)) & 0x03);
+            // printf("value color: %X\n", (val >> (2*colorIndex)) & 0x03);
             ppu.bg_pal[colorIndex] = getGBColorFromValue((val >> (2*colorIndex)) & 0x03);
         }
     }
@@ -157,18 +163,22 @@ void renderScanline() {
     uint8_t y = ppu.scrollY & 7;
 
     int pixelOffset = ppu.scanline * SCREEN_HEIGHT;
+    // printf("ppu scan line: %d\n", ppu.scanline);
 
+    // printf("Possible seg fault 1\n");
     uint16_t tile = (uint16_t)ppu.video_ram[mapOffset + lineOffset];
 
     uint8_t scanLineRow[160];
 
     // render background
     for (int i = 0; i < SCREEN_HEIGHT; i++) {
+        // printf("pixelOffset: %d\n", pixelOffset);
         uint8_t color = ppu.tileSet[tile][y][x];
 
         // keep the colour for the line for tests
         scanLineRow[i] = color;
         // put the colours in the frame buffer
+        // printf("Writing color: %X\n", color);
         ppu.screen[pixelOffset] = color;
 
         pixelOffset++;
@@ -177,12 +187,14 @@ void renderScanline() {
         if (x == 8) {
             x = 0;
             lineOffset = (lineOffset + 1) & 31;
+            // printf("Possible seg fault 3\n");
             tile = ppu.video_ram[mapOffset + lineOffset];
         }
     }
 
 
     for (int i = 0; i < 40; i++) {
+        // printf("Possible seg fault 4\n");
         uint8_t sprite_y = ppu.oam[i] - 16;
         uint8_t sprite_x = ppu.oam[i + 1] - 8;
         uint8_t sprite_tile_index = ppu.oam[i + 2];
@@ -210,6 +222,7 @@ void renderScanline() {
                         color = ppu.tileSet[sprite_tile_index][tileRow][o_x];
 
                     if (color) {
+                    printf("Adding color %X to the screen, at pixelOffset: %X\n",color, pixelOffset);
                         ppu.screen[pixelOffset] = palette[color];
                     }
                     pixelOffset++;

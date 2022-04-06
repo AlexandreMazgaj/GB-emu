@@ -138,22 +138,29 @@ uint8_t MBC3_readRam(uint16_t addr) {
 // MEMORY UNIT FUNCTIONS
 // ---------------------
 
-void loadCartridge(char* path) {
+uint8_t loadCartridge(char* path) {
     FILE *cartridgePtr;
 
     cartridgePtr = fopen(path, "rb"); // b is for binary
 
-    if (cartridgePtr == NULL)
+    if (cartridgePtr == NULL) {
         printf("Could not open the file\n");
+        return 1;
+    }
 
     fseek(cartridgePtr, 0, SEEK_END);
 
     size_t size = ftell(cartridgePtr);
 
+    printf("File size: %d\n", size);
+
+    // getchar();
+
     fseek(cartridgePtr, 0L, SEEK_SET);
 
     for (unsigned int i = 0; i < size; ++i) {
         uint8_t c = fgetc(cartridgePtr);
+        printf("rom[%d]: %X\n", i, c);
         mmu.rom[i] = c;
     }
 
@@ -179,7 +186,7 @@ void loadCartridge(char* path) {
         case 0x03: mmu.mbc_nbRomBank = 14; break; // 224kib more --> 14 banks extra
         case 0x04: mmu.mbc_nbRomBank = 30; break; // 480kib more --> 30 banks extra
     }
-
+    return 0;
 }
 
 
@@ -243,6 +250,7 @@ uint16_t readWord(uint16_t addr) {
 
 // TODO finish writeByte function
 void writeByte(uint16_t addr, uint8_t val) {
+    // printf("writing addr: %X, val: %X\n", addr, val);
     // BEGIN ROM
     // should not be able to write here
 
@@ -257,15 +265,9 @@ void writeByte(uint16_t addr, uint8_t val) {
             MBC3_writeToRom(addr, val);
         }
     }
-    // if (addr >= 0x0000 &&  addr <= 0x3fff) {
-    //     mmu.rom[addr] = val;
-    // }
-    // else if (addr >= 0x4000 && addr <= 0x7fff) {
-    //     mmu.rom[addr - 0x4000] = val;
-    // }
-    //END ROM
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         ppu.video_ram[addr - 0x8000] = val;
+        printf("Should update tiles\n");  // does not update tiles
         updateTile(addr, val);
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {

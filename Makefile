@@ -2,10 +2,10 @@ BUILDDIR = ./build/
 SOURCEDIR = ./source/
 
 SDL_INCLUDE = -I/Library/Frameworks/SDL2.framework/Headers -F/Library/Frameworks
-SDL_LIB = -framework SDL2
+SDL_LIB = -framework SDL2 -framework SDL2_ttf
 
 
-LIBS = -framework OpenGL -framework GLUT -lpng
+LIBS = # -framework OpenGL -framework GLUT -lpng
 
 CC = gcc-10
 CFLAGS = -std=c17 -arch x86_64 -mmacosx-version-min=10.15 -w

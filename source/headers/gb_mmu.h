@@ -44,7 +44,7 @@ uint8_t MBC3_readRom(uint16_t addr);
 uint8_t MBC3_readRam(uint16_t addr);
 
 
-void loadCartridge(char* path);
+uint8_t loadCartridge(char* path);
 
 
 void oam_dma(uint8_t hi);

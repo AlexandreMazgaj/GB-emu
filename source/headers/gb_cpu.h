@@ -144,3 +144,4 @@ void rotateRightCarry(uint8_t* reg);
 // Debug functions
 void printRegFlags();
 void printBinary(uint8_t hex);
+void printRegisters();

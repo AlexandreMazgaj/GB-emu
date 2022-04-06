@@ -53,7 +53,7 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"LD L, d8", &exe_ldld8, 8, 1},                     // e
     {"CPL", &exe_cpl, 4, 0},                            // f
     // 0x3
-    {"JR NZ, r8", &exe_jrncr8, 8, 1},                   // 0
+    {"JR NC, r8", &exe_jrncr8, 8, 1},                   // 0
     {"LD SP, d16", &exe_ldspd16, 12, 2},                // 1
     {"LD (HL-), A", &exe_ldphlda, 8, 0},                // 2
     {"INC SP", &exe_incsp, 8, 0},                       // 3
@@ -419,8 +419,8 @@ uint8_t exe_rla() {
 }
 
 uint8_t exe_jri8() {
-    uint8_t offset = readByte(++registers.pc); // we do not need to remove 1 because the offset is added to the address of the next operation
-    registers.pc += offset;
+    int8_t offset = (int8_t)readByte(++registers.pc); // we do not need to remove 1 because the offset is added to the address of the next operation
+    registers.pc += offset + 1;
     return 0;
 }
 
@@ -467,7 +467,8 @@ uint8_t exe_rra() {
 
 uint8_t exe_jrnzr8() {
     if (!GETZFLAG()) {
-        registers.pc += readByte(registers.pc + 1); // we do not need to remove 1 because the offset is added to the address of the next operation
+        // printf("r8: %X\n", (int8_t)readByte(registers.pc + 1));
+        registers.pc += (int8_t)readByte(registers.pc + 1) + 1; // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4;
     }
     registers.pc++;
@@ -523,7 +524,7 @@ uint8_t exe_daa() {
 
 uint8_t exe_jrzr8() {
     if (GETZFLAG()) {
-        registers.pc += readByte(registers.pc + 1); // we do not need to remove 1 because the offset is added to the address of the next operation
+        registers.pc += (int8_t)readByte(registers.pc + 1); // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
     registers.pc++;
@@ -573,7 +574,7 @@ uint8_t exe_cpl() {
 
 uint8_t exe_jrncr8() {
     if (!GETCFLAG()) {
-        registers.pc += readByte(registers.pc+1); // we do not need to remove 1 because the offset is added to the address of the next operation
+        registers.pc += (int8_t)readByte(registers.pc+1) + 1;; // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
     registers.pc++;
@@ -623,7 +624,7 @@ uint8_t exe_scf() {
 
 uint8_t exe_jrcr8() {
     if (GETCFLAG()) {
-        registers.pc += readByte(registers.pc+1); // we do not need to remove 1 because the offset is added to the address of the next operation
+        registers.pc += (int8_t)readByte(registers.pc+1) + 1; // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
     registers.pc++;

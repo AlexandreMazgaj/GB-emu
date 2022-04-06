@@ -31,7 +31,7 @@ void CPU_init() {
 // -------------
 void CPU_clock() {
 
-    //
+
     checkInterrupts();
 
     // if we have finished the 
@@ -39,24 +39,39 @@ void CPU_clock() {
         // uint8_t clock
         uint8_t op = readByte(registers.pc);
 
+        // printf("PC: %X\n", registers.pc);
+        // printRegisters();
+
         if (op > MAX_KNOWN_OPCODE) {
             handleUnknownOp(op);
             registers.pc++;
             cycle = 1;
-
-        } else {
-            struct instruction instr = instructions[op];
-
-            printf("instruction: %s\n", instr.mnemonic);
-
-            cycle = instr.nb_cycles + instr.execute();
-
-            if (instr.size_operand == 2)
-                registers.pc += 2;
-            else
-                registers.pc++;
-        
+            return;
         }
+
+        struct instruction instr = instructions[op];
+
+        printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+        // fflush(stdout);
+
+
+
+
+        if (registers.pc == 0xC252) {
+            uint16_t addr = readWord(registers.pc+1);
+            printf("l'addr de saut: %X\n", addr);
+            printRegisters();
+            exit(0);
+        }
+
+
+        cycle = instr.nb_cycles + instr.execute();
+
+        if (instr.size_operand == 2)
+            registers.pc += 2;
+        else
+            registers.pc++;
+        
         
 
     }
@@ -74,6 +89,7 @@ void CPU_clock() {
 // INTERRUPT FUNCTIONS
 // -------------------
 void checkInterrupts() {
+    // printf("Checking for interrupts\n");
     uint8_t IE = readByte(0xffff);
     uint8_t IF = readByte(0xff0f);
 
@@ -89,19 +105,19 @@ void checkInterrupts() {
         }
         // Checking if LCD_STAT enabled and if requested
         if ((IE & LCD_STAT_BIT) == LCD_STAT_BIT && (IF & LCD_STAT_BIT) == LCD_STAT_BIT) {
-            printf("LCD Stat interrupt\n");
+            // printf("LCD Stat interrupt\n");
             pushWordStack(registers.pc);
             registers.pc = LCD_STAT_ADDR;
             // reset the IME
             IME = 0;
             // reset the IF flag for the interrupt
-            printf("Before lcd stat reset %X\n", IF);
+            // printf("Before lcd stat reset %X\n", IF);
             IF ^= LCD_STAT_BIT; 
-            printf("After the lcd stat reset %X\n", IF);
+            // printf("After the lcd stat reset %X\n", IF);
         }
         // Checking if TIMER enabled and if requested
         if ((IE & TIMER_BIT) == TIMER_BIT && (IF & TIMER_BIT) == TIMER_BIT) {
-            printf("Timer interrupt\n");
+            // printf("Timer interrupt\n");
             pushWordStack(registers.pc);
             registers.pc = TIMER_ADDR;
             // reset the IME
@@ -315,4 +331,12 @@ void printBinary(uint8_t hex) {
     printf("%x", (hex >> 2) & 1);
     printf("%x", (hex >> 1) & 1);
     printf("%x\n", hex & 1);
+}
+
+
+void printRegisters() {
+    printf("af: %X; ", registers.af);
+    printf("bc: %X; ", registers.bc);
+    printf("de: %X; ", registers.de);
+    printf("hl: %X\n", registers.hl);
 }
