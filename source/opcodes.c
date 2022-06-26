@@ -420,7 +420,7 @@ uint8_t exe_rla() {
 
 uint8_t exe_jri8() {
     int8_t offset = (int8_t)readByte(++registers.pc); // we do not need to remove 1 because the offset is added to the address of the next operation
-    registers.pc += offset + 1;
+    registers.pc += offset;
     return 0;
 }
 
@@ -465,6 +465,7 @@ uint8_t exe_rra() {
 // # 0x2 #
 // #######
 
+// something is happening in this function were the af register is not updated properly, and I don't know why
 uint8_t exe_jrnzr8() {
     if (!GETZFLAG()) {
         // printf("r8: %X\n", (int8_t)readByte(registers.pc + 1));
@@ -1406,7 +1407,9 @@ uint8_t exe_retz() {
 }
 
 uint8_t exe_ret() {
-    registers.pc = popWordStack() - 1;
+    uint16_t stack = popWordStack();
+    printf("returning to %X\n", stack-1);
+    registers.pc = stack - 1;
     return 0;
 }
 

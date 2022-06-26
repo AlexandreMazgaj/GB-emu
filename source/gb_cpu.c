@@ -10,10 +10,14 @@ uint8_t stopped;
 uint8_t cycle;
 
 void CPU_init() {
-    registers.af = 0x01b0;
-    registers.bc = 0x0013;
-    registers.de = 0x00d8;
-    registers.hl = 0x014d;
+    // registers.af = 0x01b0;
+    registers.af = 0x1180;
+    // registers.bc = 0x0013;]
+    registers.bc = 0x0000;
+    // registers.de = 0x00d8
+    registers.de = 0xff56;
+    // registers.hl = 0x014d;
+    registers.hl = 0x000d;
     registers.pc = 0x0100;
     registers.sp = 0xfffe;
 
@@ -29,7 +33,7 @@ void CPU_init() {
 // -------------
 // CPU FUNCTIONS
 // -------------
-void CPU_clock() {
+uint8_t CPU_clock() {
 
 
     checkInterrupts();
@@ -46,7 +50,7 @@ void CPU_clock() {
             handleUnknownOp(op);
             registers.pc++;
             cycle = 1;
-            return;
+            return 0;
         }
 
         struct instruction instr = instructions[op];
@@ -56,15 +60,6 @@ void CPU_clock() {
 
 
 
-
-        if (registers.pc == 0xC252) {
-            uint16_t addr = readWord(registers.pc+1);
-            printf("l'addr de saut: %X\n", addr);
-            printRegisters();
-            exit(0);
-        }
-
-
         cycle = instr.nb_cycles + instr.execute();
 
         if (instr.size_operand == 2)
@@ -72,6 +67,17 @@ void CPU_clock() {
         else
             registers.pc++;
         
+
+        if (registers.pc == 0x020B) { // 0xC252 c772 call for c16b ret, then goes to 100
+            int i = 0;
+            uint16_t addr = readWord(registers.pc+1);
+            printf("l'addr de saut: %X\n", addr);
+            printRegisters();
+            return 220;
+        }
+
+
+        return 1;
         
 
     }
@@ -80,6 +86,8 @@ void CPU_clock() {
     //     printf("Still doing the op\n");
 
     cycle--;
+
+    return 0;
 
 }
 

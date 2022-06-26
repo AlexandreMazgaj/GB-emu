@@ -4,7 +4,7 @@
 #include "headers/opcodes.h"
 #include "headers/gb_ppu.h"
 #include <SDL2/SDL.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 
 void drawScreen(SDL_Surface *surface)
@@ -28,7 +28,7 @@ int main() {
     CPU_init();
     MMU_init();
 
-    uint8_t error = loadCartridge("/Users/mazgajalexandre/workspace/gameboy_emu/roms/cpu_instrs/individual/05-op\ rp.gb");
+    uint8_t error = loadCartridge("/home/IBEO.AS/ama/pers_workspace/GB/GB-emu/roms/05-op\ rp.gb");
 
     if (error)
         return 9;
@@ -100,6 +100,7 @@ int main() {
     Uint8* keys = SDL_GetKeyboardState(NULL);
 
     uint8_t emuRun = 0;
+    uint8_t oneByOne = 0;
 
     SDL_Event e;
 
@@ -122,13 +123,21 @@ int main() {
         t1 = SDL_GetTicks();
 
         if (emuRun) {
-            CPU_clock();
+            if (CPU_clock() == 220) {
+                emuRun = 0;
+            }
 
-            PPU_clock();
+            // PPU_clock();
+        }
+        else {
+            if (oneByOne) {
+                while (!CPU_clock());
+                // PPU_clock();
+                oneByOne = 0;
+            }
         }
 
         if ((SDL_PollEvent(&e)) != 0) {
-            // printf("An event!\n");
             if (e.type == SDL_QUIT) {
                 break;
             }
@@ -139,6 +148,14 @@ int main() {
 
             if (e.type == SDL_KEYDOWN && keys[SDL_SCANCODE_B]) {
                 break;
+            }
+
+            if (e.type == SDL_KEYDOWN && keys[SDL_SCANCODE_Y]) {
+              oneByOne = 1;
+            }
+
+            if (e.type == SDL_KEYDOWN && keys[SDL_SCANCODE_P]) {
+                printRegisters();
             }
         }
         
