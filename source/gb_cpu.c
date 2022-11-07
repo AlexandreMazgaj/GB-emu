@@ -55,14 +55,18 @@ void CPU_clock() {
         // fflush(stdout);
 
 
-
-
-        if (registers.pc == 0xC252) {
-            uint16_t addr = readWord(registers.pc+1);
-            printf("l'addr de saut: %X\n", addr);
-            printRegisters();
+        if (registers.pc == 0xC000) {
+            uint8_t opcode = readByteregisters.pc+1);
+            printf("le code: %X\n",  opcode);
             exit(0);
         }
+
+        // if (registers.pc == 0xC252) {
+        //     uint16_t addr = readWord(registers.pc+1);
+        //     printf("l'addr de saut: %X\n", addr);
+        //     printRegisters();
+        //     exit(0);
+        // }
 
 
         cycle = instr.nb_cycles + instr.execute();
