@@ -26,21 +26,24 @@ void PPU_init() {
 // There are 144 visible scanlines
 void PPU_clock() {
     ppu.ticks += cycle;
+    // printf("ppu.ticks: %d\n", ppu.ticks);
     // 4 modes
     // mode 0 Horizontal blanking
     // mode 1 Vertical blanking
     // mode 2 Searching OAM for OBJS whos (X, Y) coordinates overlap this line
     // mode 3 Reading OAM and VRAM to generate the picture
     if (ppu.mode == PPU_MODE_SEARCHING_OAM) {
-        // printf("PPU SEARCHING OAM");
-        if (ppu.ticks >= 80) {
+        // printf("PPU SEARCHING OAM\n");
+        if (ppu.ticks >= 40) {
             ppu.ticks = 0;
             ppu.mode = PPU_MODE_READING_OAM;
         }
     }
     else if (ppu.mode == PPU_MODE_READING_OAM) {
-        // printf("PPU READING OAM");
-        if (ppu.ticks >= 172) {
+
+        ppu.x++;
+        // printf("PPU_MODE_READING_OAM\n");
+        if (ppu.ticks >= 160) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.ticks = 0;
             // TODO Render scanline, write a scanline to the framebuffer
@@ -49,11 +52,16 @@ void PPU_clock() {
         }
     }
     else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
-        // printf("PPU HORIZONTAL BLANKING");
-        if (ppu.ticks >= 204) {
+        // A full scanline takes 456 ticks to complete. At the end of a
+        // scanline, the PPU goes back to the initial OAM Search state.
+        // When we reach line 144, we switch to VBlank state instead.
+        // HBlank happens when all 160 pixels in a scanline have been output to the screen
+        // printf("PPU HORIZONTAL BLANKING\n");
+        if (ppu.ticks >= 456) {
+            // printf("INCREASING SCANLINE\n");
             ppu.scanline++;
             ppu.ticks = 0;
-            if (ppu.scanline == 143) {
+            if (ppu.scanline == 144) {
                 // enter vblank
                 ppu.mode = PPU_MODE_VERTICAL_BLANKING;
                 // put image data
@@ -64,11 +72,12 @@ void PPU_clock() {
         }
     }
     else if (ppu.mode = PPU_MODE_VERTICAL_BLANKING) {
+        // VBlank happens when all 144 scanlines in a frame have been output to the screen
         // printf("PPU VERTICAL BLANKING");
         if (ppu.ticks >= 456) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.scanline++;
-            if (ppu.scanline > 153) {
+            if (ppu.scanline >= 153) {
                 // restart scanning modes
                 ppu.mode = PPU_MODE_SEARCHING_OAM;
                 ppu.scanline = 0;
@@ -80,7 +89,7 @@ void PPU_clock() {
 
 
 void updateTile(uint16_t addr, uint8_t val) {
-    printf("Going through the update tile function\n");
+    // printf("Going through the update tile function\n");
     // get the base address for this tile row
     addr &= 0x1ffe;
 
@@ -152,6 +161,7 @@ uint8_t getGBColorFromValue(uint8_t val) {
 
 
 void renderScanline() {
+
 
     uint16_t mapOffset = LCDC_GET_BG_TILEMAP_AREA() ? 0x1c00 : 0x1800;
 

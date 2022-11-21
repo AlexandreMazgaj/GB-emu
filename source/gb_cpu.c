@@ -7,17 +7,22 @@ uint8_t IME;
 uint8_t IE;
 uint8_t IF;
 uint8_t stopped;
+uint8_t halted;
 uint8_t cycle;
+char dbg_msg[1024];
+int msg_size;
 
 void CPU_init() {
     // registers.af = 0x01b0;
     registers.af = 0x1180;
-    // registers.bc = 0x0013;]
-    registers.bc = 0x0000;
-    // registers.de = 0x00d8
-    registers.de = 0xff56;
-    // registers.hl = 0x014d;
-    registers.hl = 0x000d;
+    SETCFLAG(1);
+    SETHFLAG(1);
+    registers.bc = 0x0013;
+    // registers.bc = 0x0000;
+    registers.de = 0x00d8;
+    // registers.de = 0xff56;
+    registers.hl = 0x014d;
+    // registers.hl = 0x000d;
     registers.pc = 0x0100;
     registers.sp = 0xfffe;
 
@@ -26,6 +31,43 @@ void CPU_init() {
     IF = 0;
 
     stopped = 0;
+    halted = 0;
+
+    for (int i = 0; i < 1024; i++) 
+        dbg_msg[i] = 0;
+    msg_size = 0;
+
+    writeByte(0xFF05, 0);
+	writeByte(0xFF06, 0);
+	writeByte(0xFF07, 0);
+	writeByte(0xFF10, 0x80);
+	writeByte(0xFF11, 0xBF);
+	writeByte(0xFF12, 0xF3);
+	writeByte(0xFF14, 0xBF);
+	writeByte(0xFF16, 0x3F);
+	writeByte(0xFF17, 0x00);
+	writeByte(0xFF19, 0xBF);
+	writeByte(0xFF1A, 0x7A);
+	writeByte(0xFF1B, 0xFF);
+	writeByte(0xFF1C, 0x9F);
+	writeByte(0xFF1E, 0xBF);
+	writeByte(0xFF20, 0xFF);
+	writeByte(0xFF21, 0x00);
+	writeByte(0xFF22, 0x00);
+	writeByte(0xFF23, 0xBF);
+	writeByte(0xFF24, 0x77);
+	writeByte(0xFF25, 0xF3);
+	writeByte(0xFF26, 0xF1);
+	writeByte(0xFF40, 0x91);
+	writeByte(0xFF42, 0x00);
+	writeByte(0xFF43, 0x00);
+	writeByte(0xFF45, 0x00);
+	writeByte(0xFF47, 0xFC);
+	writeByte(0xFF48, 0xFF);
+	writeByte(0xFF49, 0xFF);
+	writeByte(0xFF4A, 0x00);
+	writeByte(0xFF4B, 0x00);
+	writeByte(0xFFFF, 0x00);
 
 }
 
@@ -43,9 +85,8 @@ uint8_t CPU_clock() {
         // uint8_t clock
         uint8_t op = readByte(registers.pc);
 
-        // printf("PC: %X\n", registers.pc);
-        // printRegisters();
 
+        // printf("PC: %X\n", registers.pc);
         if (op > MAX_KNOWN_OPCODE) {
             handleUnknownOp(op);
             registers.pc++;
@@ -55,12 +96,23 @@ uint8_t CPU_clock() {
 
         struct instruction instr = instructions[op];
 
-        printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+        // printRegisters();
+        // printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+
+
         // fflush(stdout);
 
 
+        dbg_update();
+        dbg_print();
 
+        // executing the instruction
         cycle = instr.nb_cycles + instr.execute();
+
+        if (halted) {
+            // printf("THE CPU IS HALTED\n");
+            return 1;
+        }
 
         if (instr.size_operand == 2)
             registers.pc += 2;
@@ -68,13 +120,13 @@ uint8_t CPU_clock() {
             registers.pc++;
         
 
-        if (registers.pc == 0x020B) { // 0xC252 c772 call for c16b ret, then goes to 100
-            int i = 0;
-            uint16_t addr = readWord(registers.pc+1);
-            printf("l'addr de saut: %X\n", addr);
-            printRegisters();
-            return 220;
-        }
+        // if (registers.pc == 0x020B) { // 0xC252 c772 call for c16b ret, then goes to 100
+        //     int i = 0;
+        //     uint16_t addr = readWord(registers.pc+1);
+        //     printf("l'addr de saut: %X\n", addr);
+        //     printRegisters();
+        //     return 220;
+        // }
 
 
         return 1;
@@ -101,7 +153,12 @@ void checkInterrupts() {
     uint8_t IE = readByte(0xffff);
     uint8_t IF = readByte(0xff0f);
 
-    if (IME) {
+    if (IME || halted == 1) {
+        // this means that at least one interrupt has been triggered
+        if (IE & IF) {
+            printf("THE CPU IS NOT HALTED\n");
+            halted = 0;
+        }
         // Checking if VBLANK enabled and if requested
         if ((IE & VBLANK_BIT) == VBLANK_BIT && (IF & VBLANK_BIT) == VBLANK_BIT) {
             pushWordStack(registers.pc);
@@ -236,7 +293,7 @@ void inc8bReg(uint8_t* reg) {
 
 void dec8bReg(uint8_t* reg) {
     SETZFLAG((uint8_t)((*reg) - 1) == 0);
-    SETNFLAG(0);
+    SETNFLAG(1);
     SETHFLAG(((((*reg) & 0xf) - (1 & 0xf)) & 0x10) == 0x10);
 
     (*reg)--;
@@ -271,7 +328,7 @@ void or_a(uint8_t reg) {
 }
 
 void cp_a(uint8_t reg) {
-    int cp_val = registers.a - reg;
+    int cp_val = registers.a - reg - GETCFLAG();
 
     SETZFLAG(cp_val == 0);
     SETNFLAG(1);
@@ -343,8 +400,38 @@ void printBinary(uint8_t hex) {
 
 
 void printRegisters() {
-    printf("af: %X; ", registers.af);
-    printf("bc: %X; ", registers.bc);
-    printf("de: %X; ", registers.de);
-    printf("hl: %X\n", registers.hl);
+    printf("A: %X; ", registers.a);
+    printf("F: ");
+    if (GETZFLAG()) printf("Z");
+    else printf("-");
+    if (GETNFLAG()) printf("N");
+    else printf("-");
+    if (GETHFlAG()) printf("H");
+    else printf("-");
+    if (GETCFLAG()) printf("C; ");
+    else printf("-; ");
+    printf("BC: %X; ", registers.bc);
+    printf("DE: %X; ", registers.de);
+    printf("HL: %X; ", registers.hl);
+    printf("SP: %X; ", registers.sp);
+}
+
+
+void dbg_update() {
+    if (readByte(0xFF02) == 0x81) {
+        // printf("Writes in the dbg message\n");
+        char c = readByte(0xFF01);
+
+        printf("%X", c);
+
+        dbg_msg[msg_size++] = c;
+
+        writeByte(0xFF02, 0);
+    }
+}
+
+void dbg_print() {
+    if (dbg_msg[0]) {
+        // printf("DBG: %X\n", dbg_msg);
+    }
 }

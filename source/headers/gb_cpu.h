@@ -29,6 +29,11 @@
 #define JOYPAD_ADDR (0x60)
 
 
+// used for the debugging roms
+extern char dbg_msg[1024];
+extern int msg_size;
+
+
 
 
 // Interrupt Master enable flag
@@ -41,6 +46,8 @@ extern uint8_t IF;
 
 // stop CPU flag
 extern uint8_t stopped;
+extern uint8_t halted;
+
 
 
 

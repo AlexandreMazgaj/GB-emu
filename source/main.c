@@ -28,7 +28,7 @@ int main() {
     CPU_init();
     MMU_init();
 
-    uint8_t error = loadCartridge("/home/IBEO.AS/ama/pers_workspace/GB/GB-emu/roms/05-op\ rp.gb");
+    uint8_t error = loadCartridge("/home/IBEO.AS/ama/pers_workspace/GB/GB-emu/roms/05-op_rp.gb");
 
     if (error)
         return 9;
@@ -51,8 +51,9 @@ int main() {
         return 1;
     }
     window = SDL_CreateWindow("GAME BOY", SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+                              SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH*2, SCREEN_HEIGHT*2,
                               SDL_WINDOW_SHOWN);
+    SDL_SetWindowResizable(window, SDL_TRUE);
     if( window == NULL ){
         printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
         return 1;
@@ -104,18 +105,20 @@ int main() {
 
     SDL_Event e;
 
-    FILE *file = fopen("output_rom.txt", "w");
 
 
     printf("Everything is ready, lauching emulator\n");
 
     // printf("rom[213] = %X\n", mmu.rom[0x213]);
 
-    for (int i = 0; i < 1000; i++) {
-        fprintf(file, "rom[%X] = %X\n", i, mmu.rom[i]);
-    }
+    // FILE *file = fopen("output_rom.txt", "w");
 
-    fclose(file);
+
+    // for (int i = 0; i < 1000; i++) {
+    //     fprintf(file, "rom[%X] = %X\n", i, mmu.rom[i]);
+    // }
+
+    // fclose(file);
 
 
     while (1) {
@@ -124,15 +127,15 @@ int main() {
 
         if (emuRun) {
             if (CPU_clock() == 220) {
-                emuRun = 0;
+                // emuRun = 0;
             }
 
-            // PPU_clock();
+            PPU_clock();
         }
         else {
             if (oneByOne) {
                 while (!CPU_clock());
-                // PPU_clock();
+                PPU_clock();
                 oneByOne = 0;
             }
         }
@@ -167,7 +170,7 @@ int main() {
             SDL_UpdateTexture(texture, NULL, scaledGraphics->pixels, scaledGraphics->pitch);
             SDL_RenderClear(renderer);
             // SDL_RenderCopy(renderer, texture, NULL, NULL);
-            // SDL_RenderPresent(renderer);
+            SDL_RenderPresent(renderer);
             //Update the surface
             SDL_UpdateWindowSurface( window );
 

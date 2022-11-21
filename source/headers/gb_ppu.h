@@ -30,7 +30,7 @@ struct ppu {
     uint8_t screen[SCREEN_HEIGHT * SCREEN_WIDTH];
 
     uint8_t oam[OAM_SIZE];
-    uint8_t video_ram[RAM_SIZE];
+    uint8_t video_ram[VIDEO_RAM_SIZE];
 
 
     uint8_t tileSet[TILE_SET_SIZE][8][8];
@@ -46,9 +46,11 @@ struct ppu {
     uint8_t WY;
     uint8_t WX;
 
+    uint8_t x;
+
     // to manage the cycle
     uint8_t mode;
-    uint8_t ticks;
+    int ticks;
     uint8_t scanline;
 
 

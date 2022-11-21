@@ -348,6 +348,7 @@ uint8_t exe_ldapbc() {
 }
 
 uint8_t exe_decbc() {
+    printf("DEC BC\n");
     registers.bc--;
     return 0;
 }
@@ -436,6 +437,7 @@ uint8_t exe_ldapde() {
 }
 
 uint8_t exe_decde() {
+    // printf("DEC DE\n");
     registers.de--;
     return 0;
 }
@@ -465,7 +467,7 @@ uint8_t exe_rra() {
 // # 0x2 #
 // #######
 
-// something is happening in this function were the af register is not updated properly, and I don't know why
+// ALEX something is happening in this function were the af register is not updated properly, and I don't know why
 uint8_t exe_jrnzr8() {
     if (!GETZFLAG()) {
         // printf("r8: %X\n", (int8_t)readByte(registers.pc + 1));
@@ -473,6 +475,7 @@ uint8_t exe_jrnzr8() {
         return 4;
     }
     registers.pc++;
+
     return 0;
 }
 
@@ -954,7 +957,7 @@ uint8_t exe_ldphll() {
 }
 
 uint8_t exe_halt() {
-    printf("TODO, halt function\n");
+    halted = 1;
     return 0;
 }
 
@@ -1408,7 +1411,7 @@ uint8_t exe_retz() {
 
 uint8_t exe_ret() {
     uint16_t stack = popWordStack();
-    printf("returning to %X\n", stack-1);
+    // printf("returning to %X\n", stack-1);
     registers.pc = stack - 1;
     return 0;
 }
@@ -1544,7 +1547,6 @@ uint8_t exe_callca16() {
 }
 
 uint8_t exe_sbcad8() {
-    printf("The byte: %X\n", readByte(registers.pc+1));
     sbc_a(readByte(++registers.pc));
     return 0;
 }
@@ -1620,6 +1622,7 @@ uint8_t exe_rst28h() {
 // #######
 
 uint8_t exe_ldhapa8() {
+    // printf(" addr ldhapa8 %X, %X ", (uint16_t)readByte(registers.pc+1), readByte(0xff00 + (uint16_t)readByte(registers.pc+1)));
     registers.a = readByte(0xff00 + (uint16_t)readByte(++registers.pc));
     return 0;
 }
@@ -1678,7 +1681,7 @@ uint8_t exe_ei() {
 }
 
 uint8_t exe_cpad8() {
-    cp_a(readByte(+registers.pc));
+    cp_a(readByte(++registers.pc));
     return 0;
 }
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "headers/gb_cpu.h"
 #include "headers/gb_ppu.h"
+#include "headers/serial.h"
 
 struct mmu mmu;
 
@@ -14,6 +15,9 @@ void MMU_init() {
     mmu.mbc_hasRam = 0;
     mmu.mbc_isRamActive = 0;
     mmu.mbc_romBank = 1;
+
+    serial.control = 0x0;
+    serial.data = 0x0;
 
     for (int i = 0; i < MAX_CARTRIDGE_SIZE; i++) {
         mmu.rom[i] = 0;
@@ -154,15 +158,15 @@ uint8_t loadCartridge(char* path) {
 
     printf("File size: %d\n", size);
 
+    rewind(cartridgePtr); 
+
+    fread(mmu.rom, size, 1, cartridgePtr);
+
     // getchar();
 
-    fseek(cartridgePtr, 0L, SEEK_SET);
-
-    for (unsigned int i = 0; i < size; ++i) {
-        uint8_t c = fgetc(cartridgePtr);
-        printf("rom[%d]: %X\n", i, c);
-        mmu.rom[i] = c;
-    }
+    // for (unsigned int i = 0; i < size; ++i) {
+    //     printf("rom[%d]: %X\n", i, mmu.rom[i]);
+    // }
 
     fclose(cartridgePtr);
 
@@ -227,9 +231,17 @@ uint8_t readByte(uint16_t addr) {
     }
     // 0xff00 controller
     // 0xff01 - 02 communication
+    else if (addr == 0xff01) {
+        return serial.data;
+    }
+    else if (addr == 0xff02) {
+        // printf("READING FROM SERIAL %X\n", serial.control);
+        return serial.control;
+    }
     // 0xff04 - 07 Divider and timer
     //
     else if (addr >= 0xff40 && addr <= 0xff69) {
+        // return 0;
         return readPPU(addr);
     }
     else if (addr >= 0xff80 && addr <= 0xfffe) {
@@ -251,6 +263,9 @@ uint16_t readWord(uint16_t addr) {
 // TODO finish writeByte function
 void writeByte(uint16_t addr, uint8_t val) {
     // printf("writing addr: %X, val: %X\n", addr, val);
+    if (addr == 0xff02) {
+        // printf("PLEASE TELL ME THAT YOU WRITE THERE: %X\n", val);
+    }
     // BEGIN ROM
     // should not be able to write here
 
@@ -267,7 +282,7 @@ void writeByte(uint16_t addr, uint8_t val) {
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         ppu.video_ram[addr - 0x8000] = val;
-        printf("Should update tiles\n");  // does not update tiles
+        // printf("Should update tiles\n");  // does not update tiles
         updateTile(addr, val);
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {
@@ -283,15 +298,27 @@ void writeByte(uint16_t addr, uint8_t val) {
     }
     // 0xff00 controller
     // 0xff01 - 02 communication
+    else if (addr == 0xff01) {
+        serial.data = val;
+    }
+    else if (addr == 0xff02) {
+        // printf("WRITING TO SERIAL %X\n", val);
+
+        serial.control = val;
+        if (serial.control == 0x81) {
+            serial.data = val;
+            serial.interrupt = 0x8;
+        }
+    }
     // 0xff04 - 07 Divider and timer
     //
     else if (addr >= 0xff40 && addr <= 0xff69) {
         // OAM DMA
         if (addr == 0xff46) {
-            oam_dma(val);
+            // oam_dma(val);
         }
         else {
-            writePPU(addr, val);
+            // writePPU(addr, val);
         }
     }
     else if (addr >= 0xff80 && addr <= 0xfffe) {
