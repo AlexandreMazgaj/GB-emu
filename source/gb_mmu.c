@@ -262,10 +262,8 @@ uint16_t readWord(uint16_t addr) {
 
 // TODO finish writeByte function
 void writeByte(uint16_t addr, uint8_t val) {
-    // printf("writing addr: %X, val: %X\n", addr, val);
-    if (addr == 0xff02) {
-        // printf("PLEASE TELL ME THAT YOU WRITE THERE: %X\n", val);
-    }
+    printf("writing addr: %X, val: %X\n", addr, val);
+
     // BEGIN ROM
     // should not be able to write here
 
@@ -282,8 +280,6 @@ void writeByte(uint16_t addr, uint8_t val) {
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         ppu.video_ram[addr - 0x8000] = val;
-        // printf("Should update tiles\n");  // does not update tiles
-        updateTile(addr, val);
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {
         if (mmu.mbc_type == 1) MBC1_writeRam(addr, val);

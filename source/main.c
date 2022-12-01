@@ -13,8 +13,8 @@ void drawScreen(SDL_Surface *surface)
     uint32_t *pixels = (uint32_t *)surface->pixels;
     for (int i = 0; i < SCREEN_HEIGHT; i++) {
         for (int j = 0; j < SCREEN_WIDTH; j++) {
-            pixels[i*SCREEN_WIDTH + j] = ppu.screen[i*SCREEN_WIDTH + j] == 0 ? 0 : 0xFFFFFFFF;
-            // pixels[i*SCREEN_WIDTH + j] = 0xFFFFFFFF;
+            // pixels[i*SCREEN_WIDTH + j] = ppu.screen[i*SCREEN_WIDTH + j] == 0 ? 0 : 0xFFFFFFFF;
+            pixels[i*SCREEN_WIDTH + j] = 0xFFFFFFFF;
         }
     }
     SDL_UnlockSurface(surface);
@@ -27,8 +27,9 @@ int main() {
 
     CPU_init();
     MMU_init();
+    PPU_init();
 
-    uint8_t error = loadCartridge("/home/IBEO.AS/ama/pers_workspace/GB/GB-emu/roms/05-op_rp.gb");
+    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
 
     if (error)
         return 9;
@@ -135,7 +136,7 @@ int main() {
         else {
             if (oneByOne) {
                 while (!CPU_clock());
-                PPU_clock();
+                // PPU_clock();
                 oneByOne = 0;
             }
         }

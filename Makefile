@@ -7,7 +7,7 @@ SDL_LIB = -lSDL2main -lSDL2 -lSDL2_ttf #-framework SDL2 -framework SDL2_ttf
 
 LIBS = # -framework OpenGL -framework GLUT -lpng
 
-CC = gcc-9
+CC = gcc-11
 CFLAGS = -std=c17 -Wall -Wno-deprecated $(pkg-config --cflags --libs sdl2)#-arch x86_64 # -mmacosx-version-min=10.15 -w
 
 # define library paths in addition to /usr/lib

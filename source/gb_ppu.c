@@ -1,19 +1,24 @@
 #include "headers/gb_ppu.h"
 #include "headers/gb_cpu.h"
+#include <stdlib.h>
 
 
 struct ppu ppu;
+struct pixelFetcher pixelFetcher;
 
 
 void PPU_init() {
     for (int i = 0; i < SCREEN_HEIGHT; i++) {
-        for (int j = 0; j < SCREEN_WIDTH; i++) {
+        for (int j = 0; j < SCREEN_WIDTH; j++) {
             ppu.screen[i + j*SCREEN_HEIGHT] = 0;
         }
     }
 
-    ppu.mode = PPU_MODE_SEARCHING_OAM;
+    ppu.mode = PPU_MODE_OAM_SCAN;
     ppu.ticks = 0;
+    ppu.scrollX = 0;
+    ppu.scrollY = 0;
+    ppu.scanline = 0;
 
     for (int i = 0; i < TILE_SET_SIZE; i++) {
         for (int x = 0; x < 8; x++) {
@@ -21,34 +26,46 @@ void PPU_init() {
                 ppu.tileSet[i][x][y] = 0;
         }
     }
+
+    ppu.bgPixelFifo = malloc(sizeof(PixelFifo));
+    ppu.spritePixelFifo = malloc(sizeof(PixelFifo));
+
+
+    pixelFetcher.mode = FETCH_TILE_NO;
+    pixelFetcher.ticks = 0;
+    pixelFetcher.WLY = 0;
+    pixelFetcher.x = 0;
+    pixelFetcher.y = 0;
+    pixelFetcher.tileId = 0;
+    pixelFetcher.hiByte = 0;
+    pixelFetcher.loByte = 0;
 }
 
 // There are 144 visible scanlines
 void PPU_clock() {
     ppu.ticks += cycle;
+    printf("ppu ticks: %d\n", ppu.ticks);
     // printf("ppu.ticks: %d\n", ppu.ticks);
     // 4 modes
     // mode 0 Horizontal blanking
     // mode 1 Vertical blanking
     // mode 2 Searching OAM for OBJS whos (X, Y) coordinates overlap this line
-    // mode 3 Reading OAM and VRAM to generate the picture
-    if (ppu.mode == PPU_MODE_SEARCHING_OAM) {
-        // printf("PPU SEARCHING OAM\n");
+    // mode 3 Reading OAM and VRAM to draw the picture
+    if (ppu.mode == PPU_MODE_OAM_SCAN) {
+        printf("PPU OAM_SCAN\n");
         if (ppu.ticks >= 40) {
             ppu.ticks = 0;
-            ppu.mode = PPU_MODE_READING_OAM;
+            ppu.mode = PPU_MODE_DRAWING;
         }
     }
-    else if (ppu.mode == PPU_MODE_READING_OAM) {
+    else if (ppu.mode == PPU_MODE_DRAWING) {
 
-        ppu.x++;
-        // printf("PPU_MODE_READING_OAM\n");
+        ppu.scrollX++;
+        printf("PPU_MODE_DRAWING\n");
         if (ppu.ticks >= 160) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.ticks = 0;
-            // TODO Render scanline, write a scanline to the framebuffer
-            renderScanline();
-
+            // TODO Draw the image
         }
     }
     else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
@@ -56,7 +73,7 @@ void PPU_clock() {
         // scanline, the PPU goes back to the initial OAM Search state.
         // When we reach line 144, we switch to VBlank state instead.
         // HBlank happens when all 160 pixels in a scanline have been output to the screen
-        // printf("PPU HORIZONTAL BLANKING\n");
+        printf("PPU HORIZONTAL BLANKING\n");
         if (ppu.ticks >= 456) {
             // printf("INCREASING SCANLINE\n");
             ppu.scanline++;
@@ -67,20 +84,21 @@ void PPU_clock() {
                 // put image data
             }
             else {
-                ppu.mode = PPU_MODE_SEARCHING_OAM;
+                ppu.mode = PPU_MODE_OAM_SCAN;
             }
         }
     }
-    else if (ppu.mode = PPU_MODE_VERTICAL_BLANKING) {
+    else if (ppu.mode == PPU_MODE_VERTICAL_BLANKING) {
         // VBlank happens when all 144 scanlines in a frame have been output to the screen
-        // printf("PPU VERTICAL BLANKING");
+        printf("PPU VERTICAL BLANKING");
         if (ppu.ticks >= 456) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.scanline++;
             if (ppu.scanline >= 153) {
                 // restart scanning modes
-                ppu.mode = PPU_MODE_SEARCHING_OAM;
+                ppu.mode = PPU_MODE_OAM_SCAN;
                 ppu.scanline = 0;
+                pixelFetcher.WLY = 0;
             }
         }
     }
@@ -88,22 +106,7 @@ void PPU_clock() {
 }
 
 
-void updateTile(uint16_t addr, uint8_t val) {
-    // printf("Going through the update tile function\n");
-    // get the base address for this tile row
-    addr &= 0x1ffe;
 
-    // get which tile and row is updated
-    uint16_t tile = (addr >> 4) & 511;
-    uint8_t y = (uint8_t)((addr >> 1) & 7);
-
-    for (uint8_t x = 0; x < 8; x++) {
-        uint8_t sx = 1 << (7-x);
-        ppu.tileSet[tile][y][x] = ((ppu.video_ram[addr] & sx) ? 1 : 0) +
-                                  ((ppu.video_ram[addr + 1] & sx) ? 2 : 0);
-    }
-
-}
 
 
 void writePPU(uint16_t addr, uint8_t val) {
@@ -160,85 +163,100 @@ uint8_t getGBColorFromValue(uint8_t val) {
 }
 
 
-void renderScanline() {
+
+uint16_t getBGTileMapArea() {
+    return LCDC_GET_BG_TILEMAP_AREA() == 1? 0x9C00 : 0x9800;
+}
+
+uint16_t getWindowTileMapArea() {
+    return LCDC_GET_WINDOW_TILEMAP_AREA() == 1? 0x9C00 : 0x9800;
+}
 
 
-    uint16_t mapOffset = LCDC_GET_BG_TILEMAP_AREA() ? 0x1c00 : 0x1800;
+// Functions for the pixel fetcher and pixel fifo 
 
-    mapOffset += ((ppu.scanline + ppu.scrollY) & 0xff) >> 3;
 
-    uint8_t lineOffset = (ppu.scrollX >> 3);
-
-    uint8_t x = ppu.scrollX & 7;
-    uint8_t y = ppu.scrollY & 7;
-
-    int pixelOffset = ppu.scanline * SCREEN_HEIGHT;
-    // printf("ppu scan line: %d\n", ppu.scanline);
-
-    // printf("Possible seg fault 1\n");
-    uint16_t tile = (uint16_t)ppu.video_ram[mapOffset + lineOffset];
-
-    uint8_t scanLineRow[160];
-
-    // render background
-    for (int i = 0; i < SCREEN_HEIGHT; i++) {
-        // printf("pixelOffset: %d\n", pixelOffset);
-        uint8_t color = ppu.tileSet[tile][y][x];
-
-        // keep the colour for the line for tests
-        scanLineRow[i] = color;
-        // put the colours in the frame buffer
-        // printf("Writing color: %X\n", color);
-        ppu.screen[pixelOffset] = color;
-
-        pixelOffset++;
-
-        x++;
-        if (x == 8) {
-            x = 0;
-            lineOffset = (lineOffset + 1) & 31;
-            // printf("Possible seg fault 3\n");
-            tile = ppu.video_ram[mapOffset + lineOffset];
-        }
+uint8_t getBGTileId() {
+    uint16_t area = 0;
+    uint16_t xOffset = 0;
+    uint16_t yOffset = 0;
+    if (LCDC_GET_WINDOW_ENABLE()) {
+        area = getWindowTileMapArea();
+        xOffset = (uint16_t)pixelFetcher.x;
+        yOffset = (uint16_t)32*((uint16_t)pixelFetcher.WLY / (uint16_t)8);
+    }
+    else {
+        area = getBGTileMapArea();
+        xOffset = (((uint16_t)ppu.scrollX / (uint16_t)8) + (uint16_t)pixelFetcher.x) & 0x1F;
+        yOffset = (uint16_t)32*(((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) & 0x00FF) / (uint16_t)8;
     }
 
+    uint16_t tileIdAddress = area + (xOffset + yOffset) & 0x03FF;
 
-    for (int i = 0; i < 40; i++) {
-        // printf("Possible seg fault 4\n");
-        uint8_t sprite_y = ppu.oam[i] - 16;
-        uint8_t sprite_x = ppu.oam[i + 1] - 8;
-        uint8_t sprite_tile_index = ppu.oam[i + 2];
-        uint8_t sprite_flags = ppu.oam[i + 3];
+    return ppu.video_ram[tileIdAddress];
+}
 
-        // check if the sprite falls on this scanline
-        if (sprite_y <= ppu.scanline && (sprite_flags + 8) > ppu.scanline) {
-            uint8_t* palette = ((sprite_flags & 0x8) >> 0x8)? ppu.ob_pal1 : ppu.ob_pal0;
-            uint8_t pixOffset =  ppu.scanline * SCREEN_HEIGHT + sprite_x;
+uint8_t getBGTileDataLo(uint8_t tileId) {
+    uint16_t offset = 0;
+    if (LCDC_GET_WINDOW_ENABLE()) {
+        offset = pixelFetcher.WLY % 8;
+    }
+    else {
+        offset = 2*(((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
+    }
 
-            uint8_t tileRow;
-            if ((sprite_flags & 0x40) >> 0x40)
-                tileRow = 7 - (ppu.scanline - sprite_x);
-            else
-                tileRow = (ppu.scanline - sprite_x);
+    uint8_t loByte = 0;
+    if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
+        loByte = ppu.video_ram[offset + (uint16_t)tileId];
+    }
+    else {
+        loByte = ppu.video_ram[offset + (int16_t)tileId];
+    }
+    return loByte;
+}
 
-            for (int o_x = 0; o_x < 8; o_x++) {
-                uint8_t priority = ((sprite_flags && 0x80) >> 0x80);
-                if ((sprite_x + o_x) >= 0 && (sprite_x + o_x) < 160 && (~priority || !scanLineRow[sprite_x + o_x])) {
-                    uint8_t color;
+uint8_t getBGTileDataHi(uint8_t tileId) {
+    uint16_t offset = 0;
+    if (LCDC_GET_WINDOW_ENABLE()) {
+        offset = pixelFetcher.WLY % 8;
+    }
+    else {
+        offset = 2*(((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
+    }
 
-                    if ((sprite_flags & 0x20) >> 0x20)
-                        color = ppu.tileSet[sprite_tile_index][tileRow][7 - o_x];
-                    else
-                        color = ppu.tileSet[sprite_tile_index][tileRow][o_x];
+    uint8_t hiByte = 0;
+    if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
+        hiByte = ppu.video_ram[offset + (uint16_t)tileId] + 1;
+    }
+    else {
+        hiByte = ppu.video_ram[offset + (int16_t)tileId + 1];
+    }
+    return hiByte;
+}
 
-                    if (color) {
-                    printf("Adding color %X to the screen, at pixelOffset: %X\n",color, pixelOffset);
-                        ppu.screen[pixelOffset] = palette[color];
-                    }
-                    pixelOffset++;
-                }
-            }
-
+void clockBGPixelFetch() {
+    // every mode takes two ticks
+    if (++pixelFetcher.ticks % 2 != 0)
+        return;
+    
+    switch (pixelFetcher.mode) {
+        case FETCH_TILE_NO :  {
+            pixelFetcher.tileId = getBGTileId();
+            pixelFetcher.mode = FETCH_TILE_DATA_LO;
+            break;
+        }
+        case FETCH_TILE_DATA_LO : {
+            pixelFetcher.loByte = getBGTileDataLo(pixelFetcher.tileId);
+            pixelFetcher.mode = FETCH_TILE_DATA_LO;
+            break;
+        }
+        case FETCH_TILE_DATA_HI : {
+            pixelFetcher.hiByte = getBGTileDataHi(pixelFetcher.tileId);
+            pixelFetcher.mode = PUSH_PIXELS;
+            break;
+        }
+        case PUSH_PIXELS : {
+            // TODO
         }
     }
 }

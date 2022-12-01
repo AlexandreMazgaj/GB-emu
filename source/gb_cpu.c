@@ -86,6 +86,7 @@ uint8_t CPU_clock() {
         uint8_t op = readByte(registers.pc);
 
 
+
         // printf("PC: %X\n", registers.pc);
         if (op > MAX_KNOWN_OPCODE) {
             handleUnknownOp(op);
@@ -97,7 +98,7 @@ uint8_t CPU_clock() {
         struct instruction instr = instructions[op];
 
         // printRegisters();
-        // printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+        printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
 
 
         // fflush(stdout);
@@ -128,6 +129,7 @@ uint8_t CPU_clock() {
         //     return 220;
         // }
 
+        printf("Has executed the instruction\n");
 
         return 1;
         
