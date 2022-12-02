@@ -447,7 +447,7 @@ void printInstruction(struct instruction instr) {
     }
     else if (instr.size_operand == 2) {
         char mnemonic_with_data[256];
-        snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic, ((uint16_t)readByte(registers.pc+1) << 8)| (uint16_t)readByte(registers.pc + 2));
+        snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic, ((uint16_t)readByte(registers.pc+2) << 8)| (uint16_t)readByte(registers.pc + 1));
         printf("pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
     }
 }
