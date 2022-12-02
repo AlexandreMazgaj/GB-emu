@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "constants.h"
+#include "opcodes.h"
 
 // Definition of macros for flags
 #define SETZFLAG(value) (registers.f = ((value==0)?registers.f & (~(1 << 7)): registers.f | (1 << 7)))
@@ -154,3 +155,4 @@ void rotateRightCarry(uint8_t* reg);
 void printRegFlags();
 void printBinary(uint8_t hex);
 void printRegisters();
+void printInstruction(struct instruction intr);

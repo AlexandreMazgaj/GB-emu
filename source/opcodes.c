@@ -3,29 +3,29 @@
 const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     // 0x0
     {"NOP", &exe_nop, 4, 0},                            // 0
-    {"LD BC, d16", &exe_ldbcd16, 12, 2},                // 1
+    {"LD BC, 0x%X", &exe_ldbcd16, 12, 2},                // 1
     {"LD (BC), A", &exe_ldpbca, 8, 0},                  // 2
     {"INC BC", &exe_incbc, 8, 0},                       // 3
     {"INC B", &exe_incb, 4, 0},                         // 4
     {"DEC B", &exe_decb, 4, 0},                         // 5
-    {"LD B, d8", &exe_ldbd8, 8, 1},                     // 6
+    {"LD B, 0x%X", &exe_ldbd8, 8, 1},                     // 6
     {"RLCA", &exe_rlca, 4, 0},                          // 7
-    {"LD (a16), SP", &exe_ldpa16sp, 20, 2},             // 8
+    {"LD (0x%X), SP", &exe_ldpa16sp, 20, 2},             // 8
     {"ADD HL, BC", &exe_addhlbc, 8, 0},                 // 9
     {"LD A, (BC)", &exe_ldapbc, 8, 0},                  // a
     {"DEC BC", &exe_decbc, 8, 0},                       // b
     {"INC C", &exe_incc, 4, 0},                         // c
     {"DEC C", &exe_decc, 4, 0},                         // d
-    {"LD C, d8", &exe_ldcd8, 8, 1},                     // e
+    {"LD C, 0x%X", &exe_ldcd8, 8, 1},                     // e
     {"RRCA", &exe_rrca, 4, 0},                          // f
     // 0x1          
     {"STOP", &exe_stop, 4, 1},                          // 0
-    {"LD DE, d16", &exe_ldded16, 12, 2},                // 1
+    {"LD DE, 0x%X", &exe_ldded16, 12, 2},                // 1
     {"LD (DE), A", &exe_ldpdea, 8, 0},                  // 2
     {"INC DE", &exe_incde, 8, 0},                       // 3
     {"INC D", &exe_incd, 4, 0},                         // 4
     {"DEC D", &exe_decd, 4, 0},                         // 5
-    {"LD D, d8", &exe_lddd8, 8, 1},                     // 6
+    {"LD D, 0x%X", &exe_lddd8, 8, 1},                     // 6
     {"RLA", &exe_rla, 4, 0},                            // 7
     {"JR i8", &exe_jri8, 12, 1},                        // 8
     {"ADD HL, DE", &exe_addhlde, 8, 0},                 // 9
@@ -33,41 +33,41 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"DEC DE", &exe_decde, 8, 0},                       // b
     {"INC E", &exe_ince, 4, 0},                         // c
     {"DEC E", &exe_dece, 4, 0},                         // d
-    {"LD E, d8", &exe_lded8, 8, 1},                     // e
+    {"LD E, 0x%X", &exe_lded8, 8, 1},                     // e
     {"RRA", &exe_rra, 4, 0},                            // f
     // 0x2
-    {"JR NZ, R8", &exe_jrnzr8, 8, 1},                   // 0
-    {"LD HL, d16", &exe_ldhld16, 12, 2},                // 1
+    {"JR NZ, 0x%X", &exe_jrnzr8, 8, 1},                   // 0
+    {"LD HL, 0x%X", &exe_ldhld16, 12, 2},                // 1
     {"LD (HL+), A", &exe_ldphlia, 8, 0},                // 2
     {"INC HL", &exe_inchl, 8, 0},                       // 3
     {"INC H", &exe_inch, 4, 0},                         // 4
     {"DEC H", &exe_dech, 4, 0},                         // 5
-    {"LD H, d8", &exe_ldhd8, 8, 1},                     // 6
+    {"LD H, 0x%X", &exe_ldhd8, 8, 1},                     // 6
     {"DAA", &exe_daa, 4, 0},                            // 7
-    {"JR z, r8", &exe_jrzr8, 8, 1},                     // 8
+    {"JR z, 0x%X", &exe_jrzr8, 8, 1},                     // 8
     {"ADD HL, HL", &exe_addhlhl, 8, 0},                 // 9
     {"LD A, (HL+)", &exe_ldaphli, 8, 0},                // a
     {"DEC HL", &exe_dechl, 8, 0},                       // b
     {"INC L", &exe_incl, 4, 0},                         // c
     {"DEC L", &exe_decl, 4, 0},                         // d
-    {"LD L, d8", &exe_ldld8, 8, 1},                     // e
+    {"LD L, 0x%X", &exe_ldld8, 8, 1},                     // e
     {"CPL", &exe_cpl, 4, 0},                            // f
     // 0x3
-    {"JR NC, r8", &exe_jrncr8, 8, 1},                   // 0
-    {"LD SP, d16", &exe_ldspd16, 12, 2},                // 1
+    {"JR NC, 0x%X", &exe_jrncr8, 8, 1},                   // 0
+    {"LD SP, 0x%X", &exe_ldspd16, 12, 2},                // 1
     {"LD (HL-), A", &exe_ldphlda, 8, 0},                // 2
     {"INC SP", &exe_incsp, 8, 0},                       // 3
     {"INC (HL)", &exe_incphl, 12, 0},                   // 4
     {"DEC (HL)", &exe_decphl, 12, 0},                   // 5
-    {"LD (HL), d8", &exe_ldphld8, 12, 0},               // 6
+    {"LD (HL), 0x%X", &exe_ldphld8, 12, 0},               // 6
     {"SCF", &exe_scf, 4, 0},                            // 7
-    {"JR C, r8", &exe_jrcr8, 8, 1},                     // 8
+    {"JR C, 0x%X", &exe_jrcr8, 8, 1},                     // 8
     {"ADD HL, SP", &exe_addhlsp, 8, 0},                 // 9
     {"LD A, (HL-)", &exe_ldaphld, 8, 0},                // a
     {"DEC SP", &exe_decsp, 8, 0},                       // b
     {"INC A", &exe_inca, 4, 0},                         // c
     {"DEC A", &exe_deca, 4, 0},                         // d
-    {"LD A, d8", &exe_ldad8, 8, 1},                     // e
+    {"LD A, 0x%X", &exe_ldad8, 8, 1},                     // e
     {"CCF", &exe_ccf, 4, 0},                            // f
     // 0x4
     {"LD B, B", &exe_ldbb, 4, 0},                       // 0
@@ -208,70 +208,70 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     // 0xc
     {"RET NZ", &exe_retnz, 8, 0},
     {"POP BC", &exe_popbc, 12, 0},
-    {"JP NZ, a16", &exe_jpnza16, 12, 2},
-    {"JP a16", &exe_jpa16, 16, 2},
-    {"CALL NZ, a16", &exe_callnza16, 12, 2},
+    {"JP NZ, 0x%X", &exe_jpnza16, 12, 2},
+    {"JP 0x%X", &exe_jpa16, 16, 2},
+    {"CALL NZ, 0x%X", &exe_callnza16, 12, 2},
     {"PUSH BC", &exe_pushbc, 16, 0},
-    {"ADD A, d8", &exe_addad8, 8, 1},
+    {"ADD A, 0x%X", &exe_addad8, 8, 1},
     {"RST 00H", &exe_rst00h, 16, 0},
     {"RET Z", &exe_retz, 8, 0},
     {"RET", &exe_ret, 16, 0},
-    {"JP Z, a16", &exe_jpza16, 12, 2},
+    {"JP Z, 0x%X", &exe_jpza16, 12, 2},
     {"PREFIX", &exe_cbprefix, 4, 0},
-    {"CALL Z, a16", &exe_callza16, 12, 2},
-    {"CALL a16", &exe_calla16, 24, 2},
-    {"ADC A, d8", &exe_adcad8, 8, 1},
+    {"CALL Z, 0x%X", &exe_callza16, 12, 2},
+    {"CALL 0x%X", &exe_calla16, 24, 2},
+    {"ADC A, 0x%X", &exe_adcad8, 8, 1},
     {"RST 08H", &exe_rst08h, 16, 0},
     // 0xd
     {"RET NC", &exe_retnc, 8, 0},
     {"POP DE", &exe_popde, 12, 0},
-    {"JP NC, a16", &exe_jpnca16, 12, 2},
+    {"JP NC, 0x%X", &exe_jpnca16, 12, 2},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
-    {"CALL NC, a16", &exe_callnca16, 12, 2},
+    {"CALL NC, 0x%X", &exe_callnca16, 12, 2},
     {"PUSH DE", &exe_pushde, 16, 0},
-    {"SUB d8", &exe_subad8, 8, 1},
+    {"SUB 0x%X", &exe_subad8, 8, 1},
     {"RST 10H", &exe_rst10h, 16, 0},
     {"RET C", &exe_retc, 8, 0},
     {"RETI", &exe_reti, 16, 0},
-    {"JP C, a16", &exe_jpca16, 12, 2},
+    {"JP C, 0x%X", &exe_jpca16, 12, 2},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
-    {"CALL C, a16", &exe_callca16, 12, 2},
+    {"CALL C, 0x%X", &exe_callca16, 12, 2},
     {"NOT A FUNCTION", 0, 0, 0},
-    {"SBC A, d8", &exe_sbcad8, 8, 1},
+    {"SBC A, 0x%X", &exe_sbcad8, 8, 1},
     {"RST 18H", &exe_rst18h, 16, 0},
     // 0xe
-    {"LDH (a8), A", &exe_ldhpa8a, 12, 1},
+    {"LDH (0x%X), A", &exe_ldhpa8a, 12, 1},
     {"POP HL", &exe_pophl, 12, 0},
     {"LD (C), A", &exe_ldpca, 8, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"PUSH HL", &exe_pushhl, 16, 0},
-    {"AND A, d8", &exe_andad8, 8, 1},
+    {"AND A, 0x%X", &exe_andad8, 8, 1},
     {"RST 20H", &exe_rst20h, 16, 0},
-    {"ADD SP, r8", &exe_addspr8, 16, 1},
+    {"ADD SP, 0x%X", &exe_addspr8, 16, 1},
     {"JP HL", &exe_jphl, 4, 0},
-    {"LD (a16), A", &exe_ldpa16a, 16, 2},
+    {"LD (0x%X), A", &exe_ldpa16a, 16, 2},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
-    {"XOR A, d8", &exe_xorad8, 8, 1},
+    {"XOR A, 0x%X", &exe_xorad8, 8, 1},
     {"RST 28H", &exe_rst28h, 16, 0},
     // 0xf
-    {"LDH A, (a8)", &exe_ldhapa8, 12, 1},
+    {"LDH A, (0x%X)", &exe_ldhapa8, 12, 1},
     {"POP AF", &exe_popaf, 12, 0},
     {"LD A, (C)", &exe_ldapc, 8, 0},
     {"DI", &exe_di, 4, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"PUSH AF", &exe_pushaf, 16, 0},
-    {"OR A, d8", &exe_orad8, 8, 1},
+    {"OR A, 0x%X", &exe_orad8, 8, 1},
     {"RST 30H", &exe_rst30h, 16, 0},
-    {"LD HL, SP + r8", &exe_ldhlspaddr8, 12, 1},
+    {"LD HL, SP + 0x%X", &exe_ldhlspaddr8, 12, 1},
     {"LD SP, HL", &exe_ldsphl, 8, 0},
-    {"LD A, (a16)", &exe_ldapa16, 16, 2},
+    {"LD A, (0x%X)", &exe_ldapa16, 16, 2},
     {"EI", &exe_ei, 4, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
-    {"CP A, d8", &exe_cpad8, 8, 1},
+    {"CP A, 0x%X", &exe_cpad8, 8, 1},
     {"RST 38H", &exe_rst38h, 16, 0}
 };
 

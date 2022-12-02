@@ -1,6 +1,6 @@
 #include "headers/gb_cpu.h"
 #include "headers/gb_mmu.h"
-#include "headers/opcodes.h"
+#include <stdio.h>
 
 struct registers registers;
 uint8_t IME;
@@ -98,7 +98,8 @@ uint8_t CPU_clock() {
         struct instruction instr = instructions[op];
 
         // printRegisters();
-        printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+        printInstruction(instr);
+
 
         // fflush(stdout);
 
@@ -432,5 +433,21 @@ void dbg_update() {
 void dbg_print() {
     if (dbg_msg[0]) {
         printf("DBG: %X\n", dbg_msg);
+    }
+}
+
+void printInstruction(struct instruction instr) {
+    if (instr.size_operand == 0) {
+        printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+    }
+    else if (instr.size_operand == 1) {
+        char mnemonic_with_data[256];
+        snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic, readByte(registers.pc + 1));
+        printf("pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
+    }
+    else if (instr.size_operand == 2) {
+        char mnemonic_with_data[256];
+        snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic, ((uint16_t)readByte(registers.pc+1) << 8)| (uint16_t)readByte(registers.pc + 2));
+        printf("pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
     }
 }
