@@ -5,6 +5,9 @@
 #include "pixel_fifo.h"
 
 
+// 2BPP processing macros
+#define GET_PIXEL_COLOR(hiByte,loByte, pixel) ((uint8_t)(((hiByte) & (1 << pixel)) >> (pixel-1) | ((loByte & (1 << pixel)) >> (pixel))))
+
 // 0xFF40
 #define LCDC_GET_LCDPPU_ENABLE() ((ppu.reg_lcdc & (1 << 7)) >> 7)
 #define LCDC_GET_WINDOW_TILEMAP_AREA() ((ppu.reg_lcdc & (1 << 6)) >> 6) // select which area in the memory to fetch window map form
@@ -122,3 +125,7 @@ uint8_t getTileDataLo(uint8_t tileId);
 uint8_t getTileDataHi(uint8_t tileId);
 
 void clockBGPixelFetch();
+
+
+// debugging functions
+void displayVram();

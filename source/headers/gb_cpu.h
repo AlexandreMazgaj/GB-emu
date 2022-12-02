@@ -16,6 +16,8 @@
 
 
 // Definition of macros for interrupts
+#define REQUEST_INTERRUPT(bit) (IF |= (uint8_t)bit)
+
 #define VBLANK_BIT (1 << 0)
 #define LCD_STAT_BIT (1 << 1)
 #define TIMER_BIT (1 << 2)

@@ -281,7 +281,7 @@ void handleUnknownOp(uint8_t opcode) {
 }
 
 uint8_t unknown_op() {
-    printf("This is an unknown operation\n");
+    // printf("This is an unknown operation\n");
     return 0;
 }
 
@@ -348,7 +348,6 @@ uint8_t exe_ldapbc() {
 }
 
 uint8_t exe_decbc() {
-    printf("DEC BC\n");
     registers.bc--;
     return 0;
 }

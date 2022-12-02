@@ -44,15 +44,15 @@ void PPU_init() {
 // There are 144 visible scanlines
 void PPU_clock() {
     ppu.ticks += cycle;
-    printf("ppu ticks: %d\n", ppu.ticks);
-    // printf("ppu.ticks: %d\n", ppu.ticks);
+    // displayVram();
+    // printf("ppu ticks: %d\n", ppu.ticks);
     // 4 modes
     // mode 0 Horizontal blanking
     // mode 1 Vertical blanking
     // mode 2 Searching OAM for OBJS whos (X, Y) coordinates overlap this line
     // mode 3 Reading OAM and VRAM to draw the picture
     if (ppu.mode == PPU_MODE_OAM_SCAN) {
-        printf("PPU OAM_SCAN\n");
+        // printf("PPU OAM_SCAN\n");
         if (ppu.ticks >= 40) {
             ppu.ticks = 0;
             ppu.mode = PPU_MODE_DRAWING;
@@ -61,10 +61,11 @@ void PPU_clock() {
     else if (ppu.mode == PPU_MODE_DRAWING) {
 
         ppu.scrollX++;
-        printf("PPU_MODE_DRAWING\n");
+        // printf("PPU_MODE_DRAWING\n");
         if (ppu.ticks >= 160) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.ticks = 0;
+            clockBGPixelFetch();
             // TODO Draw the image
         }
     }
@@ -73,7 +74,7 @@ void PPU_clock() {
         // scanline, the PPU goes back to the initial OAM Search state.
         // When we reach line 144, we switch to VBlank state instead.
         // HBlank happens when all 160 pixels in a scanline have been output to the screen
-        printf("PPU HORIZONTAL BLANKING\n");
+        // printf("PPU HORIZONTAL BLANKING\n");
         if (ppu.ticks >= 456) {
             // printf("INCREASING SCANLINE\n");
             ppu.scanline++;
@@ -81,7 +82,6 @@ void PPU_clock() {
             if (ppu.scanline == 144) {
                 // enter vblank
                 ppu.mode = PPU_MODE_VERTICAL_BLANKING;
-                // put image data
             }
             else {
                 ppu.mode = PPU_MODE_OAM_SCAN;
@@ -90,7 +90,8 @@ void PPU_clock() {
     }
     else if (ppu.mode == PPU_MODE_VERTICAL_BLANKING) {
         // VBlank happens when all 144 scanlines in a frame have been output to the screen
-        printf("PPU VERTICAL BLANKING");
+        // printf("PPU VERTICAL BLANKING");
+        REQUEST_INTERRUPT(VBLANK_BIT);
         if (ppu.ticks >= 456) {
             ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
             ppu.scanline++;
@@ -242,12 +243,13 @@ void clockBGPixelFetch() {
     switch (pixelFetcher.mode) {
         case FETCH_TILE_NO :  {
             pixelFetcher.tileId = getBGTileId();
+            // printf("Tile ID: %X\n", pixelFetcher.tileId);
             pixelFetcher.mode = FETCH_TILE_DATA_LO;
             break;
         }
         case FETCH_TILE_DATA_LO : {
             pixelFetcher.loByte = getBGTileDataLo(pixelFetcher.tileId);
-            pixelFetcher.mode = FETCH_TILE_DATA_LO;
+            pixelFetcher.mode = FETCH_TILE_DATA_HI;
             break;
         }
         case FETCH_TILE_DATA_HI : {
@@ -257,6 +259,19 @@ void clockBGPixelFetch() {
         }
         case PUSH_PIXELS : {
             // TODO
+            // printf("pixelFetcher loByte: %X, hiByte: %X\n", pixelFetcher.loByte, pixelFetcher.hiByte);
+            pixelFetcher.mode = FETCH_TILE_NO;
+            pixelFetcher.x++;
+            break;
         }
+    }
+}
+
+
+// debugging functions
+
+void displayVram() {
+    for (unsigned int i = 0; i < 10; i++) {
+        printf("vram[%d] = %X\n", i, ppu.video_ram[i]);
     }
 }

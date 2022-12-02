@@ -100,9 +100,7 @@ uint8_t CPU_clock() {
         // printRegisters();
         printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
 
-
         // fflush(stdout);
-
 
         dbg_update();
         dbg_print();
@@ -129,8 +127,6 @@ uint8_t CPU_clock() {
         //     return 220;
         // }
 
-        printf("Has executed the instruction\n");
-
         return 1;
         
 
@@ -152,13 +148,13 @@ uint8_t CPU_clock() {
 // -------------------
 void checkInterrupts() {
     // printf("Checking for interrupts\n");
-    uint8_t IE = readByte(0xffff);
-    uint8_t IF = readByte(0xff0f);
+    IE = readByte(0xffff);
+    IF = readByte(0xff0f);
 
     if (IME || halted == 1) {
         // this means that at least one interrupt has been triggered
         if (IE & IF) {
-            printf("THE CPU IS NOT HALTED\n");
+            // printf("THE CPU IS NOT HALTED\n");
             halted = 0;
         }
         // Checking if VBLANK enabled and if requested
@@ -169,6 +165,7 @@ void checkInterrupts() {
             IME = 0;
             // reset the IF flag for the interrupt
             IF ^= VBLANK_BIT; 
+            printf("The request for the VBLANK!\n");
         }
         // Checking if LCD_STAT enabled and if requested
         if ((IE & LCD_STAT_BIT) == LCD_STAT_BIT && (IF & LCD_STAT_BIT) == LCD_STAT_BIT) {
@@ -424,7 +421,7 @@ void dbg_update() {
         // printf("Writes in the dbg message\n");
         char c = readByte(0xFF01);
 
-        printf("%X", c);
+        // printf("%X", c);
 
         dbg_msg[msg_size++] = c;
 
@@ -434,6 +431,6 @@ void dbg_update() {
 
 void dbg_print() {
     if (dbg_msg[0]) {
-        // printf("DBG: %X\n", dbg_msg);
+        printf("DBG: %X\n", dbg_msg);
     }
 }

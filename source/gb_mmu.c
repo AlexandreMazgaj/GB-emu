@@ -262,7 +262,7 @@ uint16_t readWord(uint16_t addr) {
 
 // TODO finish writeByte function
 void writeByte(uint16_t addr, uint8_t val) {
-    printf("writing addr: %X, val: %X\n", addr, val);
+    // printf("writing addr: %X, val: %X\n", addr, val);
 
     // BEGIN ROM
     // should not be able to write here
@@ -279,6 +279,7 @@ void writeByte(uint16_t addr, uint8_t val) {
         }
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
+        // printf("write to the ppu addr: %X, val: %X\n", addr, val);
         ppu.video_ram[addr - 0x8000] = val;
     }
     else if (addr >= 0xa000 && addr <= 0xbfff) {

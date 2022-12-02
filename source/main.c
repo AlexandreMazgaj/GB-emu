@@ -29,7 +29,7 @@ int main() {
     MMU_init();
     PPU_init();
 
-    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
+    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Tetris.gb");
 
     if (error)
         return 9;
@@ -105,7 +105,6 @@ int main() {
     uint8_t oneByOne = 0;
 
     SDL_Event e;
-
 
 
     printf("Everything is ready, lauching emulator\n");
