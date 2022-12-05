@@ -97,7 +97,7 @@ uint8_t CPU_clock() {
 
         struct instruction instr = instructions[op];
 
-        // printRegisters();
+        printRegisters();
         printInstruction(instr);
 
 

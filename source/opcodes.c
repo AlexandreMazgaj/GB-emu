@@ -1215,6 +1215,7 @@ uint8_t exe_andaphl() {
 }
 
 uint8_t exe_andaa() {
+    and_a(registers.a);
     return 0;
 }
 

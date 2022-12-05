@@ -109,7 +109,7 @@ int main() {
 
     printf("Everything is ready, lauching emulator\n");
 
-    // printf("rom[213] = %X\n", mmu.rom[0x213]);
+    // printf("rom[0x7ff3] = %X\n", mmu.rom[0x7ff3]);
 
     // FILE *file = fopen("output_rom.txt", "w");
 

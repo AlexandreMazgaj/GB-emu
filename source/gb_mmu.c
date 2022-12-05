@@ -173,10 +173,10 @@ uint8_t loadCartridge(char* path) {
     // we check the mbc type
     uint8_t mbc_type = mmu.rom[0x0147];
     switch (mbc_type) {
-        case 0x00: mmu.mbc_type = 0; break;
-        case 0x01: mmu.mbc_type = 1; break;
-        case 0x02: mmu.mbc_type = 1; mmu.mbc_hasRam = 1; break;
-        case 0x05: mmu.mbc_type = 2; break;
+        case 0x00: mmu.mbc_type = 0; printf("No memory bank\n"); break;
+        case 0x01: mmu.mbc_type = 1; printf("Memory bank type 1\n"); break;
+        case 0x02: mmu.mbc_type = 1; printf("Memory bank type 1 with ram\n"); mmu.mbc_hasRam = 1; break;
+        case 0x05: mmu.mbc_type = 2; printf("Memory bank type 2\n"); break;
         default: printf("You should implement more memory banks\n");
                  break;
     }
@@ -184,11 +184,11 @@ uint8_t loadCartridge(char* path) {
     // we get the number of rom banks
     uint8_t romSizeType = mmu.rom[0x0148];
     switch(romSizeType) {
-        case 0x00: mmu.mbc_nbRomBank = 0; break; // no extra rom
-        case 0x01: mmu.mbc_nbRomBank = 2; break; // 32kib more --> 2 banks extra
-        case 0x02: mmu.mbc_nbRomBank = 6; break; // 96kib more --> 6 banks extra
-        case 0x03: mmu.mbc_nbRomBank = 14; break; // 224kib more --> 14 banks extra
-        case 0x04: mmu.mbc_nbRomBank = 30; break; // 480kib more --> 30 banks extra
+        case 0x00: mmu.mbc_nbRomBank = 0; printf("0 memory bank\n"); break; // no extra rom
+        case 0x01: mmu.mbc_nbRomBank = 2; printf("2 memory banks\n"); break; // 32kib more --> 2 banks extra
+        case 0x02: mmu.mbc_nbRomBank = 6; printf("6 memory banks\n"); break; // 96kib more --> 6 banks extra
+        case 0x03: mmu.mbc_nbRomBank = 14; printf("14 memory banks\n"); break; // 224kib more --> 14 banks extra
+        case 0x04: mmu.mbc_nbRomBank = 30; printf("30 memory banks\n"); break; // 480kib more --> 30 banks extra
     }
     return 0;
 }
@@ -216,6 +216,9 @@ uint8_t readByte(uint16_t addr) {
         if (mmu.mbc_type == 1) return MBC1_readRom(addr);
         if (mmu.mbc_type == 2) return MBC2_readRom(addr);
         if (mmu.mbc_type == 3) return MBC3_readRom(addr);
+
+        // if no memory bank, then we just read from rom with no switch
+        return mmu.rom[addr];
     }
     else if (addr >= 0x8000 && addr <= 0x9fff) {
         return ppu.video_ram[addr - 0x8000];
