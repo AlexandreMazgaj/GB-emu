@@ -19,20 +19,22 @@ void MMU_init() {
     serial.control = 0x0;
     serial.data = 0x0;
 
+    srand(2022);
+
     for (int i = 0; i < MAX_CARTRIDGE_SIZE; i++) {
         mmu.rom[i] = 0;
     }
 
     for (int i = 0; i < RAM_SIZE; i++) {
-        mmu.external_ram[i] = 0;
+        mmu.external_ram[i] = (uint8_t)rand()%256;
     }
 
     for (int i = 0; i < HIGH_RAM_SIZE; i++) {
-        mmu.high_ram[i] = 0;
+        mmu.high_ram[i] = (uint8_t)rand()%256;
     }
 
     for (int i =0; i < MAX_RAM_SIZE; i++) {
-        mmu.external_ram[i] = 0;
+        mmu.external_ram[i] = (uint8_t)rand()%256;
     }
 }
 

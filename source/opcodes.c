@@ -590,6 +590,7 @@ uint8_t exe_ldspd16() {
 }
 
 uint8_t exe_ldphlda() {
+    // printf("register a: %X, register hl: %X\n",registers.a, registers.hl);
     writeByte(registers.hl--, registers.a);
     return 0;
 }

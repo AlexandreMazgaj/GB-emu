@@ -43,7 +43,8 @@ void PPU_init() {
 
 // There are 144 visible scanlines
 void PPU_clock() {
-    ppu.ticks += cycle;
+    // ppu.ticks += cycle;
+    ppu.ticks++;
     // displayVram();
     // printf("ppu ticks: %d\n", ppu.ticks);
     // 4 modes
