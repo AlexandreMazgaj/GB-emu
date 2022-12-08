@@ -27,7 +27,7 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"DEC D", &exe_decd, 4, 0},                         // 5
     {"LD D, 0x%X", &exe_lddd8, 8, 1},                     // 6
     {"RLA", &exe_rla, 4, 0},                            // 7
-    {"JR i8", &exe_jri8, 12, 1},                        // 8
+    {"JR 0x%X", &exe_jri8, 12, 1},                        // 8
     {"ADD HL, DE", &exe_addhlde, 8, 0},                 // 9
     {"LD A, (DE)", &exe_ldapde, 8, 0},                  // a
     {"DEC DE", &exe_decde, 8, 0},                       // b
@@ -527,7 +527,7 @@ uint8_t exe_daa() {
 
 uint8_t exe_jrzr8() {
     if (GETZFLAG()) {
-        registers.pc += (int8_t)readByte(registers.pc + 1); // we do not need to remove 1 because the offset is added to the address of the next operation
+        registers.pc += (int8_t)readByte(registers.pc + 1) + 1; // we do not need to remove 1 because the offset is added to the address of the next operation
         return 4; 
     }
     registers.pc++;
@@ -1301,6 +1301,7 @@ uint8_t exe_oraphl() {
 }
 
 uint8_t exe_oraa() {
+    or_a(registers.a);
     return 0;
 }
 

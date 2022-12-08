@@ -13,10 +13,10 @@ char dbg_msg[1024];
 int msg_size;
 
 void CPU_init() {
-    // registers.af = 0x01b0;
-    registers.af = 0x1180;
-    SETCFLAG(1);
-    SETHFLAG(1);
+    registers.af = 0x01b0;
+    // registers.af = 0x1180;
+    // SETCFLAG(1);
+    // SETHFLAG(1);
     registers.bc = 0x0013;
     // registers.bc = 0x0000;
     registers.de = 0x00d8;

@@ -6,7 +6,7 @@
 struct mmu {
     uint8_t rom[MAX_CARTRIDGE_SIZE];
 
-    uint8_t external_ram[MAX_RAM_SIZE];
+    uint8_t external_ram[RAM_SIZE];
     uint8_t work_ram[RAM_SIZE];
     uint8_t high_ram[HIGH_RAM_SIZE];
 

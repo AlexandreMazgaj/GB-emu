@@ -118,6 +118,7 @@ void writePPU(uint16_t addr, uint8_t val) {
     if (addr == 0xff43) { ppu.scrollX = val; return; }
     // if (addr == 0xff44) { ppu.scanline = val; return; } read only
     if (addr == 0xff45) { ppu.LYC = val; return; }
+    // 0xff46 is the oam dma transfer, this is taken care of in the mmu
     if (addr == 0xff47) {
         ppu.bg_palValue = val;
         for (int colorIndex = 0; colorIndex < 4; colorIndex++) {

@@ -29,12 +29,12 @@ void MMU_init() {
         mmu.external_ram[i] = (uint8_t)rand()%256;
     }
 
-    for (int i = 0; i < HIGH_RAM_SIZE; i++) {
-        mmu.high_ram[i] = (uint8_t)rand()%256;
+    for (int i = 0; i < RAM_SIZE; i++) {
+        mmu.work_ram[i] = (uint8_t)rand()%256;
     }
 
-    for (int i =0; i < MAX_RAM_SIZE; i++) {
-        mmu.external_ram[i] = (uint8_t)rand()%256;
+    for (int i = 0; i < HIGH_RAM_SIZE; i++) {
+        mmu.high_ram[i] = (uint8_t)rand()%256;
     }
 }
 
@@ -317,10 +317,12 @@ void writeByte(uint16_t addr, uint8_t val) {
     else if (addr >= 0xff40 && addr <= 0xff69) {
         // OAM DMA
         if (addr == 0xff46) {
-            // oam_dma(val);
+            printf("DOING A DMA TRANSFER\n");
+            oam_dma(val);
         }
         else {
-            // writePPU(addr, val);
+            printf("WRITING TO THE PPU\n");
+            writePPU(addr, val);
         }
     }
     else if (addr >= 0xff80 && addr <= 0xfffe) {

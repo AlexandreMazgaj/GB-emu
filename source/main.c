@@ -29,7 +29,7 @@ int main() {
     MMU_init();
     PPU_init();
 
-    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Tetris.gb");
+    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
 
     if (error)
         return 9;
