@@ -149,6 +149,11 @@ void rotateRight(uint8_t* reg);
 void rotateLeftCarry(uint8_t* reg);
 void rotateRightCarry(uint8_t* reg);
 
+void shiftLeft(uint8_t* reg);
+void shiftRight(uint8_t* reg);
+
+void swap(uint8_t* reg);
+void bit(uint8_t* reg, uint8_t bit)
 
 
 // Debug functions

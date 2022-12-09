@@ -300,6 +300,10 @@ void dec8bReg(uint8_t* reg) {
 }
 
 
+// ---------------
+// LOGIC FUNCTIONS
+// ---------------
+
 void and_a(uint8_t reg) {
     registers.a &= reg;
 
@@ -341,38 +345,76 @@ void rotateLeft(uint8_t* reg) {
     uint8_t hiBit = ((*reg) >> 7) & 1;
     SETNFLAG(0);
     SETHFLAG(0);
-    SETZFLAG(0);
     (*reg) = ((*reg) << 1) | hiBit;
     SETCFLAG((*reg) & 1);
+    SETZFLAG((*reg) == 0);
 }
 
 void rotateRight(uint8_t* reg) {
     uint8_t loBit = (*reg) & 1;
     SETNFLAG(0);
     SETHFLAG(0);
-    SETZFLAG(0);
     (*reg) = ((*reg) >> 1) | (loBit << 7);
     SETCFLAG(((*reg) & 0x80) >> 7);
+    SETZFLAG((*reg) == 0);
 }
 
 void rotateLeftCarry(uint8_t* reg) {
     SETNFLAG(0);
     SETHFLAG(0);
-    SETZFLAG(0);
     uint8_t hiBit = ((*reg) >> 7) & 1;
     (*reg) = ((*reg) << 1) | GETCFLAG();
     SETCFLAG(hiBit);
+    SETZFLAG((*reg) == 0);
 }
 
 void rotateRightCarry(uint8_t* reg) {
     uint8_t loBit = (*reg) & 1;
     SETNFLAG(0);
     SETHFLAG(0);
-    SETZFLAG(0);
     (*reg) = ((*reg) >> 1) | (GETCFLAG() << 7);
     SETCFLAG(loBit);
+    SETZFLAG((*reg) == 0);
 }
 
+void shiftLeft(uint8_t* reg) {
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETCFLAG((*reg) & 0x80 == 0x80);
+    (*reg) = ((*reg) << 1);
+    SETZFLAG((*reg) == 0);
+}
+
+void shiftRightMSB(uint8_t* reg) {
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETCFLAG((*reg) & 0x01 == 0x01);
+    (*reg) = ((*reg) >> 1) | ((*reg) & 0x80);
+    SETZFLAG((*reg) == 0);
+}
+
+void shiftRight(uint8_t* reg) {
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETCFLAG((*reg) & 0x01 == 0x01);
+    (*reg) = ((*reg) >> 1);
+    SETZFLAG((*reg) == 0);
+}
+
+void swap(uint8_t* reg) {
+    SETNFLAG(0);
+    SETHFLAG(0);
+    SETCFLAG(0);
+    SETZFLAG((*reg) == 0);
+    uint8_t lowerBits = (*reg) & 0x0f;
+    (*reg) = ((*reg) >> 4) | (lowerBits << 4);
+}
+
+void bit(uint8_t* reg, uint8_t bit) {
+    SETNFLAG(0);
+    SETHFLAG(1);
+    SETZFLAG((((*reg) >> bit) & 1) == 0);
+}
 
 
 // ---------------

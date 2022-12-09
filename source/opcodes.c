@@ -328,6 +328,7 @@ uint8_t exe_ldbd8() {
 
 uint8_t exe_rlca() {
     rotateLeft(&registers.a);
+    SETZFLAG(0);
     return 0;
 }
 
@@ -369,6 +370,7 @@ uint8_t exe_ldcd8() {
 
 uint8_t exe_rrca() {
     rotateRight(&registers.a);
+    SETZFLAG(0);
     return 0;
 }
 
@@ -415,6 +417,7 @@ uint8_t exe_lddd8() {
 
 uint8_t exe_rla() {
     rotateLeftCarry(&registers.a);
+    SETZFLAG(0);
     return 0;
 }
 
@@ -458,6 +461,7 @@ uint8_t exe_lded8() {
 
 uint8_t exe_rra() {
     rotateRightCarry(&registers.a);
+    SETZFLAG(0);
     return 0;
 }
 
@@ -1689,5 +1693,397 @@ uint8_t exe_cpad8() {
 
 uint8_t exe_rst38h() {
     registers.pc = 0x38 - 1;
+    return 0;
+}
+
+
+
+
+/* CP PREFIX OPCODES*/
+
+// 0x0
+uint8_t exe_cb_rlcb() {
+    rotateLeft(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_rlcc() {
+    rotateLeft(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_rlcd() {
+    rotateLeft(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_rlce() {
+    rotateLeft(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_rlch() {
+    rotateLeft(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_rlcl() {
+    rotateLeft(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_rlcphl() {
+    uint8_t temp = readByte(registers.hl);
+    rotateLeft(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_rlca() {
+    rotateLeft(&registers.a);
+    return 0;
+}
+
+uint8_t exe_cb_rrcb() {
+    rotateRight(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_rrcc() {
+    rotateRight(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_rrcd() {
+    rotateRight(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_rrce() {
+    rotateRight(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_rrch() {
+    rotateRight(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_rrcl() {
+    rotateRight(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_rrcphl() {
+    uint8_t temp = readByte(registers.hl);
+    rotateRight(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_rrca() {
+    rotateRight(&registers.a);
+    return 0;
+}
+
+
+// 0x1
+uint8_t exe_cb_rlb() {
+    rotateLeftCarry(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_rlc() {
+    rotateLeftCarry(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_rld() {
+    rotateLeftCarry(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_rle() {
+    rotateLeftCarry(&registers.e);
+    return 0;
+}
+uint8_t exe_cb_rlh() {
+    rotateLeftCarry(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_rll() {
+    rotateLeftCarry(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_rlphl() {
+    uint8_t temp = readByte(registers.hl);
+    rotateLeftCarry(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_rla() {
+    rotateLeftCarry(&registers.a);
+    return 0;
+}
+
+uint8_t exe_cb_rrb() {
+    rotateRightCarry(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_rrc() {
+    rotateRightCarry(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_rrd() {
+    rotateRightCarry(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_rre() {
+    rotateRightCarry(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_rrh() {
+    rotateRightCarry(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_rrl() {
+    rotateRightCarry(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_rrphl() {
+    uint8_t temp = readByte(registers.hl);
+    rotateRightCarry(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_rra() {
+    rotateRightCarry(&registers.a);
+    return 0;
+}
+
+
+// 0x2
+uint8_t exe_cb_slab() {
+    shiftLeft(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_slac() {
+    shiftLeft(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_slad() {
+    shiftLeft(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_slae() {
+    shiftLeft(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_slah() {
+    shiftLeft(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_slal() {
+    shiftLeft(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_slaphl() {
+    uint8_t temp = readByte(registers.hl);
+    shiftLeft(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_slaa() {
+    shiftLeft(&registers.a);
+    return 0;
+}
+
+uint8_t exe_cb_srab() {
+    shiftRightMSB(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_srac() {
+    shiftRightMSB(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_srad() {
+    shiftRightMSB(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_srae() {
+    shiftRightMSB(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_srah() {
+    shiftRightMSB(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_sral() {
+    shiftRightMSB(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_sraphl() {
+    uint8_t temp = readByte(registers.hl);
+    shiftRightMSB(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_sraa() {
+    shiftRightMSB(&registers.l);
+    return 0;
+}
+
+
+// 0x3
+uint8_t exe_cb_swapb() {
+    swap(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_swapc() {
+    swap(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_swapd() {
+    swap(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_swape() {
+    swap(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_swaph() {
+    swap(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_swapl() {
+    swap(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_swapphl() {
+    uint8_t temp = readByte(registers.hl);
+    swap(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_swapa() {
+    swap(&registers.a);
+    return 0;
+}
+
+uint8_t exe_cb_srlb() {
+    shiftRight(&registers.b);
+    return 0;
+}
+
+uint8_t exe_cb_srlc() {
+    shiftRight(&registers.c);
+    return 0;
+}
+
+uint8_t exe_cb_srld() {
+    shiftRight(&registers.d);
+    return 0;
+}
+
+uint8_t exe_cb_srle() {
+    shiftRight(&registers.e);
+    return 0;
+}
+
+uint8_t exe_cb_srlh() {
+    shiftRight(&registers.h);
+    return 0;
+}
+
+uint8_t exe_cb_srll() {
+    shiftRight(&registers.l);
+    return 0;
+}
+
+uint8_t exe_cb_srlphl() {
+    uint8_t temp = readByte(registers.hl);
+    shiftRight(&temp);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_srla() {
+    shiftRight(&registers.a);
+    return 0;
+}
+
+
+// 0x4
+
+uint8_t exe_cb_bit0b() {
+    bit(&registers.b, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit0c() {
+    bit(&registers.c, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit0d() {
+    bit(&registers.d, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit0e() {
+    bit(&registers.e, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit0h() {
+    bit(&registers.h, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit0l() {
+    bit(&registers.l, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit0phl() {
+    uint8_t temp = readByte(registers.hl);
+    bit(&temp, 0);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit0a() {
+    bit(&registers.a, 0);
     return 0;
 }

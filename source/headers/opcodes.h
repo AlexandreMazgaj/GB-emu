@@ -542,3 +542,92 @@ uint8_t exe_ei();
 uint8_t exe_cpad8();
 
 uint8_t exe_rst38h();
+
+
+
+/* CP PREFIX OPCODES */
+// 0x0
+uint8_t exe_cb_rlcb();
+uint8_t exe_cb_rlcc();
+uint8_t exe_cb_rlcd();
+uint8_t exe_cb_rlce();
+uint8_t exe_cb_rlch();
+uint8_t exe_cb_rlcl();
+uint8_t exe_cb_rlcphl();
+uint8_t exe_cb_rlca();
+
+uint8_t exe_cb_rrcb();
+uint8_t exe_cb_rrcc();
+uint8_t exe_cb_rrcd();
+uint8_t exe_cb_rrce();
+uint8_t exe_cb_rrch();
+uint8_t exe_cb_rrcl();
+uint8_t exe_cb_rrcphl();
+uint8_t exe_cb_rrca();
+
+// 0x1
+uint8_t exe_cb_rlb();
+uint8_t exe_cb_rlc();
+uint8_t exe_cb_rld();
+uint8_t exe_cb_rle();
+uint8_t exe_cb_rlh();
+uint8_t exe_cb_rll();
+uint8_t exe_cb_rlphl();
+uint8_t exe_cb_rla();
+
+uint8_t exe_cb_rrb();
+uint8_t exe_cb_rrc();
+uint8_t exe_cb_rrd();
+uint8_t exe_cb_rre();
+uint8_t exe_cb_rrh();
+uint8_t exe_cb_rrl();
+uint8_t exe_cb_rrphl();
+uint8_t exe_cb_rra();
+
+// 0x2
+uint8_t exe_cb_slab();
+uint8_t exe_cb_slac();
+uint8_t exe_cb_slad();
+uint8_t exe_cb_slae();
+uint8_t exe_cb_slah();
+uint8_t exe_cb_slal();
+uint8_t exe_cb_slaphl();
+uint8_t exe_cb_slaa();
+
+uint8_t exe_cb_srab();
+uint8_t exe_cb_srac();
+uint8_t exe_cb_srad();
+uint8_t exe_cb_srae();
+uint8_t exe_cb_srah();
+uint8_t exe_cb_sral();
+uint8_t exe_cb_sraphl();
+uint8_t exe_cb_sraa();
+
+// 0x3
+uint8_t exe_cb_swapb();
+uint8_t exe_cb_swapc();
+uint8_t exe_cb_swapd();
+uint8_t exe_cb_swape();
+uint8_t exe_cb_swaph();
+uint8_t exe_cb_swapl();
+uint8_t exe_cb_swapphl();
+uint8_t exe_cb_swapa();
+
+uint8_t exe_cb_srlb();
+uint8_t exe_cb_srlc();
+uint8_t exe_cb_srld();
+uint8_t exe_cb_srle();
+uint8_t exe_cb_srlh();
+uint8_t exe_cb_srll();
+uint8_t exe_cb_srlphl();
+uint8_t exe_cb_srla();
+
+// 0x4
+uint8_t exe_cb_bit0b();
+uint8_t exe_cb_bit0c();
+uint8_t exe_cb_bit0d();
+uint8_t exe_cb_bit0e();
+uint8_t exe_cb_bit0h();
+uint8_t exe_cb_bit0l();
+uint8_t exe_cb_bit0phl();
+uint8_t exe_cb_bit0a();
