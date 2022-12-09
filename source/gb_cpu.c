@@ -442,14 +442,6 @@ void set(uint8_t* reg, uint8_t bit) {
 // DEBUG FUNCTIONS
 // ---------------
 
-void printRegFlags() {
-    printf("Z flag: %X\n", GETZFLAG());
-    printf("N flag: %X\n", GETNFLAG());
-    printf("H flag: %X\n", GETHFlAG());
-    printf("C flag: %X\n", GETCFLAG());
-}
-
-
 void printBinary(uint8_t hex) {
     printf("%x", (hex >> 7) & 1);
     printf("%x", (hex >> 6) & 1);

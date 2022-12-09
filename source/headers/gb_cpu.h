@@ -162,7 +162,6 @@ void set(uint8_t* reg, uint8_t bit);
 
 
 // Debug functions
-void printRegFlags();
 void printBinary(uint8_t hex);
 void printRegisters();
 void printInstruction(struct instruction intr);
