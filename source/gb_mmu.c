@@ -237,6 +237,7 @@ uint8_t readByte(uint16_t addr) {
     // 0xff00 controller
     // 0xff01 - 02 communication
     else if (addr == 0xff01) {
+        printf("Returning %X from serial\n", serial.data);
         return serial.data;
     }
     else if (addr == 0xff02) {
@@ -301,6 +302,7 @@ void writeByte(uint16_t addr, uint8_t val) {
     // 0xff00 controller
     // 0xff01 - 02 communication
     else if (addr == 0xff01) {
+        printf("Writing %X to serial\n", val);
         serial.data = val;
     }
     else if (addr == 0xff02) {
@@ -308,7 +310,7 @@ void writeByte(uint16_t addr, uint8_t val) {
 
         serial.control = val;
         if (serial.control == 0x81) {
-            serial.data = val;
+            // serial.data = val;
             serial.interrupt = 0x8;
         }
     }
@@ -317,11 +319,11 @@ void writeByte(uint16_t addr, uint8_t val) {
     else if (addr >= 0xff40 && addr <= 0xff69) {
         // OAM DMA
         if (addr == 0xff46) {
-            printf("DOING A DMA TRANSFER\n");
+            // printf("DOING A DMA TRANSFER\n");
             oam_dma(val);
         }
         else {
-            printf("WRITING TO THE PPU\n");
+            // printf("WRITING TO THE PPU\n");
             writePPU(addr, val);
         }
     }

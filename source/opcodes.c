@@ -1,4 +1,5 @@
 #include "headers/opcodes.h"
+#include <stdio.h>
 
 const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     // 0x0
@@ -273,6 +274,282 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"CP A, 0x%X", &exe_cpad8, 8, 1},
     {"RST 38H", &exe_rst38h, 16, 0}
+};
+
+
+const struct instruction cb_instructions[INSTRUCTIONS_SIZE] = {
+    // 0x0
+    {"RLC B", &exe_cb_rlcb, 8, 0},
+    {"RLC C", &exe_cb_rlcc, 8, 0},
+    {"RLC D", &exe_cb_rlcd, 8, 0},
+    {"RLC E", &exe_cb_rlce, 8, 0},
+    {"RLC H", &exe_cb_rlch, 8, 0},
+    {"RLC L", &exe_cb_rlcl, 8, 0},
+    {"RLC (HL)", &exe_cb_rlcphl, 16, 0},
+    {"RLC A", &exe_cb_rlca, 8, 0},
+    {"RRC B", &exe_cb_rrcb, 8, 0},
+    {"RRC C", &exe_cb_rrcc, 8, 0},
+    {"RRC D", &exe_cb_rrcd, 8, 0},
+    {"RRC E", &exe_cb_rrce, 8, 0},
+    {"RRC H", &exe_cb_rrch, 8, 0},
+    {"RRC L", &exe_cb_rrcl, 8, 0},
+    {"RRC (HL)", &exe_cb_rrcphl, 16, 0},
+    {"RRC A", &exe_cb_rrca, 8, 0},
+    // 0x1
+    {"RL B", &exe_cb_rlb, 8, 0},
+    {"RL C", &exe_cb_rlc, 8, 0},
+    {"RL D", &exe_cb_rld, 8, 0},
+    {"RL E", &exe_cb_rle, 8, 0},
+    {"RL H", &exe_cb_rlh, 8, 0},
+    {"RL L", &exe_cb_rll, 8, 0},
+    {"RL (HL)", &exe_cb_rlphl, 16, 0},
+    {"RL A", &exe_cb_rla, 8, 0},
+    {"RR B", &exe_cb_rrb, 8, 0},
+    {"RR C", &exe_cb_rrc, 8, 0},
+    {"RR D", &exe_cb_rrd, 8, 0},
+    {"RR E", &exe_cb_rre, 8, 0},
+    {"RR H", &exe_cb_rrh, 8, 0},
+    {"RR L", &exe_cb_rrl, 8, 0},
+    {"RR (HL)", &exe_cb_rrphl, 16, 0},
+    {"RR A", &exe_cb_rra, 8, 0},
+    // 0x2
+    {"SLA B", &exe_cb_slab, 8, 0},
+    {"SLA C", &exe_cb_slac, 8, 0},
+    {"SLA D", &exe_cb_slad, 8, 0},
+    {"SLA E", &exe_cb_slae, 8, 0},
+    {"SLA H", &exe_cb_slah, 8, 0},
+    {"SLA L", &exe_cb_slal, 8, 0},
+    {"SLA (HL)", &exe_cb_slaphl, 16, 0},
+    {"SLA A", &exe_cb_slaa, 8, 0},
+    {"SRA B", &exe_cb_srab, 8, 0},
+    {"SRA C", &exe_cb_srac, 8, 0},
+    {"SRA D", &exe_cb_srad, 8, 0},
+    {"SRA E", &exe_cb_srae, 8, 0},
+    {"SRA H", &exe_cb_srah, 8, 0},
+    {"SRA L", &exe_cb_sral, 8, 0},
+    {"SRA (HL)", &exe_cb_sraphl, 16, 0},
+    {"SRA A", &exe_cb_sraa, 8, 0},
+    // 0x3
+    {"SWAP B", &exe_cb_swapb, 8, 0},
+    {"SWAP C", &exe_cb_swapc, 8, 0},
+    {"SWAP D", &exe_cb_swapd, 8, 0},
+    {"SWAP E", &exe_cb_swape, 8, 0},
+    {"SWAP H", &exe_cb_swaph, 8, 0},
+    {"SWAP L", &exe_cb_swapl, 8, 0},
+    {"SWAP (HL)", &exe_cb_swapphl, 16, 0},
+    {"SWAP A", &exe_cb_swapa, 8, 0},
+    {"SRL B", &exe_cb_srlb, 8, 0},
+    {"SRL C", &exe_cb_srlc, 8, 0},
+    {"SRL D", &exe_cb_srld, 8, 0},
+    {"SRL E", &exe_cb_srle, 8, 0},
+    {"SRL H", &exe_cb_srlh, 8, 0},
+    {"SRL L", &exe_cb_srll, 8, 0},
+    {"SRL (HL)", &exe_cb_srlphl, 16, 0},
+    {"SRL A", &exe_cb_srla, 8, 0},
+    // 0x4
+    {"BIT0 B", &exe_cb_bit0b, 8, 0},
+    {"BIT0 C", &exe_cb_bit0c, 8, 0},
+    {"BIT0 D", &exe_cb_bit0d, 8, 0},
+    {"BIT0 E", &exe_cb_bit0e, 8, 0},
+    {"BIT0 H", &exe_cb_bit0h, 8, 0},
+    {"BIT0 L", &exe_cb_bit0l, 8, 0},
+    {"BIT0 (HL)", &exe_cb_bit0phl, 12, 0},
+    {"BIT0 A", &exe_cb_bit0a, 8, 0},
+    {"BIT1 B", &exe_cb_bit1b, 8, 0},
+    {"BIT1 C", &exe_cb_bit1c, 8, 0},
+    {"BIT1 D", &exe_cb_bit1d, 8, 0},
+    {"BIT1 E", &exe_cb_bit1e, 8, 0},
+    {"BIT1 H", &exe_cb_bit1h, 8, 0},
+    {"BIT1 L", &exe_cb_bit1l, 8, 0},
+    {"BIT1 (HL)", &exe_cb_bit1phl, 12, 0},
+    {"BIT1 A", &exe_cb_bit1a, 8, 0},
+    // 0x5
+    {"BIT2 B", &exe_cb_bit2b, 8, 0},
+    {"BIT2 C", &exe_cb_bit2c, 8, 0},
+    {"BIT2 D", &exe_cb_bit2d, 8, 0},
+    {"BIT2 E", &exe_cb_bit2e, 8, 0},
+    {"BIT2 H", &exe_cb_bit2h, 8, 0},
+    {"BIT2 L", &exe_cb_bit2l, 8, 0},
+    {"BIT2 (HL)", &exe_cb_bit2phl, 12, 0},
+    {"BIT2 A", &exe_cb_bit2a, 8, 0},
+    {"BIT3 B", &exe_cb_bit3b, 8, 0},
+    {"BIT3 C", &exe_cb_bit3c, 8, 0},
+    {"BIT3 D", &exe_cb_bit3d, 8, 0},
+    {"BIT3 E", &exe_cb_bit3e, 8, 0},
+    {"BIT3 H", &exe_cb_bit3h, 8, 0},
+    {"BIT3 L", &exe_cb_bit3l, 8, 0},
+    {"BIT3 (HL)", &exe_cb_bit3phl, 12, 0},
+    {"BIT3 A", &exe_cb_bit3a, 8, 0},
+    // 0x6
+    {"BIT4 B", &exe_cb_bit4b, 8, 0},
+    {"BIT4 C", &exe_cb_bit4c, 8, 0},
+    {"BIT4 D", &exe_cb_bit4d, 8, 0},
+    {"BIT4 E", &exe_cb_bit4e, 8, 0},
+    {"BIT4 H", &exe_cb_bit4h, 8, 0},
+    {"BIT4 L", &exe_cb_bit4l, 8, 0},
+    {"BIT4 (HL)", &exe_cb_bit4phl, 12, 0},
+    {"BIT4 A", &exe_cb_bit4a, 8, 0},
+    {"BIT5 B", &exe_cb_bit5b, 8, 0},
+    {"BIT5 C", &exe_cb_bit5c, 8, 0},
+    {"BIT5 D", &exe_cb_bit5d, 8, 0},
+    {"BIT5 E", &exe_cb_bit5e, 8, 0},
+    {"BIT5 H", &exe_cb_bit5h, 8, 0},
+    {"BIT5 L", &exe_cb_bit5l, 8, 0},
+    {"BIT5 (HL)", &exe_cb_bit5phl, 12, 0},
+    {"BIT5 A", &exe_cb_bit5a, 8, 0},
+    // 0x7
+    {"BIT6 B", &exe_cb_bit6b, 8, 0},
+    {"BIT6 C", &exe_cb_bit6c, 8, 0},
+    {"BIT6 D", &exe_cb_bit6d, 8, 0},
+    {"BIT6 E", &exe_cb_bit6e, 8, 0},
+    {"BIT6 H", &exe_cb_bit6h, 8, 0},
+    {"BIT6 L", &exe_cb_bit6l, 8, 0},
+    {"BIT6 (HL)", &exe_cb_bit6phl, 12, 0},
+    {"BIT6 A", &exe_cb_bit6a, 8, 0},
+    {"BIT7 B", &exe_cb_bit7b, 8, 0},
+    {"BIT7 C", &exe_cb_bit7c, 8, 0},
+    {"BIT7 D", &exe_cb_bit7d, 8, 0},
+    {"BIT7 E", &exe_cb_bit7e, 8, 0},
+    {"BIT7 H", &exe_cb_bit7h, 8, 0},
+    {"BIT7 L", &exe_cb_bit7l, 8, 0},
+    {"BIT7 (HL)", &exe_cb_bit7phl, 12, 0},
+    {"BIT7 A", &exe_cb_bit7a, 8, 0},
+    // 0x8
+    {"RES0 B", &exe_cb_res0b, 8, 0},
+    {"RES0 C", &exe_cb_res0c, 8, 0},
+    {"RES0 D", &exe_cb_res0d, 8, 0},
+    {"RES0 E", &exe_cb_res0e, 8, 0},
+    {"RES0 H", &exe_cb_res0h, 8, 0},
+    {"RES0 L", &exe_cb_res0l, 8, 0},
+    {"RES0 (HL)", &exe_cb_res0phl, 16, 0},
+    {"RES0 A", &exe_cb_res0a, 8, 0},
+    {"RES1 B", &exe_cb_res1b, 8, 0},
+    {"RES1 C", &exe_cb_res1c, 8, 0},
+    {"RES1 D", &exe_cb_res1d, 8, 0},
+    {"RES1 E", &exe_cb_res1e, 8, 0},
+    {"RES1 H", &exe_cb_res1h, 8, 0},
+    {"RES1 L", &exe_cb_res1l, 8, 0},
+    {"RES1 (HL)", &exe_cb_res1phl, 16, 0},
+    {"RES1 A", &exe_cb_res1a, 8, 0},
+    // 0x9
+    {"RES2 B", &exe_cb_res2b, 8, 0},
+    {"RES2 C", &exe_cb_res2c, 8, 0},
+    {"RES2 D", &exe_cb_res2d, 8, 0},
+    {"RES2 E", &exe_cb_res2e, 8, 0},
+    {"RES2 H", &exe_cb_res2h, 8, 0},
+    {"RES2 L", &exe_cb_res2l, 8, 0},
+    {"RES2 (HL)", &exe_cb_res2phl, 16, 0},
+    {"RES2 A", &exe_cb_res2a, 8, 0},
+    {"RES3 B", &exe_cb_res3b, 8, 0},
+    {"RES3 C", &exe_cb_res3c, 8, 0},
+    {"RES3 D", &exe_cb_res3d, 8, 0},
+    {"RES3 E", &exe_cb_res3e, 8, 0},
+    {"RES3 H", &exe_cb_res3h, 8, 0},
+    {"RES3 L", &exe_cb_res3l, 8, 0},
+    {"RES3 (HL)", &exe_cb_res3phl, 16, 0},
+    {"RES3 A", &exe_cb_res3a, 8, 0},
+    // 0xA
+    {"RES4 B", &exe_cb_res4b, 8, 0},
+    {"RES4 C", &exe_cb_res4c, 8, 0},
+    {"RES4 D", &exe_cb_res4d, 8, 0},
+    {"RES4 E", &exe_cb_res4e, 8, 0},
+    {"RES4 H", &exe_cb_res4h, 8, 0},
+    {"RES4 L", &exe_cb_res4l, 8, 0},
+    {"RES4 (HL)", &exe_cb_res4phl, 16, 0},
+    {"RES4 A", &exe_cb_res4a, 8, 0},
+    {"RES5 B", &exe_cb_res5b, 8, 0},
+    {"RES5 C", &exe_cb_res5c, 8, 0},
+    {"RES5 D", &exe_cb_res5d, 8, 0},
+    {"RES5 E", &exe_cb_res5e, 8, 0},
+    {"RES5 H", &exe_cb_res5h, 8, 0},
+    {"RES5 L", &exe_cb_res5l, 8, 0},
+    {"RES5 (HL)", &exe_cb_res5phl, 16, 0},
+    {"RES5 A", &exe_cb_res5a, 8, 0},
+    // 0xB
+    {"RES6 B", &exe_cb_res6b, 8, 0},
+    {"RES6 C", &exe_cb_res6c, 8, 0},
+    {"RES6 D", &exe_cb_res6d, 8, 0},
+    {"RES6 E", &exe_cb_res6e, 8, 0},
+    {"RES6 H", &exe_cb_res6h, 8, 0},
+    {"RES6 L", &exe_cb_res6l, 8, 0},
+    {"RES6 (HL)", &exe_cb_res6phl, 16, 0},
+    {"RES6 A", &exe_cb_res6a, 8, 0},
+    {"RES7 B", &exe_cb_res7b, 8, 0},
+    {"RES7 C", &exe_cb_res7c, 8, 0},
+    {"RES7 D", &exe_cb_res7d, 8, 0},
+    {"RES7 E", &exe_cb_res7e, 8, 0},
+    {"RES7 H", &exe_cb_res7h, 8, 0},
+    {"RES7 L", &exe_cb_res7l, 8, 0},
+    {"RES7 (HL)", &exe_cb_res7phl, 16, 0},
+    {"RES7 A", &exe_cb_res7a, 8, 0},
+    // 0xC
+    {"SET0 B", &exe_cb_set0b, 8, 0},
+    {"SET0 C", &exe_cb_set0c, 8, 0},
+    {"SET0 D", &exe_cb_set0d, 8, 0},
+    {"SET0 E", &exe_cb_set0e, 8, 0},
+    {"SET0 H", &exe_cb_set0h, 8, 0},
+    {"SET0 L", &exe_cb_set0l, 8, 0},
+    {"SET0 (HL)", &exe_cb_set0phl, 16, 0},
+    {"SET0 A", &exe_cb_set0a, 8, 0},
+    {"SET1 B", &exe_cb_set1b, 8, 0},
+    {"SET1 C", &exe_cb_set1c, 8, 0},
+    {"SET1 D", &exe_cb_set1d, 8, 0},
+    {"SET1 E", &exe_cb_set1e, 8, 0},
+    {"SET1 H", &exe_cb_set1h, 8, 0},
+    {"SET1 L", &exe_cb_set1l, 8, 0},
+    {"SET1 (HL)", &exe_cb_set1phl, 16, 0},
+    {"SET1 A", &exe_cb_set1a, 8, 0},
+    // 0xD
+    {"SET2 B", &exe_cb_set2b, 8, 0},
+    {"SET2 C", &exe_cb_set2c, 8, 0},
+    {"SET2 D", &exe_cb_set2d, 8, 0},
+    {"SET2 E", &exe_cb_set2e, 8, 0},
+    {"SET2 H", &exe_cb_set2h, 8, 0},
+    {"SET2 L", &exe_cb_set2l, 8, 0},
+    {"SET2 (HL)", &exe_cb_set2phl, 16, 0},
+    {"SET2 A", &exe_cb_set2a, 8, 0},
+    {"SET3 B", &exe_cb_set3b, 8, 0},
+    {"SET3 C", &exe_cb_set3c, 8, 0},
+    {"SET3 D", &exe_cb_set3d, 8, 0},
+    {"SET3 E", &exe_cb_set3e, 8, 0},
+    {"SET3 H", &exe_cb_set3h, 8, 0},
+    {"SET3 L", &exe_cb_set3l, 8, 0},
+    {"SET3 (HL)", &exe_cb_set3phl, 16, 0},
+    {"SET3 A", &exe_cb_set3a, 8, 0},
+    // 0xE
+    {"SET4 B", &exe_cb_set4b, 8, 0},
+    {"SET4 C", &exe_cb_set4c, 8, 0},
+    {"SET4 D", &exe_cb_set4d, 8, 0},
+    {"SET4 E", &exe_cb_set4e, 8, 0},
+    {"SET4 H", &exe_cb_set4h, 8, 0},
+    {"SET4 L", &exe_cb_set4l, 8, 0},
+    {"SET4 (HL)", &exe_cb_set4phl, 16, 0},
+    {"SET4 A", &exe_cb_set4a, 8, 0},
+    {"SET5 B", &exe_cb_set5b, 8, 0},
+    {"SET5 C", &exe_cb_set5c, 8, 0},
+    {"SET5 D", &exe_cb_set5d, 8, 0},
+    {"SET5 E", &exe_cb_set5e, 8, 0},
+    {"SET5 H", &exe_cb_set5h, 8, 0},
+    {"SET5 L", &exe_cb_set5l, 8, 0},
+    {"SET5 (HL)", &exe_cb_set5phl, 16, 0},
+    {"SET5 A", &exe_cb_set5a, 8, 0},
+    // 0xF
+    {"SET6 B", &exe_cb_set6b, 8, 0},
+    {"SET6 C", &exe_cb_set6c, 8, 0},
+    {"SET6 D", &exe_cb_set6d, 8, 0},
+    {"SET6 E", &exe_cb_set6e, 8, 0},
+    {"SET6 H", &exe_cb_set6h, 8, 0},
+    {"SET6 L", &exe_cb_set6l, 8, 0},
+    {"SET6 (HL)", &exe_cb_set6phl, 16, 0},
+    {"SET6 A", &exe_cb_set6a, 8, 0},
+    {"SET7 B", &exe_cb_set7b, 8, 0},
+    {"SET7 C", &exe_cb_set7c, 8, 0},
+    {"SET7 D", &exe_cb_set7d, 8, 0},
+    {"SET7 E", &exe_cb_set7e, 8, 0},
+    {"SET7 H", &exe_cb_set7h, 8, 0},
+    {"SET7 L", &exe_cb_set7l, 8, 0},
+    {"SET7 (HL)", &exe_cb_set7phl, 16, 0},
+    {"SET7 A", &exe_cb_set7a, 8, 0}
 };
 
 
@@ -1620,6 +1897,7 @@ uint8_t exe_xorad8() {
 
 uint8_t exe_rst28h() {
     registers.pc = 0x28 - 1;
+    return 0;
 }
 
 
@@ -2047,43 +2325,1026 @@ uint8_t exe_cb_srla() {
 // 0x4
 
 uint8_t exe_cb_bit0b() {
-    bit(&registers.b, 0);
+    checkBit(&registers.b, 0);
     return 0;
 }
 
 uint8_t exe_cb_bit0c() {
-    bit(&registers.c, 0);
+    checkBit(&registers.c, 0);
     return 0;
 }
 
 uint8_t exe_cb_bit0d() {
-    bit(&registers.d, 0);
+    checkBit(&registers.d, 0);
     return 0;
 }
 
 uint8_t exe_cb_bit0e() {
-    bit(&registers.e, 0);
+    checkBit(&registers.e, 0);
     return 0;
 }
 
 uint8_t exe_cb_bit0h() {
-    bit(&registers.h, 0);
+    checkBit(&registers.h, 0);
     return 0;
 }
 
 uint8_t exe_cb_bit0l() {
-    bit(&registers.l, 0);
+    checkBit(&registers.l, 0);
     return 0;
 }
 
 uint8_t exe_cb_bit0phl() {
     uint8_t temp = readByte(registers.hl);
-    bit(&temp, 0);
+    checkBit(&temp, 0);
     writeByte(registers.hl, temp);
     return 0;
 }
 
 uint8_t exe_cb_bit0a() {
-    bit(&registers.a, 0);
+    checkBit(&registers.a, 0);
+    return 0;
+}
+
+uint8_t exe_cb_bit1b() {
+    checkBit(&registers.b, 1);
+    return 0;
+}
+
+uint8_t exe_cb_bit1c() {
+    checkBit(&registers.c, 1);
+    return 0;
+}
+
+uint8_t exe_cb_bit1d() {
+    checkBit(&registers.d, 1);
+    return 0;
+}
+
+uint8_t exe_cb_bit1e() {
+    checkBit(&registers.e, 1);
+    return 0;
+}
+
+uint8_t exe_cb_bit1h() {
+    checkBit(&registers.h, 1);
+    return 0;
+}
+
+uint8_t exe_cb_bit1l() {
+    checkBit(&registers.l, 1);
+    return 0;
+}
+
+uint8_t exe_cb_bit1phl() {
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 1);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit1a() {
+    checkBit(&registers.a, 1);
+    return 0;
+}
+
+// 0x5
+uint8_t exe_cb_bit2b(){
+    checkBit(&registers.b, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit2c(){
+    checkBit(&registers.c, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit2d(){
+    checkBit(&registers.d, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit2e(){
+    checkBit(&registers.e, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit2h(){
+    checkBit(&registers.h, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit2l(){
+    checkBit(&registers.l, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit2phl(){
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 2);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit2a(){
+    checkBit(&registers.a, 2);
+    return 0;
+}
+
+uint8_t exe_cb_bit3b(){
+    checkBit(&registers.b, 3);
+    return 0;
+}
+
+uint8_t exe_cb_bit3c(){
+    checkBit(&registers.c, 3);
+    return 0;
+}
+
+uint8_t exe_cb_bit3d(){
+    checkBit(&registers.d, 3);
+    return 0;
+}
+
+uint8_t exe_cb_bit3e(){
+    checkBit(&registers.e, 3);
+    return 0;
+}
+
+uint8_t exe_cb_bit3h(){
+    checkBit(&registers.h, 3);
+    return 0;
+}
+
+uint8_t exe_cb_bit3l(){
+    checkBit(&registers.l, 3);
+    return 0;
+}
+
+uint8_t exe_cb_bit3phl(){
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 3);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit3a(){
+    checkBit(&registers.a, 3);
+    return 0;
+}
+
+
+// 0x6
+uint8_t exe_cb_bit4b(){
+    checkBit(&registers.b, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit4c(){
+    checkBit(&registers.c, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit4d(){
+    checkBit(&registers.d, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit4e(){
+    checkBit(&registers.e, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit4h(){
+    checkBit(&registers.h, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit4l(){
+    checkBit(&registers.l, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit4phl(){
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 4);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit4a(){
+    checkBit(&registers.a, 4);
+    return 0;
+}
+
+uint8_t exe_cb_bit5b(){
+    checkBit(&registers.b, 5);
+    return 0;
+}
+
+uint8_t exe_cb_bit5c(){
+    checkBit(&registers.c, 5);
+    return 0;
+}
+
+uint8_t exe_cb_bit5d(){
+    checkBit(&registers.d, 5);
+    return 0;
+}
+
+uint8_t exe_cb_bit5e(){
+    checkBit(&registers.e, 5);
+    return 0;
+}
+
+uint8_t exe_cb_bit5h(){
+    checkBit(&registers.h, 5);
+    return 0;
+}
+
+uint8_t exe_cb_bit5l(){
+    checkBit(&registers.l, 5);
+    return 0;
+}
+
+uint8_t exe_cb_bit5phl(){
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 5);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit5a(){
+    checkBit(&registers.a, 5);
+    return 0;
+}
+
+
+// 0x7
+uint8_t exe_cb_bit6b(){
+    checkBit(&registers.b, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit6c(){
+    checkBit(&registers.c, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit6d(){
+    checkBit(&registers.d, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit6e(){
+    checkBit(&registers.e, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit6h(){
+    checkBit(&registers.h, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit6l(){
+    checkBit(&registers.l, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit6phl(){
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 6);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit6a(){
+    checkBit(&registers.a, 6);
+    return 0;
+}
+
+uint8_t exe_cb_bit7b(){
+    checkBit(&registers.b, 7);
+    return 0;
+}
+
+uint8_t exe_cb_bit7c(){
+    checkBit(&registers.c, 7);
+    return 0;
+}
+
+uint8_t exe_cb_bit7d(){
+    checkBit(&registers.d, 7);
+    return 0;
+}
+
+uint8_t exe_cb_bit7e(){
+    checkBit(&registers.e, 7);
+    return 0;
+}
+
+uint8_t exe_cb_bit7h(){
+    checkBit(&registers.h, 7);
+    return 0;
+}
+
+uint8_t exe_cb_bit7l(){
+    checkBit(&registers.l, 7);
+    return 0;
+}
+
+uint8_t exe_cb_bit7phl(){
+    uint8_t temp = readByte(registers.hl);
+    checkBit(&temp, 7);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_bit7a(){
+    checkBit(&registers.a, 7);
+    return 0;
+}
+
+// 0x8
+uint8_t exe_cb_res0b(){
+    reset(&registers.b, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res0c(){
+    reset(&registers.c, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res0d(){
+    reset(&registers.d, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res0e(){
+    reset(&registers.e, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res0h(){
+    reset(&registers.h, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res0l(){
+    reset(&registers.l, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res0phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 0);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res0a() {
+    reset(&registers.a, 0);
+    return 0;
+}
+
+uint8_t exe_cb_res1b(){
+    reset(&registers.b, 1);
+    return 0;
+}
+
+uint8_t exe_cb_res1c(){
+    reset(&registers.c, 1);
+    return 0;
+}
+
+uint8_t exe_cb_res1d(){
+    reset(&registers.d, 1);
+    return 0;
+}
+
+uint8_t exe_cb_res1e(){
+    reset(&registers.e, 1);
+    return 0;
+}
+
+uint8_t exe_cb_res1h(){
+    reset(&registers.h, 1);
+    return 0;
+}
+
+uint8_t exe_cb_res1l(){
+    reset(&registers.l, 1);
+    return 0;
+}
+
+uint8_t exe_cb_res1phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 1);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res1a() {
+    reset(&registers.a, 1);
+    return 0;
+}
+
+// 0x9
+uint8_t exe_cb_res2b(){
+    reset(&registers.b, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res2c(){
+    reset(&registers.c, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res2d(){
+    reset(&registers.d, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res2e(){
+    reset(&registers.e, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res2h(){
+    reset(&registers.h, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res2l(){
+    reset(&registers.l, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res2phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 2);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res2a() {
+    reset(&registers.a, 2);
+    return 0;
+}
+
+uint8_t exe_cb_res3b(){
+    reset(&registers.b, 3);
+    return 0;
+}
+
+uint8_t exe_cb_res3c(){
+    reset(&registers.c, 3);
+    return 0;
+}
+
+uint8_t exe_cb_res3d(){
+    reset(&registers.d, 3);
+    return 0;
+}
+
+uint8_t exe_cb_res3e(){
+    reset(&registers.e, 3);
+    return 0;
+}
+
+uint8_t exe_cb_res3h(){
+    reset(&registers.h, 3);
+    return 0;
+}
+
+uint8_t exe_cb_res3l(){
+    reset(&registers.l, 3);
+    return 0;
+}
+
+uint8_t exe_cb_res3phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 3);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res3a() {
+    reset(&registers.a, 3);
+    return 0;
+}
+
+
+// 0xA
+uint8_t exe_cb_res4b(){
+    reset(&registers.b, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res4c(){
+    reset(&registers.c, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res4d(){
+    reset(&registers.d, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res4e(){
+    reset(&registers.e, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res4h(){
+    reset(&registers.h, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res4l(){
+    reset(&registers.l, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res4phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 4);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res4a() {
+    reset(&registers.a, 4);
+    return 0;
+}
+
+uint8_t exe_cb_res5b(){
+    reset(&registers.b, 5);
+    return 0;
+}
+
+uint8_t exe_cb_res5c(){
+    reset(&registers.c, 5);
+    return 0;
+}
+
+uint8_t exe_cb_res5d(){
+    reset(&registers.d, 5);
+    return 0;
+}
+
+uint8_t exe_cb_res5e(){
+    reset(&registers.e, 5);
+    return 0;
+}
+
+uint8_t exe_cb_res5h(){
+    reset(&registers.h, 5);
+    return 0;
+}
+
+uint8_t exe_cb_res5l(){
+    reset(&registers.l, 5);
+    return 0;
+}
+
+uint8_t exe_cb_res5phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 5);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res5a() {
+    reset(&registers.a, 5);
+    return 0;
+}
+
+// 0xB
+uint8_t exe_cb_res6b(){
+    reset(&registers.b, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res6c(){
+    reset(&registers.c, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res6d(){
+    reset(&registers.d, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res6e(){
+    reset(&registers.e, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res6h(){
+    reset(&registers.h, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res6l(){
+    reset(&registers.l, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res6phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 6);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res6a() {
+    reset(&registers.a, 6);
+    return 0;
+}
+
+uint8_t exe_cb_res7b(){
+    reset(&registers.b, 7);
+    return 0;
+}
+
+uint8_t exe_cb_res7c(){
+    reset(&registers.c, 7);
+    return 0;
+}
+
+uint8_t exe_cb_res7d(){
+    reset(&registers.d, 7);
+    return 0;
+}
+
+uint8_t exe_cb_res7e(){
+    reset(&registers.e, 7);
+    return 0;
+}
+
+uint8_t exe_cb_res7h(){
+    reset(&registers.h, 7);
+    return 0;
+}
+
+uint8_t exe_cb_res7l(){
+    reset(&registers.l, 7);
+    return 0;
+}
+
+uint8_t exe_cb_res7phl() {
+    uint8_t temp = readByte(registers.hl);
+    reset(&temp, 7);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_res7a() {
+    reset(&registers.a, 7);
+    return 0;
+}
+
+
+// 0xC
+uint8_t exe_cb_set0b(){
+    set(&registers.b, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set0c(){
+    set(&registers.c, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set0d(){
+    set(&registers.d, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set0e(){
+    set(&registers.e, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set0h(){
+    set(&registers.h, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set0l(){
+    set(&registers.l, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set0phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 0);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set0a() {
+    set(&registers.a, 0);
+    return 0;
+}
+
+uint8_t exe_cb_set1b(){
+    set(&registers.b, 1);
+    return 0;
+}
+
+uint8_t exe_cb_set1c(){
+    set(&registers.c, 1);
+    return 0;
+}
+
+uint8_t exe_cb_set1d(){
+    set(&registers.d, 1);
+    return 0;
+}
+
+uint8_t exe_cb_set1e(){
+    set(&registers.e, 1);
+    return 0;
+}
+
+uint8_t exe_cb_set1h(){
+    set(&registers.h, 1);
+    return 0;
+}
+
+uint8_t exe_cb_set1l(){
+    set(&registers.l, 1);
+    return 0;
+}
+
+uint8_t exe_cb_set1phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 1);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set1a() {
+    set(&registers.a, 1);
+    return 0;
+}
+
+
+// 0xD
+uint8_t exe_cb_set2b(){
+    set(&registers.b, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set2c(){
+    set(&registers.c, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set2d(){
+    set(&registers.d, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set2e(){
+    set(&registers.e, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set2h(){
+    set(&registers.h, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set2l(){
+    set(&registers.l, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set2phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 2);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set2a() {
+    set(&registers.a, 2);
+    return 0;
+}
+
+uint8_t exe_cb_set3b(){
+    set(&registers.b, 3);
+    return 0;
+}
+
+uint8_t exe_cb_set3c(){
+    set(&registers.c, 3);
+    return 0;
+}
+
+uint8_t exe_cb_set3d(){
+    set(&registers.d, 3);
+    return 0;
+}
+
+uint8_t exe_cb_set3e(){
+    set(&registers.e, 3);
+    return 0;
+}
+
+uint8_t exe_cb_set3h(){
+    set(&registers.h, 3);
+    return 0;
+}
+
+uint8_t exe_cb_set3l(){
+    set(&registers.l, 3);
+    return 0;
+}
+
+uint8_t exe_cb_set3phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 3);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set3a() {
+    set(&registers.a, 3);
+    return 0;
+}
+
+
+// 0xE
+uint8_t exe_cb_set4b(){
+    set(&registers.b, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set4c(){
+    set(&registers.c, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set4d(){
+    set(&registers.d, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set4e(){
+    set(&registers.e, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set4h(){
+    set(&registers.h, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set4l(){
+    set(&registers.l, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set4phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 4);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set4a() {
+    set(&registers.a, 4);
+    return 0;
+}
+
+uint8_t exe_cb_set5b(){
+    set(&registers.b, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set5c(){
+    set(&registers.c, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set5d(){
+    set(&registers.d, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set5e(){
+    set(&registers.e, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set5h(){
+    set(&registers.h, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set5l(){
+    set(&registers.l, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set5phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 5);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set5a() {
+    set(&registers.a, 5);
+    return 0;
+}
+
+// 0xF
+uint8_t exe_cb_set6b(){
+    set(&registers.b, 5);
+    return 0;
+}
+
+uint8_t exe_cb_set6c(){
+    set(&registers.c, 6);
+    return 0;
+}
+
+uint8_t exe_cb_set6d(){
+    set(&registers.d, 6);
+    return 0;
+}
+
+uint8_t exe_cb_set6e(){
+    set(&registers.e, 6);
+    return 0;
+}
+
+uint8_t exe_cb_set6h(){
+    set(&registers.h, 6);
+    return 0;
+}
+
+uint8_t exe_cb_set6l(){
+    set(&registers.l, 6);
+    return 0;
+}
+
+uint8_t exe_cb_set6phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 6);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set6a() {
+    set(&registers.a, 6);
+    return 0;
+}
+
+uint8_t exe_cb_set7b(){
+    set(&registers.b, 7);
+    return 0;
+}
+
+uint8_t exe_cb_set7c(){
+    set(&registers.c, 7);
+    return 0;
+}
+
+uint8_t exe_cb_set7d(){
+    set(&registers.d, 7);
+    return 0;
+}
+
+uint8_t exe_cb_set7e(){
+    set(&registers.e, 7);
+    return 0;
+}
+
+uint8_t exe_cb_set7h(){
+    set(&registers.h, 7);
+    return 0;
+}
+
+uint8_t exe_cb_set7l(){
+    set(&registers.l, 7);
+    return 0;
+}
+
+uint8_t exe_cb_set7phl() {
+    uint8_t temp = readByte(registers.hl);
+    set(&temp, 7);
+    writeByte(registers.hl, temp);
+    return 0;
+}
+
+uint8_t exe_cb_set7a() {
+    set(&registers.a, 7);
     return 0;
 }

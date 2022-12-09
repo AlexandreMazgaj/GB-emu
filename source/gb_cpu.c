@@ -95,19 +95,30 @@ uint8_t CPU_clock() {
             return 0;
         }
 
-        struct instruction instr = instructions[op];
 
-        printRegisters();
-        printInstruction(instr);
+        // we check if the op is a CB prefix
+        struct instruction instr;
+        // only used if we go through CB prefix operations
+        uint8_t cb_cycle = 0;
+        if (op == 0xCB) {
+            uint8_t cb_op = readByte(++registers.pc);
+            instr = cb_instructions[cb_op];
+            cb_cycle = 4;
+        }
+        else {
+            instr = instructions[op];
+        }
 
+        // debugging
+        // printRegisters();
+        // printInstruction(instr);
 
-        // fflush(stdout);
-
+        // serial
         dbg_update();
         dbg_print();
 
         // executing the instruction
-        cycle = instr.nb_cycles + instr.execute();
+        cycle = instr.nb_cycles + instr.execute() + cb_cycle;
 
         if (halted) {
             // printf("THE CPU IS HALTED\n");
@@ -401,6 +412,8 @@ void shiftRight(uint8_t* reg) {
     SETZFLAG((*reg) == 0);
 }
 
+// bit manipulation
+
 void swap(uint8_t* reg) {
     SETNFLAG(0);
     SETHFLAG(0);
@@ -410,10 +423,18 @@ void swap(uint8_t* reg) {
     (*reg) = ((*reg) >> 4) | (lowerBits << 4);
 }
 
-void bit(uint8_t* reg, uint8_t bit) {
+void checkBit(uint8_t* reg, uint8_t bit) {
     SETNFLAG(0);
     SETHFLAG(1);
     SETZFLAG((((*reg) >> bit) & 1) == 0);
+}
+
+void reset(uint8_t* reg, uint8_t bit) {
+    (*reg) = (*reg) & (0xff ^ (1 << bit));
+}
+
+void set(uint8_t* reg, uint8_t bit) {
+    (*reg) = (*reg) | (1 << bit);
 }
 
 
@@ -461,11 +482,8 @@ void printRegisters() {
 
 void dbg_update() {
     if (readByte(0xFF02) == 0x81) {
-        // printf("Writes in the dbg message\n");
-        char c = readByte(0xFF01);
-
+        char c = (char)readByte(0xFF01);
         // printf("%X", c);
-
         dbg_msg[msg_size++] = c;
 
         writeByte(0xFF02, 0);
@@ -474,7 +492,7 @@ void dbg_update() {
 
 void dbg_print() {
     if (dbg_msg[0]) {
-        printf("DBG: %X\n", dbg_msg);
+        printf("DBG: %s\n", dbg_msg);
     }
 }
 

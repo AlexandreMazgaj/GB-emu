@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "opcodes.h": "c"
+        "opcodes.h": "c",
+        "cwchar": "c",
+        "limits": "c"
     }
 }
