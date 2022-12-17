@@ -29,7 +29,12 @@ int main() {
     MMU_init();
     PPU_init();
 
-    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
+    uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/01-special.gb");
+
+    // uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
+
+    // uint8_t error = loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/11-op-a,(hl).gb");
+    
 
     if (error)
         return 9;

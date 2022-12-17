@@ -792,16 +792,44 @@ uint8_t exe_ldhd8() {
 
 // https://forums.nesdev.com/viewtopic.php?t=15944
 uint8_t exe_daa() {
+    // if (!GETNFLAG()) {
+    //     if (GETCFLAG() || registers.a > 0x99) { registers.a += 0x60; SETCFLAG(1); }
+    //     if (GETHFLAG() || ((registers.a & 0x0f) > 0x09)) { registers.a += 0x6; }
+    // }
+    // else {
+    //     if (GETCFLAG()) { registers.a -= 0x60; }
+    //     if (GETHFLAG()) { registers.a -= 0x6; }
+    // }
+    // SETZFLAG(registers.a == 0);
+    // SETHFLAG(0);
+
+    // SETCFLAG(registers.a >= 0x100);
+
+
+    uint8_t a = registers.a;
+    uint8_t adjust;
+    if (GETCFLAG())
+        adjust = 0x60;
+    else
+        adjust = 0;
+
+    if (GETHFLAG()) adjust |= 0x06;
+
     if (!GETNFLAG()) {
-        if (GETCFLAG() || registers.a > 0x99) { registers.a += 0x60; SETCFLAG(1); }
-        if (GETHFlAG() || (registers.a & 0x0f) > 0x09) { registers.a += 0x6; }
+        if (a & 0x0f > 0x09) adjust |= 0x06;
+        if (a > 0x99) adjust |= 0x60;
+        a += adjust;
     }
     else {
-        if (GETCFLAG()) { registers.a -= 0x60; }
-        if (GETHFlAG()) { registers.a -= 0x6; }
+        a -= adjust;
     }
-    SETZFLAG(registers.a == 0);
+
+    SETCFLAG(adjust >= 0x60);
     SETHFLAG(0);
+    SETZFLAG(a == 0);
+
+    registers.a = a;
+
 
     return 0;
 }
@@ -1913,6 +1941,7 @@ uint8_t exe_ldhapa8() {
 
 uint8_t exe_popaf() {
     registers.af = popWordStack();
+    registers.af = registers.af & 0xfff0; // only the upper bits (7 5 6 4) are relevant for register f, the rest is discarded
     return 0;
 }
 
@@ -1927,6 +1956,7 @@ uint8_t exe_di() {
 }
 
 uint8_t exe_pushaf() {
+    printf("PUSHING  THE REGISTERS: AF: %X\n", registers.af);
     pushWordStack(registers.af);
     return 0;
 }

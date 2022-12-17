@@ -110,8 +110,8 @@ uint8_t CPU_clock() {
         }
 
         // debugging
-        // printRegisters();
-        // printInstruction(instr);
+        printRegisters();
+        printInstruction(instr);
 
         // serial
         dbg_update();
@@ -241,9 +241,10 @@ void add_a(uint8_t reg) {
 void sub_a(uint8_t reg) {
     int8_t temp = registers.a - reg;
     SETZFLAG(temp == 0);
-    SETCFLAG(temp < 0);
+    SETCFLAG(registers.a < reg);
     SETNFLAG(1);
-    SETHFLAG((((registers.a & 0xf) - (reg & 0xf)) & 0x10) == 0x10);
+    // SETHFLAG((((registers.a & 0xf) - (reg & 0xf)) & 0x10) == 0x10);
+    SETHFLAG((reg & 0xf) > (registers.a & 0xf));
 
     registers.a = registers.a - reg;
 }
@@ -261,9 +262,10 @@ void adc_a(uint8_t reg) {
 void sbc_a(uint8_t reg) {
     int8_t temp = registers.a - reg - GETCFLAG();
     SETZFLAG(temp == 0);
-    SETCFLAG(temp < 0);
+    SETCFLAG(registers.a < reg);
     SETNFLAG(1);
-    SETHFLAG((((registers.a & 0xf) - (reg & 0xf) - (GETCFLAG() & 0xf)) & 0x10) == 0x10);
+    // SETHFLAG((((registers.a & 0xf) - (reg & 0xf) - (GETCFLAG() & 0xf)) & 0x10) == 0x10);
+    SETHFLAG((reg & 0xf) > (registers.a & 0xf));
 
     registers.a = registers.a - reg - GETCFLAG();
 }
@@ -343,12 +345,13 @@ void or_a(uint8_t reg) {
 }
 
 void cp_a(uint8_t reg) {
-    int cp_val = registers.a - reg - GETCFLAG();
+    int cp_val = registers.a - reg; //- GETCFLAG();
 
     SETZFLAG(cp_val == 0);
     SETNFLAG(1);
-    SETHFLAG((((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf)) & 0x10) == 0x10);
     SETCFLAG(cp_val < 0);
+    // SETHFLAG((((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf)) & 0x10) == 0x10);
+    SETHFLAG((reg & 0xf) > (registers.a & 0xf));
 }
 
 
@@ -461,7 +464,7 @@ void printRegisters() {
     else printf("-");
     if (GETNFLAG()) printf("N");
     else printf("-");
-    if (GETHFlAG()) printf("H");
+    if (GETHFLAG()) printf("H");
     else printf("-");
     if (GETCFLAG()) printf("C; ");
     else printf("-; ");

@@ -12,7 +12,7 @@
 
 #define GETZFLAG() ((registers.f & (1 << 7)) >> 7)
 #define GETNFLAG() ((registers.f & (1 << 6)) >> 6)
-#define GETHFlAG() ((registers.f & (1 << 5)) >> 5)
+#define GETHFLAG() ((registers.f & (1 << 5)) >> 5)
 #define GETCFLAG() ((registers.f & (1 << 4)) >> 4)
 
 

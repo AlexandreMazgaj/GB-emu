@@ -294,6 +294,9 @@ void writeByte(uint16_t addr, uint8_t val) {
         if (mmu.mbc_type == 3) MBC3_writeRam(addr, val);
     }
     else if (addr >= 0xc000 && addr <= 0xdfff) {
+        if (addr == 0xDEF8) {
+            printf("WRITING %X TO DEF8\n", val);
+        }
         mmu.work_ram[addr - 0xc000] = val;
     }
     else if (addr >= 0xfe00 && addr <= 0xfe9f) {
@@ -357,6 +360,8 @@ uint16_t popWordStack() {
 
 
 void pushWordStack(uint16_t val) {
+    if (val == 0x3040)
+        printf("PUSHING 0x3040\n");
     registers.sp -=2;
     writeWord(registers.sp, val);
 }
