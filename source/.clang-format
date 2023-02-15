@@ -1,0 +1,8 @@
+{ 
+UseTab: 14, 
+IndentWidth: 8,
+ BreakBeforeBraces: BS_Attach,
+ AllowShortIfStatementsOnASingleLine: false,
+ IndentCaseLabels: false,
+ ColumnLimit: 0 
+}
