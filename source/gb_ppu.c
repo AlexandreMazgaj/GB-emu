@@ -1,5 +1,6 @@
 #include "headers/gb_ppu.h"
 #include "headers/gb_cpu.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 struct ppu ppu;
@@ -277,9 +278,9 @@ void clockBGPixelFetch() {
   if (++pixelFetcher.ticks % 2 != 0)
     return;
 
-  //   for (int i = 0; i < VIDEO_RAM_SIZE; i++) {
-  //     printf("video ram [%X] = %X\n", i, ppu.video_ram[i]);
-  //   }
+  // for (int i = 0; i < VIDEO_RAM_SIZE; i++) {
+  //   printf("video ram [%X] = %X\n", i, ppu.video_ram[i]);
+  // }
 
   switch (pixelFetcher.mode) {
   case FETCH_TILE_NO: {
@@ -301,14 +302,19 @@ void clockBGPixelFetch() {
   case PUSH_PIXELS: {
     // TODO
     // printf("pixelFetcher loByte: %X, hiByte: %X\n", pixelFetcher.loByte,
-    // pixelFetcher.hiByte); enqueue(ppu.bgPixelFifo, (pixelFetcher.hiByte << 8)
-    // | (pixelFetcher.loByte));
-    pixelFetcher.mode = FETCH_TILE_NO;
-    pixelFetcher.x++;
+    // pixelFetcher.hiByte);
+    if (isEmpty(ppu.bgPixelFifo)) {
+      enqueue(ppu.bgPixelFifo, (uint16_t)((uint16_t)pixelFetcher.hiByte << 8) |
+                                   ((uint16_t)pixelFetcher.loByte));
+      pixelFetcher.mode = FETCH_TILE_NO;
+      pixelFetcher.x++;
+    }
     break;
   }
   }
 }
+
+void pushPixelsToLCD() {}
 
 // debugging functions
 

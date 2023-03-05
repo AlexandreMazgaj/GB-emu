@@ -23,42 +23,70 @@ uint32_t getColor(uint8_t bit) {
   if (bit == 0x3)
     return 0;
   if (bit == 0x2)
-    return 0x2f3536;
+    return 0xff555555;
   if (bit == 0x1)
-    return 0xbebebe;
+    return 0xffaaaaaa;
 
   return 0xffffff;
-  ;
 }
 
 void drawFirstTile(SDL_Surface *surface) {
   SDL_LockSurface(surface);
 
-  //   SDL_PixelFormat *format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
-
   Uint32 *pixels = (Uint32 *)surface->pixels;
-  int pix = 0;
-  for (uint16_t i = 0x300; i < 0x310; i += 2) {
-    uint8_t loByte = ppu.video_ram[i];
-    uint8_t hiByte = ppu.video_ram[i + 1];
+  // printf("Size of pixel array: %lu\n", sizeof(pixels));
 
-    for (int j = 0; j < 8; j++) {
+  // pixels[24194] = 0;
 
-      uint8_t bit;
-      if (j == 0) {
-        bit = (uint8_t)(((hiByte & 0x1) << 1) | (loByte & 0x1));
-      } else {
-        bit = (uint8_t)(((hiByte & (0x1 << j)) >> (j - 1)) |
-                        ((loByte & (0x1 << j)) >> j));
+  uint32_t t = 0;
+  uint32_t line = 0;
+
+  for (uint16_t tile = 0; tile < VIDEO_RAM_SIZE - 0x10; tile += 0x10) {
+
+    int tileLine = 0;
+
+    for (uint16_t i = tile; i < (tile + 0x10); i += 2) {
+
+      uint8_t loByte = ppu.video_ram[i];
+      uint8_t hiByte = ppu.video_ram[i + 1];
+
+      for (int j = 0; j < 8; j++) {
+
+        uint8_t bit;
+        if (j == 0) {
+          bit = (uint8_t)(((hiByte & 0x1) << 1) | (loByte & 0x1));
+        } else {
+          bit = (uint8_t)(((hiByte & (0x1 << j)) >> (j - 1)) |
+                          ((loByte & (0x1 << j)) >> j));
+        }
+
+        //   if (loByte != 0 || hiByte != 0) {
+        //      printf("bit : %X\n", bit);
+        //   }
+
+        // pixels[pix * SCREEN_WIDTH + line * 8 * SCREEN_WIDTH + t * 8 + (8 -
+        // j)] =
+        //     getColor(bit);
+
+        // printf("the pixel we are writing to: %d\n",
+        //        (8 - j) + t * 8 + tileLine * SCREEN_WIDTH +
+        //            line * (SCREEN_WIDTH * 8));
+
+        pixels[(8 - j) + t * 8 + tileLine * SCREEN_WIDTH +
+               line * (SCREEN_WIDTH * 8)] = getColor(bit);
       }
-
-      //   if (loByte != 0 || hiByte != 0) {
-      //     printf("bit : %X\n", bit);
-      //   }
-
-      pixels[pix * SCREEN_WIDTH + j] = getColor(bit);
+      tileLine++;
     }
-    pix++;
+    if (t >= 15) {
+      // printf("FINISHED THE FIRST LINE OF TILES\n");
+      t = 0;
+      line++;
+      if (line >= 20)
+        break;
+    } else {
+      // printf("T: %d\n", t);
+      t++;
+    }
   }
 
   SDL_UnlockSurface(surface);
@@ -73,8 +101,11 @@ int main() {
   // uint8_t error =
   // loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/01-special.gb");
 
-  uint8_t error = loadCartridge(
-      "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
+  // uint8_t error = loadCartridge(
+  //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
+
+  uint8_t error =
+      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Dr_Mario.gb");
 
   // uint8_t error =
   // loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/11-op-a,(hl).gb");
@@ -116,7 +147,7 @@ int main() {
   gameboyGraphics =
       SDL_CreateRGBSurface(0, DISPLAY_WIDTH, DISPLAY_HEIGHT, 32, 0, 0, 0, 0);
   scaledGraphics =
-      SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
+      SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT + 1, 32, 0, 0, 0, 0);
 
   SDL_RenderPresent(renderer);
 
@@ -138,6 +169,11 @@ int main() {
   SDL_Event e;
 
   printf("Everything is ready, lauching emulator\n");
+
+  printf("surace height: %d, width: %d\n", scaledGraphics->h,
+         scaledGraphics->w);
+  Uint32 *pixels = (Uint32 *)(scaledGraphics->pixels);
+  printf("surface pixel: %d\n", pixels[160 * 144 - 1]);
 
   // printf("rom[0x7ff3] = %X\n", mmu.rom[0x7ff3]);
 
@@ -192,12 +228,17 @@ int main() {
 
     if (emuRun && ppu.video_ram[0x300] != 0) {
       //   drawScreen(gameboyGraphics);
-      drawFirstTile(gameboyGraphics);
       //   SDL_BlitScaled(gameboyGraphics, NULL, scaledGraphics, NULL);
-      SDL_UpdateTexture(texture, NULL, gameboyGraphics->pixels,
+
+      SDL_RenderClear(renderer);
+      // renderTileChatGPT(renderer);
+
+      drawFirstTile(scaledGraphics);
+      SDL_UpdateTexture(texture, NULL, scaledGraphics->pixels,
                         SCREEN_WIDTH * 4);
-      //   SDL_RenderClear(renderer);
+
       SDL_RenderCopy(renderer, texture, NULL, NULL);
+
       SDL_RenderPresent(renderer);
       // Update the surface
       //   if (SDL_UpdateWindowSurface(window) < 0) {
