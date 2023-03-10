@@ -94,10 +94,12 @@ uint8_t CPU_clock() {
     struct instruction instr;
     // only used if we go through CB prefix operations
     uint8_t cb_cycle = 0;
+    uint8_t cb_operand = 0;
     if (op == 0xCB) {
-      uint8_t cb_op = readByte(++registers.pc);
+      uint8_t cb_op = readByte(registers.pc + 1);
       instr = cb_instructions[cb_op];
       cb_cycle = 4;
+      cb_operand = 1;
     } else {
       instr = instructions[op];
     }
@@ -106,9 +108,19 @@ uint8_t CPU_clock() {
     // printRegisters();
     // printInstruction(instr);
 
+    // printing to stderr, do ./GB 2> output.txt
+    dprintf(2,
+            "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X "
+            "PC:%04X "
+            "PCMEM:%02X,%02X,%02X,%02X\n",
+            registers.a, registers.f, registers.b, registers.c, registers.d,
+            registers.e, registers.h, registers.l, registers.sp, registers.pc,
+            readByte(registers.pc), readByte(registers.pc + 1),
+            readByte(registers.pc + 2), readByte(registers.pc + 3));
+
     // serial
-    // dbg_update();
-    // dbg_print();
+    dbg_update();
+    dbg_print();
 
     // executing the instruction
     cycle = instr.nb_cycles + instr.execute() + cb_cycle;
@@ -122,6 +134,8 @@ uint8_t CPU_clock() {
       registers.pc += 2;
     else
       registers.pc++;
+
+    registers.pc += cb_operand;
 
     // if (registers.pc == 0x020B) { // 0xC252 c772 call for c16b ret, then goes
     // to 100
@@ -265,7 +279,7 @@ void add_hl(uint16_t reg) {
   uint32_t temp = (uint32_t)registers.hl + (uint32_t)reg;
   SETCFLAG(temp > 0xffff);
   SETNFLAG(0);
-  SETHFLAG(((registers.hl & 0x07ff) + (reg & 0x07ff)) > 0x07ff);
+  SETHFLAG(((registers.hl & 0x0fff) + (reg & 0x0fff)) > 0x1000);
 
   registers.hl = (uint16_t)(temp & 0x0000ffff);
 }
@@ -380,7 +394,7 @@ void rotateRightCarry(uint8_t *reg) {
 void shiftLeft(uint8_t *reg) {
   SETNFLAG(0);
   SETHFLAG(0);
-  SETCFLAG((*reg) & 0x80 == 0x80);
+  SETCFLAG(((*reg) & 0x80) == 0x80);
   (*reg) = ((*reg) << 1);
   SETZFLAG((*reg) == 0);
 }
@@ -388,7 +402,7 @@ void shiftLeft(uint8_t *reg) {
 void shiftRightMSB(uint8_t *reg) {
   SETNFLAG(0);
   SETHFLAG(0);
-  SETCFLAG((*reg) & 0x01 == 0x01);
+  SETCFLAG(((*reg) & 0x01) == 0x01);
   (*reg) = ((*reg) >> 1) | ((*reg) & 0x80);
   SETZFLAG((*reg) == 0);
 }
@@ -396,7 +410,7 @@ void shiftRightMSB(uint8_t *reg) {
 void shiftRight(uint8_t *reg) {
   SETNFLAG(0);
   SETHFLAG(0);
-  SETCFLAG((*reg) & 0x01 == 0x01);
+  SETCFLAG(((*reg) & 0x01) == 0x01);
   (*reg) = ((*reg) >> 1);
   SETZFLAG((*reg) == 0);
 }
@@ -465,7 +479,6 @@ void printRegisters() {
 void dbg_update() {
   if (readByte(0xFF02) == 0x81) {
     char c = (char)readByte(0xFF01);
-    // printf("%X", c);
     dbg_msg[msg_size++] = c;
 
     writeByte(0xFF02, 0);

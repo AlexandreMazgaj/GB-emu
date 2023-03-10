@@ -1,7 +1,6 @@
 #pragma once
 
 #include "constants.h"
-#include "pixel_fifo.h"
 #include <stdint.h>
 
 // 2BPP processing macros
@@ -81,8 +80,8 @@ struct ppu {
   uint8_t ob_pal0Value;
   uint8_t ob_pal1Value;
 
-  PixelFifo *bgPixelFifo;
-  PixelFifo *spritePixelFifo;
+  uint16_t bgPixelFifo;
+  uint16_t spritePixelFifo;
 
 } extern ppu;
 
@@ -126,6 +125,8 @@ uint8_t getTileDataHi(uint8_t tileId);
 void pushPixelsToLCD();
 
 void clockBGPixelFetch();
+
+void renderBackgroundScanline();
 
 // debugging functions
 void displayVram();

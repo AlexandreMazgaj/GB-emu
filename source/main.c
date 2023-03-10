@@ -6,19 +6,6 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 
-void drawScreen(SDL_Surface *surface) {
-  SDL_LockSurface(surface);
-  uint32_t *pixels = (uint32_t *)surface->pixels;
-  for (int i = 0; i < SCREEN_HEIGHT; i++) {
-    for (int j = 0; j < SCREEN_WIDTH; j++) {
-      // pixels[i*SCREEN_WIDTH + j] = ppu.screen[i*SCREEN_WIDTH + j] == 0 ? 0 :
-      // 0xFFFFFFFF;
-      pixels[i * SCREEN_WIDTH + j] = 0xFFFFFFFF;
-    }
-  }
-  SDL_UnlockSurface(surface);
-}
-
 uint32_t getColor(uint8_t bit) {
   if (bit == 0x3)
     return 0;
@@ -28,6 +15,17 @@ uint32_t getColor(uint8_t bit) {
     return 0xffaaaaaa;
 
   return 0xffffff;
+}
+
+void drawScreen(SDL_Surface *surface) {
+  SDL_LockSurface(surface);
+  uint32_t *pixels = (uint32_t *)surface->pixels;
+  for (int i = 0; i < SCREEN_HEIGHT; i++) {
+    for (int j = 0; j < SCREEN_WIDTH; j++) {
+      pixels[i * SCREEN_WIDTH + j] = getColor(ppu.screen[i * SCREEN_WIDTH + j]);
+    }
+  }
+  SDL_UnlockSurface(surface);
 }
 
 void drawFirstTile(SDL_Surface *surface) {
@@ -59,18 +57,6 @@ void drawFirstTile(SDL_Surface *surface) {
           bit = (uint8_t)(((hiByte & (0x1 << j)) >> (j - 1)) |
                           ((loByte & (0x1 << j)) >> j));
         }
-
-        //   if (loByte != 0 || hiByte != 0) {
-        //      printf("bit : %X\n", bit);
-        //   }
-
-        // pixels[pix * SCREEN_WIDTH + line * 8 * SCREEN_WIDTH + t * 8 + (8 -
-        // j)] =
-        //     getColor(bit);
-
-        // printf("the pixel we are writing to: %d\n",
-        //        (8 - j) + t * 8 + tileLine * SCREEN_WIDTH +
-        //            line * (SCREEN_WIDTH * 8));
 
         pixels[(8 - j) + t * 8 + tileLine * SCREEN_WIDTH +
                line * (SCREEN_WIDTH * 8)] = getColor(bit);
@@ -104,8 +90,8 @@ int main() {
   // uint8_t error = loadCartridge(
   //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
 
-  uint8_t error =
-      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Dr_Mario.gb");
+  uint8_t error = loadCartridge(
+      "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
 
   // uint8_t error =
   // loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/11-op-a,(hl).gb");
@@ -170,7 +156,7 @@ int main() {
 
   printf("Everything is ready, lauching emulator\n");
 
-  printf("surace height: %d, width: %d\n", scaledGraphics->h,
+  printf("surface height: %d, width: %d\n", scaledGraphics->h,
          scaledGraphics->w);
   Uint32 *pixels = (Uint32 *)(scaledGraphics->pixels);
   printf("surface pixel: %d\n", pixels[160 * 144 - 1]);
@@ -194,12 +180,12 @@ int main() {
         // emuRun = 0;
       }
 
-      PPU_clock();
+      // PPU_clock();
     } else {
       if (oneByOne) {
         while (!CPU_clock())
           ;
-        // PPU_clock();
+        PPU_clock();
         oneByOne = 0;
       }
     }
@@ -227,13 +213,14 @@ int main() {
     }
 
     if (emuRun && ppu.video_ram[0x300] != 0) {
-      //   drawScreen(gameboyGraphics);
       //   SDL_BlitScaled(gameboyGraphics, NULL, scaledGraphics, NULL);
 
       SDL_RenderClear(renderer);
       // renderTileChatGPT(renderer);
 
-      drawFirstTile(scaledGraphics);
+      // drawFirstTile(scaledGraphics);
+      drawScreen(scaledGraphics);
+
       SDL_UpdateTexture(texture, NULL, scaledGraphics->pixels,
                         SCREEN_WIDTH * 4);
 

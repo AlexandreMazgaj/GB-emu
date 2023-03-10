@@ -1,7 +1,8 @@
 {
-    "files.associations": {
-        "opcodes.h": "c",
-        "cwchar": "c",
-        "limits": "c"
-    }
+  "files.associations": {
+    "opcodes.h": "c",
+    "cwchar": "c",
+    "limits": "c",
+    "constants.h": "c"
+  }
 }
