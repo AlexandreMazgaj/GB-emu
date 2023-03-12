@@ -211,7 +211,6 @@ uint8_t loadCartridge(char *path) {
 }
 
 void oam_dma(uint8_t hi) {
-  printf("should be going here\n");
   for (uint16_t i = 0x00; i < 0x9f + 1; i++) {
     uint16_t readAddr = ((uint16_t)hi << 8) | i;
     uint16_t oamAddr = ((uint16_t)0xfe << 8) | i;
@@ -296,7 +295,7 @@ void writeByte(uint16_t addr, uint8_t val) {
       MBC3_writeToRom(addr, val);
     }
   } else if (addr >= 0x8000 && addr <= 0x9fff) {
-    // printf("write to the ppu addr: %X, val: %X\n", addr, val);
+    printf("write to the ppu addr: %X, val: %X\n", addr, val);
     ppu.video_ram[addr - 0x8000] = val;
   } else if (addr >= 0xa000 && addr <= 0xbfff) {
     if (mmu.mbc_type == 1)

@@ -109,25 +109,21 @@ uint8_t CPU_clock() {
     }
 
     // debugging
-    // printRegisters(2);
-    // printInstruction(instr, 2);
-
-    // if (registers.pc == 0 && registers.sp == 0xDF7E) {
-    //   printInstruction(instr, 1);
-    // }
+    printRegisters(2);
+    printInstruction(instr, 2);
 
     // printing to stderr, do ./GB 2> output.txt
-    dprintf(2,
-            "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X "
-            "PC:%04X PCMEM:%02X,%02X,%02X,%02X\n",
-            registers.a, registers.f, registers.b, registers.c, registers.d,
-            registers.e, registers.h, registers.l, registers.sp, registers.pc,
-            readByte(registers.pc), readByte(registers.pc + 1),
-            readByte(registers.pc + 2), readByte(registers.pc + 3));
+    // dprintf(2,
+    //         "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X
+    //         " "PC:%04X PCMEM:%02X,%02X,%02X,%02X\n", registers.a,
+    //         registers.f, registers.b, registers.c, registers.d, registers.e,
+    //         registers.h, registers.l, registers.sp, registers.pc,
+    //         readByte(registers.pc), readByte(registers.pc + 1),
+    //         readByte(registers.pc + 2), readByte(registers.pc + 3));
 
     // serial
-    dbg_update();
-    dbg_print();
+    // dbg_update();
+    // dbg_print();
 
     // executing the instruction
     cycle = instr.nb_cycles + instr.execute() + cb_cycle;
@@ -159,6 +155,8 @@ uint8_t CPU_clock() {
   // if (cycle != 0)
   //     printf("Still doing the op\n");
 
+  divider_register++;
+
   cycle--;
 
   return 0;
@@ -186,7 +184,7 @@ void checkInterrupts() {
       IME = 0;
       // reset the IF flag for the interrupt
       IF ^= VBLANK_BIT;
-      printf("The request for the VBLANK!\n");
+      // printf("The request for the VBLANK!\n");
     }
     // Checking if LCD_STAT enabled and if requested
     if ((IE & LCD_STAT_BIT) == LCD_STAT_BIT &&

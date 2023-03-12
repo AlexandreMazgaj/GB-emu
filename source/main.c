@@ -32,9 +32,6 @@ void drawFirstTile(SDL_Surface *surface) {
   SDL_LockSurface(surface);
 
   Uint32 *pixels = (Uint32 *)surface->pixels;
-  // printf("Size of pixel array: %lu\n", sizeof(pixels));
-
-  // pixels[24194] = 0;
 
   uint32_t t = 0;
   uint32_t line = 0;
@@ -64,13 +61,11 @@ void drawFirstTile(SDL_Surface *surface) {
       tileLine++;
     }
     if (t >= 15) {
-      // printf("FINISHED THE FIRST LINE OF TILES\n");
       t = 0;
       line++;
       if (line >= 20)
         break;
     } else {
-      // printf("T: %d\n", t);
       t++;
     }
   }
@@ -84,17 +79,8 @@ int main() {
   MMU_init();
   PPU_init();
 
-  uint8_t error = loadCartridge(
-      "/home/alex/workspace/gameboy_emu/GB-emu/roms/cpu_instr_2.gb");
-
-  // uint8_t error = loadCartridge(
-  //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
-
-  // uint8_t error = loadCartridge(
-  //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
-
-  // uint8_t error =
-  // loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/11-op-a,(hl).gb");
+  uint8_t error =
+      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Tetris.gb");
 
   if (error)
     return 9;
@@ -171,17 +157,19 @@ int main() {
 
   // fclose(file);
 
+  int draw_tick = 0;
+
   while (1) {
 
     t1 = SDL_GetTicks();
 
     if (emuRun) {
       if (CPU_clock() == 220) {
-        // emuRun = 0;
-        break;
+        emuRun = 0;
+        // break;
       }
 
-      // PPU_clock();
+      PPU_clock();
     } else {
       if (oneByOne) {
         while (!CPU_clock())
@@ -213,14 +201,14 @@ int main() {
       }
     }
 
-    if (!emuRun && ppu.video_ram[0x300] != 0) {
+    if (emuRun && ppu.video_ram[0x300] != 0 && draw_tick % 10 == 0) {
       //   SDL_BlitScaled(gameboyGraphics, NULL, scaledGraphics, NULL);
 
       SDL_RenderClear(renderer);
       // renderTileChatGPT(renderer);
 
-      // drawFirstTile(scaledGraphics);
-      drawScreen(scaledGraphics);
+      drawFirstTile(scaledGraphics);
+      // drawScreen(scaledGraphics);
 
       SDL_UpdateTexture(texture, NULL, scaledGraphics->pixels,
                         SCREEN_WIDTH * 4);
@@ -241,6 +229,7 @@ int main() {
       // SDL_Delay(remaining/2);
       elapsed = interval;
     }
+    draw_tick++;
   }
 
   SDL_DestroyWindow(window);
