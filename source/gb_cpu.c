@@ -105,14 +105,17 @@ uint8_t CPU_clock() {
     }
 
     // debugging
-    // printRegisters();
-    // printInstruction(instr);
+    // printRegisters(2);
+    // printInstruction(instr, 2);
+
+    // if (registers.pc == 0 && registers.sp == 0xDF7E) {
+    //   printInstruction(instr, 1);
+    // }
 
     // printing to stderr, do ./GB 2> output.txt
     dprintf(2,
             "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X "
-            "PC:%04X "
-            "PCMEM:%02X,%02X,%02X,%02X\n",
+            "PC:%04X PCMEM:%02X,%02X,%02X,%02X\n",
             registers.a, registers.f, registers.b, registers.c, registers.d,
             registers.e, registers.h, registers.l, registers.sp, registers.pc,
             readByte(registers.pc), readByte(registers.pc + 1),
@@ -255,10 +258,9 @@ void sub_a(uint8_t reg) {
 void adc_a(uint8_t reg) {
   uint16_t temp = (uint16_t)registers.a + (uint16_t)reg + (uint16_t)GETCFLAG();
   SETZFLAG((temp & 0x00ff) == 0);
+  SETHFLAG((((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf))) >= 0x10);
   SETCFLAG(temp > 255);
   SETNFLAG(0);
-  SETHFLAG((((registers.a & 0xf) + (reg & 0xf) + (GETCFLAG() & 0xf)) & 0x10) ==
-           0x10);
 
   registers.a = (uint8_t)(temp & 0x00ff);
 }
@@ -266,20 +268,20 @@ void adc_a(uint8_t reg) {
 void sbc_a(uint8_t reg) {
   int8_t temp = registers.a - reg - GETCFLAG();
   SETZFLAG(temp == 0);
-  SETCFLAG(registers.a < reg);
+  SETHFLAG((reg & 0xf) + (GETCFLAG() & 0xf) > (registers.a & 0xf));
+  SETCFLAG(registers.a < (reg + GETCFLAG()));
   SETNFLAG(1);
   // SETHFLAG((((registers.a & 0xf) - (reg & 0xf) - (GETCFLAG() & 0xf)) & 0x10)
   // == 0x10);
-  SETHFLAG((reg & 0xf) > (registers.a & 0xf));
 
-  registers.a = registers.a - reg - GETCFLAG();
+  registers.a = (uint8_t)temp;
 }
 
 void add_hl(uint16_t reg) {
   uint32_t temp = (uint32_t)registers.hl + (uint32_t)reg;
   SETCFLAG(temp > 0xffff);
   SETNFLAG(0);
-  SETHFLAG(((registers.hl & 0x0fff) + (reg & 0x0fff)) > 0x1000);
+  SETHFLAG(((registers.hl & 0xfff) + (reg & 0xfff)) > 0xfff);
 
   registers.hl = (uint16_t)(temp & 0x0000ffff);
 }
@@ -288,13 +290,16 @@ void add_sp(int8_t val) {
   int32_t temp = (uint32_t)registers.sp + (int32_t)val;
   SETZFLAG(0);
   SETNFLAG(0);
-  SETCFLAG(temp > 0xffff);
+  SETCFLAG((registers.sp & 0x00ff) + ((int32_t)(val)&0x00ff) >= 0x0100);
   if (val >= 0)
-    SETHFLAG((((registers.sp & 0xf) + (val & 0xf)) & 0x10) == 0x10);
-  else
-    SETHFLAG((((registers.sp & 0xf) - ((uint8_t)val & 0xf)) & 0x10) == 0x10);
+    SETHFLAG((((registers.sp & 0xf) + (val & 0xf))) >= 0x10);
+  // else
+  //   SETHFLAG((((registers.sp & 0xf) - ((uint8_t)val & 0xf)) & 0x10) == 0x10);
+  SETHFLAG(
+      (((uint16_t)registers.sp ^ (uint16_t)val ^ ((uint16_t)temp & 0xffff)) &
+       0x10) == 0x10);
 
-  registers.sp = (uint32_t)temp;
+  registers.sp = (uint16_t)temp;
 }
 
 void inc8bReg(uint8_t *reg) {
@@ -451,29 +456,29 @@ void printBinary(uint8_t hex) {
   printf("%x\n", hex & 1);
 }
 
-void printRegisters() {
-  printf("A: %X; ", registers.a);
-  printf("F: ");
+void printRegisters(int pipe) {
+  dprintf(pipe, "A: %X; ", registers.a);
+  dprintf(pipe, "F: ");
   if (GETZFLAG())
-    printf("Z");
+    dprintf(pipe, "Z");
   else
-    printf("-");
+    dprintf(pipe, "-");
   if (GETNFLAG())
-    printf("N");
+    dprintf(pipe, "N");
   else
-    printf("-");
+    dprintf(pipe, "-");
   if (GETHFLAG())
-    printf("H");
+    dprintf(pipe, "H");
   else
-    printf("-");
+    dprintf(pipe, "-");
   if (GETCFLAG())
-    printf("C; ");
+    dprintf(pipe, "C; ");
   else
-    printf("-; ");
-  printf("BC: %X; ", registers.bc);
-  printf("DE: %X; ", registers.de);
-  printf("HL: %X; ", registers.hl);
-  printf("SP: %X; ", registers.sp);
+    dprintf(pipe, "-; ");
+  dprintf(pipe, "BC: %X; ", registers.bc);
+  dprintf(pipe, "DE: %X; ", registers.de);
+  dprintf(pipe, "HL: %X; ", registers.hl);
+  dprintf(pipe, "SP: %X; ", registers.sp);
 }
 
 void dbg_update() {
@@ -491,19 +496,19 @@ void dbg_print() {
   }
 }
 
-void printInstruction(struct instruction instr) {
+void printInstruction(struct instruction instr, int pipe) {
   if (instr.size_operand == 0) {
-    printf("pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+    dprintf(pipe, "pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
   } else if (instr.size_operand == 1) {
     char mnemonic_with_data[256];
     snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic,
              readByte(registers.pc + 1));
-    printf("pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
+    dprintf(pipe, "pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
   } else if (instr.size_operand == 2) {
     char mnemonic_with_data[256];
     snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic,
              ((uint16_t)readByte(registers.pc + 2) << 8) |
                  (uint16_t)readByte(registers.pc + 1));
-    printf("pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
+    dprintf(pipe, "pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
   }
 }

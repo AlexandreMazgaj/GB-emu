@@ -28,7 +28,8 @@ void MMU_init() {
   }
 
   for (int i = 0; i < RAM_SIZE; i++) {
-    mmu.work_ram[i] = (uint8_t)rand() % 256;
+    // mmu.work_ram[i] = (uint8_t)rand() % 256;
+    mmu.work_ram[i] = (uint8_t)0;
   }
 
   for (int i = 0; i < HIGH_RAM_SIZE; i++) {

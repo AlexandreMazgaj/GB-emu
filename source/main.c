@@ -84,14 +84,14 @@ int main() {
   MMU_init();
   PPU_init();
 
-  // uint8_t error =
-  // loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/01-special.gb");
+  uint8_t error = loadCartridge(
+      "/home/alex/workspace/gameboy_emu/GB-emu/roms/cpu_instr_7.gb");
 
   // uint8_t error = loadCartridge(
   //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
 
-  uint8_t error = loadCartridge(
-      "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
+  // uint8_t error = loadCartridge(
+  //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");
 
   // uint8_t error =
   // loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/11-op-a,(hl).gb");
@@ -178,6 +178,7 @@ int main() {
     if (emuRun) {
       if (CPU_clock() == 220) {
         // emuRun = 0;
+        break;
       }
 
       // PPU_clock();
@@ -208,11 +209,11 @@ int main() {
       }
 
       if (e.type == SDL_KEYDOWN && keys[SDL_SCANCODE_P]) {
-        printRegisters();
+        printRegisters(1);
       }
     }
 
-    if (emuRun && ppu.video_ram[0x300] != 0) {
+    if (!emuRun && ppu.video_ram[0x300] != 0) {
       //   SDL_BlitScaled(gameboyGraphics, NULL, scaledGraphics, NULL);
 
       SDL_RenderClear(renderer);

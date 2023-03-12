@@ -7,16 +7,16 @@
 // Definition of macros for flags
 #define SETZFLAG(value)                                                        \
   (registers.f =                                                               \
-       ((value == 0) ? registers.f & (~(1 << 7)) : registers.f | (1 << 7)))
+       (((value) == 0) ? registers.f & (~(1 << 7)) : registers.f | (1 << 7)))
 #define SETNFLAG(value)                                                        \
   (registers.f =                                                               \
-       ((value == 0) ? registers.f & (~(1 << 6)) : registers.f | (1 << 6)))
+       (((value) == 0) ? registers.f & (~(1 << 6)) : registers.f | (1 << 6)))
 #define SETHFLAG(value)                                                        \
   (registers.f =                                                               \
-       ((value == 0) ? registers.f & (~(1 << 5)) : registers.f | (1 << 5)))
+       (((value) == 0) ? registers.f & (~(1 << 5)) : registers.f | (1 << 5)))
 #define SETCFLAG(value)                                                        \
   (registers.f =                                                               \
-       ((value == 0) ? registers.f & (~(1 << 4)) : registers.f | (1 << 4)))
+       (((value) == 0) ? registers.f & (~(1 << 4)) : registers.f | (1 << 4)))
 
 #define GETZFLAG() ((registers.f & (1 << 7)) >> 7)
 #define GETNFLAG() ((registers.f & (1 << 6)) >> 6)
@@ -155,8 +155,8 @@ void set(uint8_t *reg, uint8_t bit);
 
 // Debug functions
 void printBinary(uint8_t hex);
-void printRegisters();
-void printInstruction(struct instruction intr);
+void printRegisters(int pipe);
+void printInstruction(struct instruction intr, int pipe);
 
 void dbg_update();
 void dbg_print();

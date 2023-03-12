@@ -3,107 +3,107 @@
 
 const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     // 0x0
-    {"NOP", &exe_nop, 4, 0},                            // 0
-    {"LD BC, 0x%X", &exe_ldbcd16, 12, 2},                // 1
-    {"LD (BC), A", &exe_ldpbca, 8, 0},                  // 2
-    {"INC BC", &exe_incbc, 8, 0},                       // 3
-    {"INC B", &exe_incb, 4, 0},                         // 4
-    {"DEC B", &exe_decb, 4, 0},                         // 5
-    {"LD B, 0x%X", &exe_ldbd8, 8, 1},                     // 6
-    {"RLCA", &exe_rlca, 4, 0},                          // 7
-    {"LD (0x%X), SP", &exe_ldpa16sp, 20, 2},             // 8
-    {"ADD HL, BC", &exe_addhlbc, 8, 0},                 // 9
-    {"LD A, (BC)", &exe_ldapbc, 8, 0},                  // a
-    {"DEC BC", &exe_decbc, 8, 0},                       // b
-    {"INC C", &exe_incc, 4, 0},                         // c
-    {"DEC C", &exe_decc, 4, 0},                         // d
-    {"LD C, 0x%X", &exe_ldcd8, 8, 1},                     // e
-    {"RRCA", &exe_rrca, 4, 0},                          // f
-    // 0x1          
-    {"STOP", &exe_stop, 4, 1},                          // 0
-    {"LD DE, 0x%X", &exe_ldded16, 12, 2},                // 1
-    {"LD (DE), A", &exe_ldpdea, 8, 0},                  // 2
-    {"INC DE", &exe_incde, 8, 0},                       // 3
-    {"INC D", &exe_incd, 4, 0},                         // 4
-    {"DEC D", &exe_decd, 4, 0},                         // 5
-    {"LD D, 0x%X", &exe_lddd8, 8, 1},                     // 6
-    {"RLA", &exe_rla, 4, 0},                            // 7
-    {"JR 0x%X", &exe_jri8, 12, 1},                        // 8
-    {"ADD HL, DE", &exe_addhlde, 8, 0},                 // 9
-    {"LD A, (DE)", &exe_ldapde, 8, 0},                  // a
-    {"DEC DE", &exe_decde, 8, 0},                       // b
-    {"INC E", &exe_ince, 4, 0},                         // c
-    {"DEC E", &exe_dece, 4, 0},                         // d
-    {"LD E, 0x%X", &exe_lded8, 8, 1},                     // e
-    {"RRA", &exe_rra, 4, 0},                            // f
+    {"NOP", &exe_nop, 4, 0},                 // 0
+    {"LD BC, 0x%X", &exe_ldbcd16, 12, 2},    // 1
+    {"LD (BC), A", &exe_ldpbca, 8, 0},       // 2
+    {"INC BC", &exe_incbc, 8, 0},            // 3
+    {"INC B", &exe_incb, 4, 0},              // 4
+    {"DEC B", &exe_decb, 4, 0},              // 5
+    {"LD B, 0x%X", &exe_ldbd8, 8, 1},        // 6
+    {"RLCA", &exe_rlca, 4, 0},               // 7
+    {"LD (0x%X), SP", &exe_ldpa16sp, 20, 2}, // 8
+    {"ADD HL, BC", &exe_addhlbc, 8, 0},      // 9
+    {"LD A, (BC)", &exe_ldapbc, 8, 0},       // a
+    {"DEC BC", &exe_decbc, 8, 0},            // b
+    {"INC C", &exe_incc, 4, 0},              // c
+    {"DEC C", &exe_decc, 4, 0},              // d
+    {"LD C, 0x%X", &exe_ldcd8, 8, 1},        // e
+    {"RRCA", &exe_rrca, 4, 0},               // f
+    // 0x1
+    {"STOP", &exe_stop, 4, 1},            // 0
+    {"LD DE, 0x%X", &exe_ldded16, 12, 2}, // 1
+    {"LD (DE), A", &exe_ldpdea, 8, 0},    // 2
+    {"INC DE", &exe_incde, 8, 0},         // 3
+    {"INC D", &exe_incd, 4, 0},           // 4
+    {"DEC D", &exe_decd, 4, 0},           // 5
+    {"LD D, 0x%X", &exe_lddd8, 8, 1},     // 6
+    {"RLA", &exe_rla, 4, 0},              // 7
+    {"JR 0x%X", &exe_jri8, 12, 1},        // 8
+    {"ADD HL, DE", &exe_addhlde, 8, 0},   // 9
+    {"LD A, (DE)", &exe_ldapde, 8, 0},    // a
+    {"DEC DE", &exe_decde, 8, 0},         // b
+    {"INC E", &exe_ince, 4, 0},           // c
+    {"DEC E", &exe_dece, 4, 0},           // d
+    {"LD E, 0x%X", &exe_lded8, 8, 1},     // e
+    {"RRA", &exe_rra, 4, 0},              // f
     // 0x2
-    {"JR NZ, 0x%X", &exe_jrnzr8, 8, 1},                   // 0
-    {"LD HL, 0x%X", &exe_ldhld16, 12, 2},                // 1
-    {"LD (HL+), A", &exe_ldphlia, 8, 0},                // 2
-    {"INC HL", &exe_inchl, 8, 0},                       // 3
-    {"INC H", &exe_inch, 4, 0},                         // 4
-    {"DEC H", &exe_dech, 4, 0},                         // 5
-    {"LD H, 0x%X", &exe_ldhd8, 8, 1},                     // 6
-    {"DAA", &exe_daa, 4, 0},                            // 7
-    {"JR z, 0x%X", &exe_jrzr8, 8, 1},                     // 8
-    {"ADD HL, HL", &exe_addhlhl, 8, 0},                 // 9
-    {"LD A, (HL+)", &exe_ldaphli, 8, 0},                // a
-    {"DEC HL", &exe_dechl, 8, 0},                       // b
-    {"INC L", &exe_incl, 4, 0},                         // c
-    {"DEC L", &exe_decl, 4, 0},                         // d
-    {"LD L, 0x%X", &exe_ldld8, 8, 1},                     // e
-    {"CPL", &exe_cpl, 4, 0},                            // f
+    {"JR NZ, 0x%X", &exe_jrnzr8, 8, 1},   // 0
+    {"LD HL, 0x%X", &exe_ldhld16, 12, 2}, // 1
+    {"LD (HL+), A", &exe_ldphlia, 8, 0},  // 2
+    {"INC HL", &exe_inchl, 8, 0},         // 3
+    {"INC H", &exe_inch, 4, 0},           // 4
+    {"DEC H", &exe_dech, 4, 0},           // 5
+    {"LD H, 0x%X", &exe_ldhd8, 8, 1},     // 6
+    {"DAA", &exe_daa, 4, 0},              // 7
+    {"JR z, 0x%X", &exe_jrzr8, 8, 1},     // 8
+    {"ADD HL, HL", &exe_addhlhl, 8, 0},   // 9
+    {"LD A, (HL+)", &exe_ldaphli, 8, 0},  // a
+    {"DEC HL", &exe_dechl, 8, 0},         // b
+    {"INC L", &exe_incl, 4, 0},           // c
+    {"DEC L", &exe_decl, 4, 0},           // d
+    {"LD L, 0x%X", &exe_ldld8, 8, 1},     // e
+    {"CPL", &exe_cpl, 4, 0},              // f
     // 0x3
-    {"JR NC, 0x%X", &exe_jrncr8, 8, 1},                   // 0
-    {"LD SP, 0x%X", &exe_ldspd16, 12, 2},                // 1
-    {"LD (HL-), A", &exe_ldphlda, 8, 0},                // 2
-    {"INC SP", &exe_incsp, 8, 0},                       // 3
-    {"INC (HL)", &exe_incphl, 12, 0},                   // 4
-    {"DEC (HL)", &exe_decphl, 12, 0},                   // 5
-    {"LD (HL), 0x%X", &exe_ldphld8, 12, 0},               // 6
-    {"SCF", &exe_scf, 4, 0},                            // 7
-    {"JR C, 0x%X", &exe_jrcr8, 8, 1},                     // 8
-    {"ADD HL, SP", &exe_addhlsp, 8, 0},                 // 9
-    {"LD A, (HL-)", &exe_ldaphld, 8, 0},                // a
-    {"DEC SP", &exe_decsp, 8, 0},                       // b
-    {"INC A", &exe_inca, 4, 0},                         // c
-    {"DEC A", &exe_deca, 4, 0},                         // d
-    {"LD A, 0x%X", &exe_ldad8, 8, 1},                     // e
-    {"CCF", &exe_ccf, 4, 0},                            // f
+    {"JR NC, 0x%X", &exe_jrncr8, 8, 1},     // 0
+    {"LD SP, 0x%X", &exe_ldspd16, 12, 2},   // 1
+    {"LD (HL-), A", &exe_ldphlda, 8, 0},    // 2
+    {"INC SP", &exe_incsp, 8, 0},           // 3
+    {"INC (HL)", &exe_incphl, 12, 0},       // 4
+    {"DEC (HL)", &exe_decphl, 12, 0},       // 5
+    {"LD (HL), 0x%X", &exe_ldphld8, 12, 0}, // 6
+    {"SCF", &exe_scf, 4, 0},                // 7
+    {"JR C, 0x%X", &exe_jrcr8, 8, 1},       // 8
+    {"ADD HL, SP", &exe_addhlsp, 8, 0},     // 9
+    {"LD A, (HL-)", &exe_ldaphld, 8, 0},    // a
+    {"DEC SP", &exe_decsp, 8, 0},           // b
+    {"INC A", &exe_inca, 4, 0},             // c
+    {"DEC A", &exe_deca, 4, 0},             // d
+    {"LD A, 0x%X", &exe_ldad8, 8, 1},       // e
+    {"CCF", &exe_ccf, 4, 0},                // f
     // 0x4
-    {"LD B, B", &exe_ldbb, 4, 0},                       // 0
-    {"LD B, C", &exe_ldbc, 4, 0},                       // 1
-    {"LD B, D", &exe_ldbd, 4, 0},                       // 2
-    {"LD B, E", &exe_ldbe, 4, 0},                       // 3
-    {"LD B, H", &exe_ldbh, 4, 0},                       // 4
-    {"LD B, L", &exe_ldbl, 4, 0},                       // 5
-    {"LD B, (HL)", &exe_ldbphl, 8, 0},                  // 6
-    {"LD B, A", &exe_ldba, 4, 0},                       // 7
-    {"LD C, B", &exe_ldcb, 4, 0},                       // 8
-    {"LD C, C", &exe_ldcc, 4, 0},                       // 9
-    {"LD C, D", &exe_ldcd, 4, 0},                       // a
-    {"LD C, E", &exe_ldce, 4, 0},                       // b
-    {"LD C, H", &exe_ldch, 4, 0},                       // c
-    {"LD C, L", &exe_ldcl, 4, 0},                       // d
-    {"LD C, (HL)", &exe_ldcphl, 8, 0},                  // e
-    {"LD C, A", &exe_ldca, 4, 0},                       // f
+    {"LD B, B", &exe_ldbb, 4, 0},      // 0
+    {"LD B, C", &exe_ldbc, 4, 0},      // 1
+    {"LD B, D", &exe_ldbd, 4, 0},      // 2
+    {"LD B, E", &exe_ldbe, 4, 0},      // 3
+    {"LD B, H", &exe_ldbh, 4, 0},      // 4
+    {"LD B, L", &exe_ldbl, 4, 0},      // 5
+    {"LD B, (HL)", &exe_ldbphl, 8, 0}, // 6
+    {"LD B, A", &exe_ldba, 4, 0},      // 7
+    {"LD C, B", &exe_ldcb, 4, 0},      // 8
+    {"LD C, C", &exe_ldcc, 4, 0},      // 9
+    {"LD C, D", &exe_ldcd, 4, 0},      // a
+    {"LD C, E", &exe_ldce, 4, 0},      // b
+    {"LD C, H", &exe_ldch, 4, 0},      // c
+    {"LD C, L", &exe_ldcl, 4, 0},      // d
+    {"LD C, (HL)", &exe_ldcphl, 8, 0}, // e
+    {"LD C, A", &exe_ldca, 4, 0},      // f
     // 0x5
-    {"LD D, B", &exe_lddb, 4, 0},                       // 0
-    {"LD D, C", &exe_lddc, 4, 0},                       // 1
-    {"LD D, D", &exe_lddd, 4, 0},                       // 2
-    {"LD D, E", &exe_ldde, 4, 0},                       // 3
-    {"LD D, H", &exe_lddh, 4, 0},                       // 4
-    {"LD D, L", &exe_lddl, 4, 0},                       // 5
-    {"LD D, (HL)", &exe_lddphl, 8, 0},                  // 6
-    {"LD D, A", &exe_ldda, 4, 0},                       // 7
-    {"LD E, B", &exe_ldeb, 4, 0},                       // 8
-    {"LD E, C", &exe_ldec, 4, 0},                       // 9
-    {"LD E, D", &exe_lded, 4, 0},                       // a
-    {"LD E, E", &exe_ldee, 4, 0},                       // b
-    {"LD E, H", &exe_ldeh, 4, 0},                       // c
-    {"LD E, L", &exe_ldel, 4, 0},                       // d
-    {"LD E, (HL)", &exe_ldephl, 8, 0},                  // e
-    {"LD E, A", &exe_ldea, 4, 0},                       // f
+    {"LD D, B", &exe_lddb, 4, 0},      // 0
+    {"LD D, C", &exe_lddc, 4, 0},      // 1
+    {"LD D, D", &exe_lddd, 4, 0},      // 2
+    {"LD D, E", &exe_ldde, 4, 0},      // 3
+    {"LD D, H", &exe_lddh, 4, 0},      // 4
+    {"LD D, L", &exe_lddl, 4, 0},      // 5
+    {"LD D, (HL)", &exe_lddphl, 8, 0}, // 6
+    {"LD D, A", &exe_ldda, 4, 0},      // 7
+    {"LD E, B", &exe_ldeb, 4, 0},      // 8
+    {"LD E, C", &exe_ldec, 4, 0},      // 9
+    {"LD E, D", &exe_lded, 4, 0},      // a
+    {"LD E, E", &exe_ldee, 4, 0},      // b
+    {"LD E, H", &exe_ldeh, 4, 0},      // c
+    {"LD E, L", &exe_ldel, 4, 0},      // d
+    {"LD E, (HL)", &exe_ldephl, 8, 0}, // e
+    {"LD E, A", &exe_ldea, 4, 0},      // f
     // 0x6
     {"LD H, B", &exe_ldhb, 4, 0},
     {"LD H, C", &exe_ldhc, 4, 0},
@@ -273,9 +273,7 @@ const struct instruction instructions[INSTRUCTIONS_SIZE] = {
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"UNKNOWN OPCODE", &unknown_op, 0, 0},
     {"CP A, 0x%X", &exe_cpad8, 8, 1},
-    {"RST 38H", &exe_rst38h, 16, 0}
-};
-
+    {"RST 38H", &exe_rst38h, 16, 0}};
 
 const struct instruction cb_instructions[INSTRUCTIONS_SIZE] = {
     // 0x0
@@ -549,335 +547,340 @@ const struct instruction cb_instructions[INSTRUCTIONS_SIZE] = {
     {"SET7 H", &exe_cb_set7h, 8, 0},
     {"SET7 L", &exe_cb_set7l, 8, 0},
     {"SET7 (HL)", &exe_cb_set7phl, 16, 0},
-    {"SET7 A", &exe_cb_set7a, 8, 0}
-};
+    {"SET7 A", &exe_cb_set7a, 8, 0}};
 
-
-void handleUnknownOp(uint8_t opcode) {
-    printf("unknown opcode: %X\n", opcode);
-}
+void handleUnknownOp(uint8_t opcode) { printf("unknown opcode: %X\n", opcode); }
 
 uint8_t unknown_op() {
-    // printf("This is an unknown operation\n");
-    return 0;
+  // printf("This is an unknown operation\n");
+  return 0;
 }
-
 
 // #######
 // # 0x0 #
 // #######
 
 uint8_t exe_nop() {
-    // registers.pc++;
-    // asm("nop"::);
-    return 0;
+  // registers.pc++;
+  // asm("nop"::);
+  return 0;
 }
 
 uint8_t exe_ldbcd16() {
-    registers.bc = readWord(++registers.pc);
-    return 0;
+  registers.bc = readWord(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_ldpbca() {
-    writeByte(registers.bc, registers.a);
-    return 0;
+  writeByte(registers.bc, registers.a);
+  return 0;
 }
 
 uint8_t exe_incbc() {
-    registers.bc++;
-    return 0;
+  registers.bc++;
+  return 0;
 }
 
 uint8_t exe_incb() {
-    inc8bReg(&registers.b);
-    return 0;
+  inc8bReg(&registers.b);
+  return 0;
 }
 
 uint8_t exe_decb() {
-    dec8bReg(&registers.b);
-    return 0;
+  dec8bReg(&registers.b);
+  return 0;
 }
 
 uint8_t exe_ldbd8() {
-    registers.b = readByte(++registers.pc);
-    return 0;
+  registers.b = readByte(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_rlca() {
-    rotateLeft(&registers.a);
-    SETZFLAG(0);
-    return 0;
+  rotateLeft(&registers.a);
+  SETZFLAG(0);
+  return 0;
 }
 
 uint8_t exe_ldpa16sp() {
-    uint16_t addr = readWord(++registers.pc);
-    writeWord(addr, registers.sp);
-    return 0;
+  uint16_t addr = readWord(++registers.pc);
+  writeWord(addr, registers.sp);
+  return 0;
 }
 
 uint8_t exe_addhlbc() {
-   add_hl(registers.bc);
-   return 0; 
+  add_hl(registers.bc);
+  return 0;
 }
 
 uint8_t exe_ldapbc() {
-    registers.a = readByte(registers.bc);
-    return 0;
+  registers.a = readByte(registers.bc);
+  return 0;
 }
 
 uint8_t exe_decbc() {
-    registers.bc--;
-    return 0;
+  registers.bc--;
+  return 0;
 }
 
 uint8_t exe_incc() {
-    inc8bReg(&registers.c);
-    return 0;
+  inc8bReg(&registers.c);
+  return 0;
 }
 
 uint8_t exe_decc() {
-    dec8bReg(&registers.c);
-    return 0;
+  dec8bReg(&registers.c);
+  return 0;
 }
 
 uint8_t exe_ldcd8() {
-    registers.c = readByte(++registers.pc);
-    return 0;
+  registers.c = readByte(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_rrca() {
-    rotateRight(&registers.a);
-    SETZFLAG(0);
-    return 0;
+  rotateRight(&registers.a);
+  SETZFLAG(0);
+  return 0;
 }
-
-
 
 // #######
 // # 0x1 #
 // #######
 
 uint8_t exe_stop() {
-    stopped = 1;
-    return 0;
+  stopped = 1;
+  return 0;
 }
 
 uint8_t exe_ldded16() {
-    registers.de = readWord(++registers.pc);
-    return 0;
+  registers.de = readWord(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_ldpdea() {
-    writeByte(registers.de, registers.a);
-    return 0;
+  writeByte(registers.de, registers.a);
+  return 0;
 }
 
 uint8_t exe_incde() {
-    registers.de++;
-    return 0;
+  registers.de++;
+  return 0;
 }
 
 uint8_t exe_incd() {
-    inc8bReg(&registers.d);
-    return 0;
+  inc8bReg(&registers.d);
+  return 0;
 }
 
 uint8_t exe_decd() {
-    dec8bReg(&registers.d);
-    return 0;
+  dec8bReg(&registers.d);
+  return 0;
 }
 
 uint8_t exe_lddd8() {
-    registers.d = readByte(++registers.pc);
-    return 0;
+  registers.d = readByte(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_rla() {
-    rotateLeftCarry(&registers.a);
-    SETZFLAG(0);
-    return 0;
+  rotateLeftCarry(&registers.a);
+  SETZFLAG(0);
+  return 0;
 }
 
 uint8_t exe_jri8() {
-    int8_t offset = (int8_t)readByte(++registers.pc); // we do not need to remove 1 because the offset is added to the address of the next operation
-    registers.pc += offset;
-    return 0;
+  int8_t offset = (int8_t)readByte(
+      ++registers.pc); // we do not need to remove 1 because the offset is added
+                       // to the address of the next operation
+  registers.pc += offset;
+  return 0;
 }
 
 uint8_t exe_addhlde() {
-    add_hl(registers.de);
-    return 0;
+  add_hl(registers.de);
+  return 0;
 }
 
-
 uint8_t exe_ldapde() {
-    registers.a = readByte(registers.de);
-    return 0;
+  registers.a = readByte(registers.de);
+  return 0;
 }
 
 uint8_t exe_decde() {
-    // printf("DEC DE\n");
-    registers.de--;
-    return 0;
+  // printf("DEC DE\n");
+  registers.de--;
+  return 0;
 }
 
 uint8_t exe_ince() {
-    inc8bReg(&registers.e);
-    return 0;
+  inc8bReg(&registers.e);
+  return 0;
 }
 
 uint8_t exe_dece() {
-    dec8bReg(&registers.e);
-    return 0;
+  dec8bReg(&registers.e);
+  return 0;
 }
 
 uint8_t exe_lded8() {
-    registers.e = readByte(++registers.pc);
-    return 0;
+  registers.e = readByte(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_rra() {
-    rotateRightCarry(&registers.a);
-    SETZFLAG(0);
-    return 0;
+  rotateRightCarry(&registers.a);
+  SETZFLAG(0);
+  return 0;
 }
-
 
 // #######
 // # 0x2 #
 // #######
 
-// ALEX something is happening in this function were the af register is not updated properly, and I don't know why
+// ALEX something is happening in this function were the af register is not
+// updated properly, and I don't know why
 uint8_t exe_jrnzr8() {
-    if (!GETZFLAG()) {
-        // printf("r8: %X\n", (int8_t)readByte(registers.pc + 1));
-        registers.pc += (int8_t)readByte(registers.pc + 1) + 1; // we do not need to remove 1 because the offset is added to the address of the next operation
-        return 4;
-    }
-    registers.pc++;
+  if (!GETZFLAG()) {
+    // printf("r8: %X\n", (int8_t)readByte(registers.pc + 1));
+    registers.pc += (int8_t)readByte(registers.pc + 1) +
+                    1; // we do not need to remove 1 because the offset is added
+                       // to the address of the next operation
+    return 4;
+  }
+  registers.pc++;
 
-    return 0;
+  return 0;
 }
 
 uint8_t exe_ldhld16() {
-    registers.hl = readWord(++registers.pc);
-    return 0;
+  registers.hl = readWord(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_ldphlia() {
-    writeByte(registers.hl, registers.a);
-    registers.hl++;
-    return 0;
+  writeByte(registers.hl, registers.a);
+  registers.hl++;
+  return 0;
 }
 
 uint8_t exe_inchl() {
-    registers.hl++;
-    return 0;
+  registers.hl++;
+  return 0;
 }
 
 uint8_t exe_inch() {
-    inc8bReg(&registers.h);
-    return 0;
+  inc8bReg(&registers.h);
+  return 0;
 }
 
 uint8_t exe_dech() {
-    dec8bReg(&registers.h);
-    return 0;
+  dec8bReg(&registers.h);
+  return 0;
 }
 
 uint8_t exe_ldhd8() {
-    registers.h = readByte(++registers.pc);
-    return 0;
+  registers.h = readByte(++registers.pc);
+  return 0;
 }
 
 // https://forums.nesdev.com/viewtopic.php?t=15944
 uint8_t exe_daa() {
-    if (!GETNFLAG()) {
-        if (GETCFLAG() || registers.a > 0x99) { registers.a += 0x60; SETCFLAG(1); }
-        if (GETHFLAG() || ((registers.a & 0x0f) > 0x09)) { registers.a += 0x6; }
+  if (!GETNFLAG()) {
+    if (GETCFLAG() || registers.a > 0x99) {
+      registers.a += 0x60;
+      SETCFLAG(1);
     }
-    else {
-        if (GETCFLAG()) { registers.a -= 0x60; SETCFLAG(1); }
-        if (GETHFLAG()) { registers.a -= 0x6; }
+    if (GETHFLAG() || ((registers.a & 0x0f) > 0x09)) {
+      registers.a += 0x6;
     }
-    SETZFLAG(registers.a == 0);
-    SETHFLAG(0);
+  } else {
+    if (GETCFLAG()) {
+      registers.a -= 0x60;
+      SETCFLAG(1);
+    }
+    if (GETHFLAG()) {
+      registers.a -= 0x6;
+    }
+  }
+  SETZFLAG(registers.a == 0);
+  SETHFLAG(0);
 
-    // SETCFLAG(registers.a >= 0x100);
+  // SETCFLAG(registers.a >= 0x100);
 
+  // uint8_t a = registers.a;
+  // uint8_t adjust;
+  // if (GETCFLAG())
+  //     adjust = 0x60;
+  // else
+  //     adjust = 0;
 
-    // uint8_t a = registers.a;
-    // uint8_t adjust;
-    // if (GETCFLAG())
-    //     adjust = 0x60;
-    // else
-    //     adjust = 0;
+  // if (GETHFLAG()) adjust |= 0x06;
 
-    // if (GETHFLAG()) adjust |= 0x06;
+  // if (!GETNFLAG()) {
+  //     if (a & 0x0f > 0x09) adjust |= 0x06;
+  //     if (a > 0x99) adjust |= 0x60;
+  //     a += adjust;
+  // }
+  // else {
+  //     a -= adjust;
+  // }
 
-    // if (!GETNFLAG()) {
-    //     if (a & 0x0f > 0x09) adjust |= 0x06;
-    //     if (a > 0x99) adjust |= 0x60;
-    //     a += adjust;
-    // }
-    // else {
-    //     a -= adjust;
-    // }
+  // SETCFLAG(adjust >= 0x60);
+  // SETHFLAG(0);
+  // SETZFLAG(a == 0);
 
-    // SETCFLAG(adjust >= 0x60);
-    // SETHFLAG(0);
-    // SETZFLAG(a == 0);
+  // registers.a = a;
 
-    // registers.a = a;
-
-
-    return 0;
+  return 0;
 }
 
 uint8_t exe_jrzr8() {
-    if (GETZFLAG()) {
-        registers.pc += (int8_t)readByte(registers.pc + 1) + 1; // we do not need to remove 1 because the offset is added to the address of the next operation
-        return 4; 
-    }
-    registers.pc++;
-    return 0;
+  if (GETZFLAG()) {
+    registers.pc += (int8_t)readByte(registers.pc + 1) +
+                    1; // we do not need to remove 1 because the offset is added
+                       // to the address of the next operation
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_addhlhl() {
-    add_hl(registers.hl);
+  add_hl(registers.hl);
 
-    return 0;
+  return 0;
 }
 
 uint8_t exe_ldaphli() {
-    registers.a = readByte(registers.hl++);
+  registers.a = readByte(registers.hl++);
 
-    return 0;
+  return 0;
 }
 
 uint8_t exe_dechl() {
-    registers.hl--;
-    return 0;
+  registers.hl--;
+  return 0;
 }
 
 uint8_t exe_incl() {
-    inc8bReg(&registers.l);
-    return 0;
+  inc8bReg(&registers.l);
+  return 0;
 }
 
 uint8_t exe_decl() {
-    dec8bReg(&registers.l);
-    return 0;
+  dec8bReg(&registers.l);
+  return 0;
 }
 
 uint8_t exe_ldld8() {
-    registers.l = readByte(++registers.pc);
-    return 0;
+  registers.l = readByte(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_cpl() {
-    registers.a = ~registers.a;
-    return 0;
+  registers.a = ~registers.a;
+  return 0;
 }
 
 // #######
@@ -885,267 +888,262 @@ uint8_t exe_cpl() {
 // #######
 
 uint8_t exe_jrncr8() {
-    if (!GETCFLAG()) {
-        registers.pc += (int8_t)readByte(registers.pc+1) + 1;; // we do not need to remove 1 because the offset is added to the address of the next operation
-        return 4; 
-    }
-    registers.pc++;
-    return 0;
+  if (!GETCFLAG()) {
+    registers.pc += (int8_t)readByte(registers.pc + 1) + 1;
+    ; // we do not need to remove 1 because the offset is added to the address
+      // of the next operation
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_ldspd16() {
-    registers.sp = readWord(++registers.pc);
-    return 0;
+  registers.sp = readWord(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_ldphlda() {
-    // printf("register a: %X, register hl: %X\n",registers.a, registers.hl);
-    writeByte(registers.hl--, registers.a);
-    return 0;
+  // printf("register a: %X, register hl: %X\n",registers.a, registers.hl);
+  writeByte(registers.hl--, registers.a);
+  return 0;
 }
 
 uint8_t exe_incsp() {
-    registers.sp++;
-    return 0;
+  registers.sp++;
+  return 0;
 }
 
 uint8_t exe_incphl() {
-    uint8_t val = readByte(registers.hl);
-    val++;
-    writeByte(registers.hl, val);
-    return 0;
+  uint8_t val = readByte(registers.hl);
+  val++;
+  writeByte(registers.hl, val);
+  return 0;
 }
 
 uint8_t exe_decphl() {
-    uint8_t val = readByte(registers.hl);
-    val--;
-    writeByte(registers.hl, val);
-    return 0;
+  uint8_t val = readByte(registers.hl);
+  dec8bReg(&val);
+  writeByte(registers.hl, val);
+  return 0;
 }
 
 uint8_t exe_ldphld8() {
-    writeByte(registers.hl, readByte(++registers.pc));
-    return 0;
+  writeByte(registers.hl, readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_scf() {
-    SETCFLAG(1);
-    SETHFLAG(0);
-    SETNFLAG(0);
-    return 0;
+  SETCFLAG(1);
+  SETHFLAG(0);
+  SETNFLAG(0);
+  return 0;
 }
 
 uint8_t exe_jrcr8() {
-    if (GETCFLAG()) {
-        registers.pc += (int8_t)readByte(registers.pc+1) + 1; // we do not need to remove 1 because the offset is added to the address of the next operation
-        return 4; 
-    }
-    registers.pc++;
-    return 0;
+  if (GETCFLAG()) {
+    registers.pc += (int8_t)readByte(registers.pc + 1) +
+                    1; // we do not need to remove 1 because the offset is added
+                       // to the address of the next operation
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_addhlsp() {
-    add_hl(registers.sp);
-    return 0;
+  add_hl(registers.sp);
+  return 0;
 }
 
 uint8_t exe_ldaphld() {
-    registers.a = readByte(registers.hl--);
+  registers.a = readByte(registers.hl--);
 
-    return 0;
+  return 0;
 }
 
 uint8_t exe_decsp() {
-    registers.sp--;
-    return 0;
+  registers.sp--;
+  return 0;
 }
 
 uint8_t exe_inca() {
-    inc8bReg(&registers.a);
-    return 0;
+  inc8bReg(&registers.a);
+  return 0;
 }
 
 uint8_t exe_deca() {
-    dec8bReg(&registers.a);
-    return 0;
+  dec8bReg(&registers.a);
+  return 0;
 }
 
 uint8_t exe_ldad8() {
-    registers.a = readByte(++registers.pc);
-    return 0;
+  registers.a = readByte(++registers.pc);
+  return 0;
 }
 
 uint8_t exe_ccf() {
-    SETCFLAG(!GETCFLAG());
-    SETHFLAG(0);
-    SETNFLAG(0);
+  SETCFLAG(!GETCFLAG());
+  SETHFLAG(0);
+  SETNFLAG(0);
 
-    return 0;
+  return 0;
 }
 
 // #######
 // # 0x4 #
 // #######
 
-uint8_t exe_ldbb() {
-    return 0;
-}
+uint8_t exe_ldbb() { return 0; }
 
 uint8_t exe_ldbc() {
-    registers.b = registers.c;
-    return 0;
+  registers.b = registers.c;
+  return 0;
 }
 
 uint8_t exe_ldbd() {
-    registers.b = registers.d;
-    return 0;
+  registers.b = registers.d;
+  return 0;
 }
 
 uint8_t exe_ldbe() {
-    registers.b = registers.e;
-    return 0;
+  registers.b = registers.e;
+  return 0;
 }
 
 uint8_t exe_ldbh() {
-    registers.b = registers.h;
-    return 0;
+  registers.b = registers.h;
+  return 0;
 }
 
 uint8_t exe_ldbl() {
-    registers.b = registers.l;
-    return 0;
+  registers.b = registers.l;
+  return 0;
 }
 
 uint8_t exe_ldbphl() {
-    registers.b = readByte(registers.hl);
-    return 0;
+  registers.b = readByte(registers.hl);
+  return 0;
 }
 
 uint8_t exe_ldba() {
-    registers.b = registers.a;
-    return 0;
+  registers.b = registers.a;
+  return 0;
 }
 
 uint8_t exe_ldcb() {
-    registers.c = registers.b;
-    return 0;
+  registers.c = registers.b;
+  return 0;
 }
 
-uint8_t exe_ldcc() {
-    return 0;
-}
+uint8_t exe_ldcc() { return 0; }
 
 uint8_t exe_ldcd() {
-    registers.c = registers.d;
-    return 0;
+  registers.c = registers.d;
+  return 0;
 }
 
 uint8_t exe_ldce() {
-    registers.c = registers.e;
-    return 0;
+  registers.c = registers.e;
+  return 0;
 }
 
 uint8_t exe_ldch() {
-    registers.c = registers.h;
-    return 0;
+  registers.c = registers.h;
+  return 0;
 }
 
 uint8_t exe_ldcl() {
-    registers.c = registers.l;
-    return 0;
+  registers.c = registers.l;
+  return 0;
 }
 
 uint8_t exe_ldcphl() {
-    registers.c = readByte(registers.hl);
-    return 0;
+  registers.c = readByte(registers.hl);
+  return 0;
 }
 
 uint8_t exe_ldca() {
-    registers.c = registers.a;
-    return 0;
+  registers.c = registers.a;
+  return 0;
 }
-
 
 // #######
 // # 0x5 #
 // #######
 
 uint8_t exe_lddb() {
-    registers.d = registers.b;
-    return 0;
+  registers.d = registers.b;
+  return 0;
 }
 
 uint8_t exe_lddc() {
-    registers.d = registers.c;
-    return 0;
+  registers.d = registers.c;
+  return 0;
 }
 
-uint8_t exe_lddd() {
-    return 0;
-}
+uint8_t exe_lddd() { return 0; }
 
 uint8_t exe_ldde() {
-    registers.d = registers.e;
-    return 0;
+  registers.d = registers.e;
+  return 0;
 }
 
 uint8_t exe_lddh() {
-    registers.d = registers.h;
-    return 0;
+  registers.d = registers.h;
+  return 0;
 }
 
 uint8_t exe_lddl() {
-    registers.d = registers.l;
-    return 0;
+  registers.d = registers.l;
+  return 0;
 }
 
 uint8_t exe_lddphl() {
-    registers.d = readByte(registers.hl);
-    return 0;
+  registers.d = readByte(registers.hl);
+  return 0;
 }
 
 uint8_t exe_ldda() {
-    registers.d = registers.a;
-    return 0;
+  registers.d = registers.a;
+  return 0;
 }
 
 uint8_t exe_ldeb() {
-    registers.e = registers.b;
-    return 0;
+  registers.e = registers.b;
+  return 0;
 }
 
 uint8_t exe_ldec() {
-    registers.e = registers.c;
-    return 0;
+  registers.e = registers.c;
+  return 0;
 }
 
 uint8_t exe_lded() {
-    registers.e = registers.d;
-    return 0;
+  registers.e = registers.d;
+  return 0;
 }
 
-uint8_t exe_ldee() {
-    return 0;
-}
+uint8_t exe_ldee() { return 0; }
 
 uint8_t exe_ldeh() {
-    registers.e = registers.h;
-    return 0;
+  registers.e = registers.h;
+  return 0;
 }
 
 uint8_t exe_ldel() {
-    registers.e = registers.l;
-    return 0;
+  registers.e = registers.l;
+  return 0;
 }
 
 uint8_t exe_ldephl() {
-    registers.e = readByte(registers.hl);
-    return 0;
+  registers.e = readByte(registers.hl);
+  return 0;
 }
 
 uint8_t exe_ldea() {
-    registers.e = registers.a;
-    return 0;
+  registers.e = registers.a;
+  return 0;
 }
 
 // #######
@@ -1153,2227 +1151,2218 @@ uint8_t exe_ldea() {
 // #######
 
 uint8_t exe_ldhb() {
-    registers.h = registers.b;
-    return 0;
+  registers.h = registers.b;
+  return 0;
 }
 
 uint8_t exe_ldhc() {
-    registers.h = registers.c;
-    return 0;
+  registers.h = registers.c;
+  return 0;
 }
 
 uint8_t exe_ldhd() {
-    registers.h = registers.d;
-    return 0;
+  registers.h = registers.d;
+  return 0;
 }
 
 uint8_t exe_ldhe() {
-    registers.h = registers.e;
-    return 0;
+  registers.h = registers.e;
+  return 0;
 }
 
-uint8_t exe_ldhh() {
-    return 0;
-}
+uint8_t exe_ldhh() { return 0; }
 
 uint8_t exe_ldhl() {
-    registers.h = registers.l;
-    return 0;
+  registers.h = registers.l;
+  return 0;
 }
 
 uint8_t exe_ldhphl() {
-    registers.h = readByte(registers.hl);
-    return 0;
+  registers.h = readByte(registers.hl);
+  return 0;
 }
 
 uint8_t exe_ldha() {
-    registers.h = registers.a;
-    return 0;
+  registers.h = registers.a;
+  return 0;
 }
 
 uint8_t exe_ldlb() {
-    registers.l = registers.b;
-    return 0;
+  registers.l = registers.b;
+  return 0;
 }
 
 uint8_t exe_ldlc() {
-    registers.l = registers.c;
-    return 0;
+  registers.l = registers.c;
+  return 0;
 }
 
 uint8_t exe_ldld() {
-    registers.l = registers.d;
-    return 0;
+  registers.l = registers.d;
+  return 0;
 }
 
 uint8_t exe_ldle() {
-    registers.l = registers.e;
-    return 0;
+  registers.l = registers.e;
+  return 0;
 }
 
 uint8_t exe_ldlh() {
-    registers.l = registers.h;
-    return 0;
+  registers.l = registers.h;
+  return 0;
 }
 
-uint8_t exe_ldll() {
-    return 0;
-}
+uint8_t exe_ldll() { return 0; }
 
 uint8_t exe_ldlphl() {
-    registers.l = readByte(registers.hl);
-    return 0;
+  registers.l = readByte(registers.hl);
+  return 0;
 }
 
 uint8_t exe_ldla() {
-    registers.l = registers.a;
-    return 0;
+  registers.l = registers.a;
+  return 0;
 }
-
 
 // #######
 // # 0x7 #
 // #######
 
 uint8_t exe_ldphlb() {
-    writeByte(registers.hl, registers.b);
-    return 0;
+  writeByte(registers.hl, registers.b);
+  return 0;
 }
 
 uint8_t exe_ldphlc() {
-    writeByte(registers.hl, registers.c);
-    return 0;
+  writeByte(registers.hl, registers.c);
+  return 0;
 }
 
 uint8_t exe_ldphld() {
-    writeByte(registers.hl, registers.d);
-    return 0;
+  writeByte(registers.hl, registers.d);
+  return 0;
 }
 
 uint8_t exe_ldphle() {
-    writeByte(registers.hl, registers.e);
-    return 0;
+  writeByte(registers.hl, registers.e);
+  return 0;
 }
 
 uint8_t exe_ldphlh() {
-    writeByte(registers.hl, registers.h);
-    return 0;
+  writeByte(registers.hl, registers.h);
+  return 0;
 }
 
 uint8_t exe_ldphll() {
-    writeByte(registers.hl, registers.l);
-    return 0;
+  writeByte(registers.hl, registers.l);
+  return 0;
 }
 
 uint8_t exe_halt() {
-    halted = 1;
-    return 0;
+  halted = 1;
+  return 0;
 }
 
 uint8_t exe_ldphla() {
-    writeByte(registers.hl, registers.a);
-    return 0;
+  writeByte(registers.hl, registers.a);
+  return 0;
 }
 
 uint8_t exe_ldab() {
-    registers.a = registers.b;
-    return 0;
+  registers.a = registers.b;
+  return 0;
 }
 
 uint8_t exe_ldac() {
-    registers.a = registers.c;
-    return 0;
+  registers.a = registers.c;
+  return 0;
 }
 
 uint8_t exe_ldad() {
-    registers.a = registers.d;
-    return 0;
+  registers.a = registers.d;
+  return 0;
 }
 
 uint8_t exe_ldae() {
-    registers.a = registers.e;
-    return 0;
+  registers.a = registers.e;
+  return 0;
 }
 
 uint8_t exe_ldah() {
-    registers.a = registers.h;
-    return 0;
+  registers.a = registers.h;
+  return 0;
 }
 
 uint8_t exe_ldal() {
-    registers.a = registers.l;
-    return 0;
+  registers.a = registers.l;
+  return 0;
 }
 
 uint8_t exe_ldaphl() {
-    registers.a = readByte(registers.hl);
-    return 0;
+  registers.a = readByte(registers.hl);
+  return 0;
 }
 
-uint8_t exe_ldaa() {
-    return 0;
-}
-
+uint8_t exe_ldaa() { return 0; }
 
 // #######
 // # 0x8 #
 // #######
 
 uint8_t exe_addab() {
-    add_a(registers.b);
-    return 0;
+  add_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_addac() {
-    add_a(registers.c);
-    return 0;
+  add_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_addad() {
-    add_a(registers.d);
-    return 0;
+  add_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_addae() {
-    add_a(registers.e);
-    return 0;
+  add_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_addah() {
-    add_a(registers.h);
-    return 0;
+  add_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_addal() {
-    add_a(registers.l);
-    return 0;
+  add_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_addaphl() {
-    add_a(readByte(registers.hl));
-    return 0;
+  add_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_addaa() {
-    add_a(registers.a);
-    return 0;
+  add_a(registers.a);
+  return 0;
 }
 
 uint8_t exe_adcab() {
-    adc_a(registers.b);
-    return 0;
+  adc_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_adcac() {
-    adc_a(registers.c);
-    return 0;
+  adc_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_adcad() {
-    adc_a(registers.d);
-    return 0;
+  adc_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_adcae() {
-    adc_a(registers.e);
-    return 0;
+  adc_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_adcah() {
-    adc_a(registers.h);
-    return 0;
+  adc_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_adcal() {
-    adc_a(registers.l);
-    return 0;
+  adc_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_adcaphl() {
-    adc_a(readByte(registers.hl));
-    return 0;
+  adc_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_adcaa() {
-    adc_a(registers.a);
-    return 0;
+  adc_a(registers.a);
+  return 0;
 }
-
 
 // #######
 // # 0x9 #
 // #######
 
 uint8_t exe_subab() {
-    sub_a(registers.b);
-    return 0;
+  sub_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_subac() {
-    sub_a(registers.c);
-    return 0;
+  sub_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_subad() {
-    sub_a(registers.d);
-    return 0;
+  sub_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_subae() {
-    sub_a(registers.e);
-    return 0;
+  sub_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_subah() {
-    sub_a(registers.h);
-    return 0;
+  sub_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_subal() {
-    sub_a(registers.l);
-    return 0;
+  sub_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_subaphl() {
-    sub_a(readByte(registers.hl));
-    return 0;
+  sub_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_subaa() {
-    sub_a(registers.a);
-    return 0;
+  sub_a(registers.a);
+  return 0;
 }
 
 uint8_t exe_sbcab() {
-    sbc_a(registers.b);
-    return 0;
+  sbc_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_sbcac() {
-    sbc_a(registers.c);
-    return 0;
+  sbc_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_sbcad() {
-    sbc_a(registers.d);
-    return 0;
+  sbc_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_sbcae() {
-    sbc_a(registers.e);
-    return 0;
+  sbc_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_sbcah() {
-    sbc_a(registers.h);
-    return 0;
+  sbc_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_sbcal() {
-    sbc_a(registers.l);
-    return 0;
+  sbc_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_sbcaphl() {
-    sbc_a(readByte(registers.hl));
-    return 0;
+  sbc_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_sbcaa() {
-    sbc_a(registers.a);
-    return 0;
+  sbc_a(registers.a);
+  return 0;
 }
-
 
 // #######
 // # 0xa #
 // #######
 
 uint8_t exe_andab() {
-    and_a(registers.b);
-    return 0;
+  and_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_andac() {
-    and_a(registers.c);
-    return 0;
+  and_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_andad() {
-    and_a(registers.d);
-    return 0;
+  and_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_andae() {
-    and_a(registers.e);
-    return 0;
+  and_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_andah() {
-    and_a(registers.h);
-    return 0;
+  and_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_andal() {
-    and_a(registers.l);
-    return 0;
+  and_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_andaphl() {
-    and_a(readByte(registers.hl));
-    return 0;
+  and_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_andaa() {
-    and_a(registers.a);
-    return 0;
+  and_a(registers.a);
+  return 0;
 }
 
 uint8_t exe_xorab() {
-    xor_a(registers.b);
-    return 0;
+  xor_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_xorac() {
-    xor_a(registers.c);
-    return 0;
+  xor_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_xorad() {
-    xor_a(registers.d);
-    return 0;
+  xor_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_xorae() {
-    xor_a(registers.e);
-    return 0;
+  xor_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_xorah() {
-    xor_a(registers.h);
-    return 0;
+  xor_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_xoral() {
-    xor_a(registers.l);
-    return 0;
+  xor_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_xoraphl() {
-    xor_a(readByte(registers.hl));
-    return 0;
+  xor_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_xoraa() {
-    xor_a(registers.a);
-    return 0;
+  xor_a(registers.a);
+  return 0;
 }
-
 
 // #######
 // # 0xb #
 // #######
 
 uint8_t exe_orab() {
-    or_a(registers.b);
-    return 0;
+  or_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_orac() {
-    or_a(registers.c);
-    return 0;
+  or_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_orad() {
-    or_a(registers.d);
-    return 0;
+  or_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_orae() {
-    or_a(registers.e);
-    return 0;
+  or_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_orah() {
-    or_a(registers.h);
-    return 0;
+  or_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_oral() {
-    or_a(registers.l);
-    return 0;
+  or_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_oraphl() {
-    or_a(readByte(registers.hl));
-    return 0;
+  or_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_oraa() {
-    or_a(registers.a);
-    return 0;
+  or_a(registers.a);
+  return 0;
 }
 
 uint8_t exe_cpab() {
-    cp_a(registers.b);
-    return 0;
+  cp_a(registers.b);
+  return 0;
 }
 
 uint8_t exe_cpac() {
-    cp_a(registers.c);
-    return 0;
+  cp_a(registers.c);
+  return 0;
 }
 
 uint8_t exe_cpad() {
-    cp_a(registers.d);
-    return 0;
+  cp_a(registers.d);
+  return 0;
 }
 
 uint8_t exe_cpae() {
-    cp_a(registers.e);
-    return 0;
+  cp_a(registers.e);
+  return 0;
 }
 
 uint8_t exe_cpah() {
-    cp_a(registers.h);
-    return 0;
+  cp_a(registers.h);
+  return 0;
 }
 
 uint8_t exe_cpal() {
-    cp_a(registers.l);
-    return 0;
+  cp_a(registers.l);
+  return 0;
 }
 
 uint8_t exe_cpaphl() {
-    cp_a(readByte(registers.hl));
-    return 0;
+  cp_a(readByte(registers.hl));
+  return 0;
 }
 
 uint8_t exe_cpaa() {
-    cp_a(registers.a);
-    return 0;
+  cp_a(registers.a);
+  return 0;
 }
-
 
 // #######
 // # 0xc #
 // #######
 
 uint8_t exe_retnz() {
-    if (!GETZFLAG()) {
-        registers.pc = popWordStack() - 1;
-        return 12;
-    }
-    return 0;
+  if (!GETZFLAG()) {
+    registers.pc = popWordStack() - 1;
+    return 12;
+  }
+  return 0;
 }
 
 uint8_t exe_popbc() {
-    registers.bc = popWordStack();
-    return 0;
+  registers.bc = popWordStack();
+  return 0;
 }
 
 uint8_t exe_jpnza16() {
-    if (!GETZFLAG()) {
-        registers.pc = readWord(registers.pc+1) - 2; // we remove 2 because it will be added at the end of the clock function
-        return 4;
-    }
-    registers.pc++;
-    return 0;
+  if (!GETZFLAG()) {
+    registers.pc =
+        readWord(registers.pc + 1) - 2; // we remove 2 because it will be added
+                                        // at the end of the clock function
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_jpa16() {
-    registers.pc = readWord(++registers.pc) - 2; // we remove 2 because it will be added at the end of the clock function
-    return 0;
+  registers.pc =
+      readWord(++registers.pc) - 2; // we remove 2 because it will be added at
+                                    // the end of the clock function
+  return 0;
 }
 
 uint8_t exe_callnza16() {
-    if (!GETZFLAG()) {
-        uint16_t addr = readWord(registers.pc+1);
-        pushWordStack(registers.pc+3);
-        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
-        return 12;
-    }
-    registers.pc++;
-    return 0;
+  if (!GETZFLAG()) {
+    uint16_t addr = readWord(registers.pc + 1);
+    pushWordStack(registers.pc + 3);
+    registers.pc = addr - 2; // we remove 2 because it will be added at the end
+                             // of the clock function
+    return 12;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_pushbc() {
-    pushWordStack(registers.bc);
-    return 0;
+  pushWordStack(registers.bc);
+  return 0;
 }
 
 uint8_t exe_addad8() {
-    add_a(readByte(++registers.pc));
-    return 0;
+  add_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst00h() {
-    registers.pc = 0xffff;
-    return 0;
+  pushWordStack(registers.pc + 1);
+  registers.pc = 0xffff;
+  return 0;
 }
 
 uint8_t exe_retz() {
-    if (GETZFLAG()) {
-        registers.pc = popWordStack() - 1;
-        return 12;
-    }
-    return 0;
+  if (GETZFLAG()) {
+    registers.pc = popWordStack() - 1;
+    return 12;
+  }
+  return 0;
 }
 
 uint8_t exe_ret() {
-    uint16_t stack = popWordStack();
-    // printf("returning to %X\n", stack-1);
-    registers.pc = stack - 1;
-    return 0;
+  uint16_t stack = popWordStack();
+  // printf("returning to %X\n", stack-1);
+  registers.pc = stack - 1;
+  return 0;
 }
 
 uint8_t exe_jpza16() {
-    if (GETZFLAG()) {
-        registers.pc = readWord(registers.pc + 1) - 2; // we remove 2 because it will be added at the end of the clock function
-        return 4;
-    }
-    registers.pc++;
-    return 0;
+  if (GETZFLAG()) {
+    registers.pc =
+        readWord(registers.pc + 1) - 2; // we remove 2 because it will be added
+                                        // at the end of the clock function
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_cbprefix() {
-    // IMPLEMENT CB opcodes
-    return 0;
+  // IMPLEMENT CB opcodes
+  return 0;
 }
 
 uint8_t exe_callza16() {
-    if (GETZFLAG()) {
-        uint16_t addr = readWord(registers.pc+1);
-        pushWordStack(registers.pc+3); // In order to skip 
-        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
-        return 12;
-    }
-    registers.pc++;
-    return 0;
+  if (GETZFLAG()) {
+    uint16_t addr = readWord(registers.pc + 1);
+    pushWordStack(registers.pc + 3); // In order to skip
+    registers.pc = addr - 2; // we remove 2 because it will be added at the end
+                             // of the clock function
+    return 12;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_calla16() {
-    uint16_t addr = readWord(++registers.pc);
-    pushWordStack(registers.pc+2); // In order to skip 
-    registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
-    return 0;
+  uint16_t addr = readWord(++registers.pc);
+  pushWordStack(registers.pc + 2); // In order to skip
+  registers.pc = addr - 2; // we remove 2 because it will be added at the end of
+                           // the clock function
+  return 0;
 }
 
 uint8_t exe_adcad8() {
-    adc_a(readByte(++registers.pc));
+  adc_a(readByte(++registers.pc));
 
-    return 0;
+  return 0;
 }
 
 uint8_t exe_rst08h() {
-    registers.pc = 0x08 -1;
-    return 0;
+  registers.pc = 0x08 - 1;
+  return 0;
 }
-
 
 // #######
 // # 0xd #
 // #######
 
 uint8_t exe_retnc() {
-    if (!GETCFLAG()) {
-        registers.pc = popWordStack() - 1;
-        return 12;
-    }
-    return 0;
+  if (!GETCFLAG()) {
+    registers.pc = popWordStack() - 1;
+    return 12;
+  }
+  return 0;
 }
 
 uint8_t exe_popde() {
-    registers.de = popWordStack();
-    return 0;
+  registers.de = popWordStack();
+  return 0;
 }
 
 uint8_t exe_jpnca16() {
-    if (!GETCFLAG()) {
-        registers.pc = readWord(registers.pc + 1) - 2; // we remove 2 because it will be added at the end of the clock function
-        return 4;
-    }
-    registers.pc++;
-    return 0;
+  if (!GETCFLAG()) {
+    registers.pc =
+        readWord(registers.pc + 1) - 2; // we remove 2 because it will be added
+                                        // at the end of the clock function
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_callnca16() {
-    if (!GETCFLAG()) {
-        uint16_t addr = readWord(registers.pc+1);
-        pushWordStack(registers.pc+3); // In order to skip 
-        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
-        return 12;
-    }
-    registers.pc++;
-    return 0;
+  if (!GETCFLAG()) {
+    uint16_t addr = readWord(registers.pc + 1);
+    pushWordStack(registers.pc + 3); // In order to skip
+    registers.pc = addr - 2; // we remove 2 because it will be added at the end
+                             // of the clock function
+    return 12;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_pushde() {
-    pushWordStack(registers.de);
-    return 0;
+  pushWordStack(registers.de);
+  return 0;
 }
 
 uint8_t exe_subad8() {
-    sub_a(readByte(++registers.pc));
-    return 0;
+  sub_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst10h() {
-    registers.pc = 0x10 - 1;
-    return 0;
+  registers.pc = 0x10 - 1;
+  return 0;
 }
 
 uint8_t exe_retc() {
-    if (GETCFLAG()) {
-        registers.pc = popWordStack() - 1;
-        return 12;
-    }
-    return 0;
+  if (GETCFLAG()) {
+    registers.pc = popWordStack() - 1;
+    return 12;
+  }
+  return 0;
 }
 
 uint8_t exe_reti() {
-    registers.pc = popWordStack() - 1;
-    IME = 1;
-    return 0;
+  registers.pc = popWordStack() - 1;
+  IME = 1;
+  return 0;
 }
 
 uint8_t exe_jpca16() {
-    if (GETCFLAG()) {
-        registers.pc = readWord(registers.pc + 1) - 2; // we remove 2 because it will be added at the end of the clock function
-        return 4;
-    }
-    registers.pc++;
-    return 0;
+  if (GETCFLAG()) {
+    registers.pc =
+        readWord(registers.pc + 1) - 2; // we remove 2 because it will be added
+                                        // at the end of the clock function
+    return 4;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_callca16() {
-    if (GETCFLAG()) {
-        uint16_t addr = readWord(registers.pc+1);
-        pushWordStack(registers.pc+3); // In order to skip 
-        registers.pc = addr - 2; // we remove 2 because it will be added at the end of the clock function
-        return 12;
-    }
-    registers.pc++;
-    return 0;
+  if (GETCFLAG()) {
+    uint16_t addr = readWord(registers.pc + 1);
+    pushWordStack(registers.pc + 3); // In order to skip
+    registers.pc = addr - 2; // we remove 2 because it will be added at the end
+                             // of the clock function
+    return 12;
+  }
+  registers.pc++;
+  return 0;
 }
 
 uint8_t exe_sbcad8() {
-    sbc_a(readByte(++registers.pc));
-    return 0;
+  sbc_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst18h() {
-    registers.pc = 0x18 - 1;
-    return 0;
+  registers.pc = 0x18 - 1;
+  return 0;
 }
-
 
 // #######
 // # 0xe #
 // #######
 
-
 uint8_t exe_ldhpa8a() {
-    writeByte(0xff00 + (uint16_t)readByte(++registers.pc), registers.a);
-    return 0;
+  writeByte(0xff00 + (uint16_t)readByte(++registers.pc), registers.a);
+  return 0;
 }
 
 uint8_t exe_pophl() {
-    registers.hl = popWordStack();
-    return 0;
+  registers.hl = popWordStack();
+  return 0;
 }
 
 uint8_t exe_ldpca() {
-    writeByte(0xff00 + (uint16_t)GETCFLAG(), registers.a);
-    return 0;
+  writeByte(0xff00 + (uint16_t)GETCFLAG(), registers.a);
+  return 0;
 }
 
 uint8_t exe_pushhl() {
-    pushWordStack(registers.hl);
-    return 0;
+  pushWordStack(registers.hl);
+  return 0;
 }
 
 uint8_t exe_andad8() {
-    and_a(readByte(++registers.pc));
-    return 0;
+  and_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst20h() {
-    registers.pc = 0x20 - 1;
-    return 0;
+  registers.pc = 0x20 - 1;
+  return 0;
 }
 
 uint8_t exe_addspr8() {
-    add_sp((int8_t)readByte(++registers.pc));
-    return 0;
+  add_sp((int8_t)readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_jphl() {
-    registers.pc = registers.hl - 1; // We remove 1 because it will be added at the end of the clock function
-    return 0;
+  registers.pc = registers.hl - 1; // We remove 1 because it will be added at
+                                   // the end of the clock function
+  return 0;
 }
 
 uint8_t exe_ldpa16a() {
-    writeByte(readWord(++registers.pc), registers.a);
-    return 0;
+  writeByte(readWord(++registers.pc), registers.a);
+  return 0;
 }
 
 uint8_t exe_xorad8() {
-    xor_a(readByte(++registers.pc));
-    return 0;
+  xor_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst28h() {
-    registers.pc = 0x28 - 1;
-    return 0;
+  registers.pc = 0x28 - 1;
+  return 0;
 }
-
 
 // #######
 // # 0xf #
 // #######
 
 uint8_t exe_ldhapa8() {
-    // printf(" addr ldhapa8 %X, %X ", (uint16_t)readByte(registers.pc+1), readByte(0xff00 + (uint16_t)readByte(registers.pc+1)));
-    registers.a = readByte(0xff00 + (uint16_t)readByte(++registers.pc));
-    return 0;
+  // printf(" addr ldhapa8 %X, %X ", (uint16_t)readByte(registers.pc+1),
+  // readByte(0xff00 + (uint16_t)readByte(registers.pc+1)));
+  registers.a = readByte(0xff00 + (uint16_t)readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_popaf() {
-    registers.af = popWordStack();
-    registers.af = registers.af & 0xfff0; // only the upper bits (7 5 6 4) are relevant for register f, the rest is discarded
-    return 0;
+  registers.af = popWordStack();
+  registers.af =
+      registers.af & 0xfff0; // only the upper bits (7 5 6 4) are relevant for
+                             // register f, the rest is discarded
+  return 0;
 }
 
 uint8_t exe_ldapc() {
-    registers.a = readByte(0xff00 + (uint16_t)GETCFLAG());
-    return 0;
+  registers.a = readByte(0xff00 + (uint16_t)GETCFLAG());
+  return 0;
 }
 
 uint8_t exe_di() {
-    IME = 0;
-    return 0;
+  IME = 0;
+  return 0;
 }
 
 uint8_t exe_pushaf() {
-    pushWordStack(registers.af);
-    return 0;
+  pushWordStack(registers.af);
+  return 0;
 }
 
 uint8_t exe_orad8() {
-    or_a(readByte(++registers.pc));
-    return 0;
+  or_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst30h() {
-    registers.pc = 0x30 - 1;
-    return 0;
+  registers.pc = 0x30 - 1;
+  return 0;
 }
 
 uint8_t exe_ldhlspaddr8() {
-    uint16_t temp = registers.sp;
-    add_sp(readByte(++registers.pc));
-    registers.hl = registers.sp;
-    registers.sp = temp;
-    return 0;
+  uint16_t temp = registers.sp;
+  add_sp(readByte(++registers.pc));
+  registers.hl = registers.sp;
+  registers.sp = temp;
+  return 0;
 }
 
 uint8_t exe_ldsphl() {
-    registers.sp = registers.hl;
-    return 0;
+  registers.sp = registers.hl;
+  return 0;
 }
 
 uint8_t exe_ldapa16() {
-    registers.a = readByte(readWord(++registers.pc));
-    return 0;
+  registers.a = readByte(readWord(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_ei() {
-    IME = 1;
-    return 0;
+  IME = 1;
+  return 0;
 }
 
 uint8_t exe_cpad8() {
-    cp_a(readByte(++registers.pc));
-    return 0;
+  cp_a(readByte(++registers.pc));
+  return 0;
 }
 
 uint8_t exe_rst38h() {
-    registers.pc = 0x38 - 1;
-    return 0;
+  registers.pc = 0x38 - 1;
+  return 0;
 }
-
-
-
 
 /* CP PREFIX OPCODES*/
 
 // 0x0
 uint8_t exe_cb_rlcb() {
-    rotateLeft(&registers.b);
-    return 0;
+  rotateLeft(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_rlcc() {
-    rotateLeft(&registers.c);
-    return 0;
+  rotateLeft(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_rlcd() {
-    rotateLeft(&registers.d);
-    return 0;
+  rotateLeft(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_rlce() {
-    rotateLeft(&registers.e);
-    return 0;
+  rotateLeft(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_rlch() {
-    rotateLeft(&registers.h);
-    return 0;
+  rotateLeft(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_rlcl() {
-    rotateLeft(&registers.l);
-    return 0;
+  rotateLeft(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_rlcphl() {
-    uint8_t temp = readByte(registers.hl);
-    rotateLeft(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  rotateLeft(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_rlca() {
-    rotateLeft(&registers.a);
-    return 0;
+  rotateLeft(&registers.a);
+  return 0;
 }
 
 uint8_t exe_cb_rrcb() {
-    rotateRight(&registers.b);
-    return 0;
+  rotateRight(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_rrcc() {
-    rotateRight(&registers.c);
-    return 0;
+  rotateRight(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_rrcd() {
-    rotateRight(&registers.d);
-    return 0;
+  rotateRight(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_rrce() {
-    rotateRight(&registers.e);
-    return 0;
+  rotateRight(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_rrch() {
-    rotateRight(&registers.h);
-    return 0;
+  rotateRight(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_rrcl() {
-    rotateRight(&registers.l);
-    return 0;
+  rotateRight(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_rrcphl() {
-    uint8_t temp = readByte(registers.hl);
-    rotateRight(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  rotateRight(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_rrca() {
-    rotateRight(&registers.a);
-    return 0;
+  rotateRight(&registers.a);
+  return 0;
 }
-
 
 // 0x1
 uint8_t exe_cb_rlb() {
-    rotateLeftCarry(&registers.b);
-    return 0;
+  rotateLeftCarry(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_rlc() {
-    rotateLeftCarry(&registers.c);
-    return 0;
+  rotateLeftCarry(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_rld() {
-    rotateLeftCarry(&registers.d);
-    return 0;
+  rotateLeftCarry(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_rle() {
-    rotateLeftCarry(&registers.e);
-    return 0;
+  rotateLeftCarry(&registers.e);
+  return 0;
 }
 uint8_t exe_cb_rlh() {
-    rotateLeftCarry(&registers.h);
-    return 0;
+  rotateLeftCarry(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_rll() {
-    rotateLeftCarry(&registers.l);
-    return 0;
+  rotateLeftCarry(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_rlphl() {
-    uint8_t temp = readByte(registers.hl);
-    rotateLeftCarry(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  rotateLeftCarry(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_rla() {
-    rotateLeftCarry(&registers.a);
-    return 0;
+  rotateLeftCarry(&registers.a);
+  return 0;
 }
 
 uint8_t exe_cb_rrb() {
-    rotateRightCarry(&registers.b);
-    return 0;
+  rotateRightCarry(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_rrc() {
-    rotateRightCarry(&registers.c);
-    return 0;
+  rotateRightCarry(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_rrd() {
-    rotateRightCarry(&registers.d);
-    return 0;
+  rotateRightCarry(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_rre() {
-    rotateRightCarry(&registers.e);
-    return 0;
+  rotateRightCarry(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_rrh() {
-    rotateRightCarry(&registers.h);
-    return 0;
+  rotateRightCarry(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_rrl() {
-    rotateRightCarry(&registers.l);
-    return 0;
+  rotateRightCarry(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_rrphl() {
-    uint8_t temp = readByte(registers.hl);
-    rotateRightCarry(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  rotateRightCarry(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_rra() {
-    rotateRightCarry(&registers.a);
-    return 0;
+  rotateRightCarry(&registers.a);
+  return 0;
 }
-
 
 // 0x2
 uint8_t exe_cb_slab() {
-    shiftLeft(&registers.b);
-    return 0;
+  shiftLeft(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_slac() {
-    shiftLeft(&registers.c);
-    return 0;
+  shiftLeft(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_slad() {
-    shiftLeft(&registers.d);
-    return 0;
+  shiftLeft(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_slae() {
-    shiftLeft(&registers.e);
-    return 0;
+  shiftLeft(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_slah() {
-    shiftLeft(&registers.h);
-    return 0;
+  shiftLeft(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_slal() {
-    shiftLeft(&registers.l);
-    return 0;
+  shiftLeft(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_slaphl() {
-    uint8_t temp = readByte(registers.hl);
-    shiftLeft(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  shiftLeft(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_slaa() {
-    shiftLeft(&registers.a);
-    return 0;
+  shiftLeft(&registers.a);
+  return 0;
 }
 
 uint8_t exe_cb_srab() {
-    shiftRightMSB(&registers.b);
-    return 0;
+  shiftRightMSB(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_srac() {
-    shiftRightMSB(&registers.c);
-    return 0;
+  shiftRightMSB(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_srad() {
-    shiftRightMSB(&registers.d);
-    return 0;
+  shiftRightMSB(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_srae() {
-    shiftRightMSB(&registers.e);
-    return 0;
+  shiftRightMSB(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_srah() {
-    shiftRightMSB(&registers.h);
-    return 0;
+  shiftRightMSB(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_sral() {
-    shiftRightMSB(&registers.l);
-    return 0;
+  shiftRightMSB(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_sraphl() {
-    uint8_t temp = readByte(registers.hl);
-    shiftRightMSB(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  shiftRightMSB(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_sraa() {
-    shiftRightMSB(&registers.l);
-    return 0;
+  shiftRightMSB(&registers.l);
+  return 0;
 }
-
 
 // 0x3
 uint8_t exe_cb_swapb() {
-    swap(&registers.b);
-    return 0;
+  swap(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_swapc() {
-    swap(&registers.c);
-    return 0;
+  swap(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_swapd() {
-    swap(&registers.d);
-    return 0;
+  swap(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_swape() {
-    swap(&registers.e);
-    return 0;
+  swap(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_swaph() {
-    swap(&registers.h);
-    return 0;
+  swap(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_swapl() {
-    swap(&registers.l);
-    return 0;
+  swap(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_swapphl() {
-    uint8_t temp = readByte(registers.hl);
-    swap(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  swap(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_swapa() {
-    swap(&registers.a);
-    return 0;
+  swap(&registers.a);
+  return 0;
 }
 
 uint8_t exe_cb_srlb() {
-    shiftRight(&registers.b);
-    return 0;
+  shiftRight(&registers.b);
+  return 0;
 }
 
 uint8_t exe_cb_srlc() {
-    shiftRight(&registers.c);
-    return 0;
+  shiftRight(&registers.c);
+  return 0;
 }
 
 uint8_t exe_cb_srld() {
-    shiftRight(&registers.d);
-    return 0;
+  shiftRight(&registers.d);
+  return 0;
 }
 
 uint8_t exe_cb_srle() {
-    shiftRight(&registers.e);
-    return 0;
+  shiftRight(&registers.e);
+  return 0;
 }
 
 uint8_t exe_cb_srlh() {
-    shiftRight(&registers.h);
-    return 0;
+  shiftRight(&registers.h);
+  return 0;
 }
 
 uint8_t exe_cb_srll() {
-    shiftRight(&registers.l);
-    return 0;
+  shiftRight(&registers.l);
+  return 0;
 }
 
 uint8_t exe_cb_srlphl() {
-    uint8_t temp = readByte(registers.hl);
-    shiftRight(&temp);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  shiftRight(&temp);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_srla() {
-    shiftRight(&registers.a);
-    return 0;
+  shiftRight(&registers.a);
+  return 0;
 }
-
 
 // 0x4
 
 uint8_t exe_cb_bit0b() {
-    checkBit(&registers.b, 0);
-    return 0;
+  checkBit(&registers.b, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit0c() {
-    checkBit(&registers.c, 0);
-    return 0;
+  checkBit(&registers.c, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit0d() {
-    checkBit(&registers.d, 0);
-    return 0;
+  checkBit(&registers.d, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit0e() {
-    checkBit(&registers.e, 0);
-    return 0;
+  checkBit(&registers.e, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit0h() {
-    checkBit(&registers.h, 0);
-    return 0;
+  checkBit(&registers.h, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit0l() {
-    checkBit(&registers.l, 0);
-    return 0;
+  checkBit(&registers.l, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit0phl() {
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 0);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 0);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_bit0a() {
-    checkBit(&registers.a, 0);
-    return 0;
+  checkBit(&registers.a, 0);
+  return 0;
 }
 
 uint8_t exe_cb_bit1b() {
-    checkBit(&registers.b, 1);
-    return 0;
+  checkBit(&registers.b, 1);
+  return 0;
 }
 
 uint8_t exe_cb_bit1c() {
-    checkBit(&registers.c, 1);
-    return 0;
+  checkBit(&registers.c, 1);
+  return 0;
 }
 
 uint8_t exe_cb_bit1d() {
-    checkBit(&registers.d, 1);
-    return 0;
+  checkBit(&registers.d, 1);
+  return 0;
 }
 
 uint8_t exe_cb_bit1e() {
-    checkBit(&registers.e, 1);
-    return 0;
+  checkBit(&registers.e, 1);
+  return 0;
 }
 
 uint8_t exe_cb_bit1h() {
-    checkBit(&registers.h, 1);
-    return 0;
+  checkBit(&registers.h, 1);
+  return 0;
 }
 
 uint8_t exe_cb_bit1l() {
-    checkBit(&registers.l, 1);
-    return 0;
+  checkBit(&registers.l, 1);
+  return 0;
 }
 
 uint8_t exe_cb_bit1phl() {
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 1);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 1);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_bit1a() {
-    checkBit(&registers.a, 1);
-    return 0;
+  checkBit(&registers.a, 1);
+  return 0;
 }
 
 // 0x5
-uint8_t exe_cb_bit2b(){
-    checkBit(&registers.b, 2);
-    return 0;
+uint8_t exe_cb_bit2b() {
+  checkBit(&registers.b, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit2c(){
-    checkBit(&registers.c, 2);
-    return 0;
+uint8_t exe_cb_bit2c() {
+  checkBit(&registers.c, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit2d(){
-    checkBit(&registers.d, 2);
-    return 0;
+uint8_t exe_cb_bit2d() {
+  checkBit(&registers.d, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit2e(){
-    checkBit(&registers.e, 2);
-    return 0;
+uint8_t exe_cb_bit2e() {
+  checkBit(&registers.e, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit2h(){
-    checkBit(&registers.h, 2);
-    return 0;
+uint8_t exe_cb_bit2h() {
+  checkBit(&registers.h, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit2l(){
-    checkBit(&registers.l, 2);
-    return 0;
+uint8_t exe_cb_bit2l() {
+  checkBit(&registers.l, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit2phl(){
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 2);
-    writeByte(registers.hl, temp);
-    return 0;
+uint8_t exe_cb_bit2phl() {
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 2);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
-uint8_t exe_cb_bit2a(){
-    checkBit(&registers.a, 2);
-    return 0;
+uint8_t exe_cb_bit2a() {
+  checkBit(&registers.a, 2);
+  return 0;
 }
 
-uint8_t exe_cb_bit3b(){
-    checkBit(&registers.b, 3);
-    return 0;
+uint8_t exe_cb_bit3b() {
+  checkBit(&registers.b, 3);
+  return 0;
 }
 
-uint8_t exe_cb_bit3c(){
-    checkBit(&registers.c, 3);
-    return 0;
+uint8_t exe_cb_bit3c() {
+  checkBit(&registers.c, 3);
+  return 0;
 }
 
-uint8_t exe_cb_bit3d(){
-    checkBit(&registers.d, 3);
-    return 0;
+uint8_t exe_cb_bit3d() {
+  checkBit(&registers.d, 3);
+  return 0;
 }
 
-uint8_t exe_cb_bit3e(){
-    checkBit(&registers.e, 3);
-    return 0;
+uint8_t exe_cb_bit3e() {
+  checkBit(&registers.e, 3);
+  return 0;
 }
 
-uint8_t exe_cb_bit3h(){
-    checkBit(&registers.h, 3);
-    return 0;
+uint8_t exe_cb_bit3h() {
+  checkBit(&registers.h, 3);
+  return 0;
 }
 
-uint8_t exe_cb_bit3l(){
-    checkBit(&registers.l, 3);
-    return 0;
+uint8_t exe_cb_bit3l() {
+  checkBit(&registers.l, 3);
+  return 0;
 }
 
-uint8_t exe_cb_bit3phl(){
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 3);
-    writeByte(registers.hl, temp);
-    return 0;
+uint8_t exe_cb_bit3phl() {
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 3);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
-uint8_t exe_cb_bit3a(){
-    checkBit(&registers.a, 3);
-    return 0;
+uint8_t exe_cb_bit3a() {
+  checkBit(&registers.a, 3);
+  return 0;
 }
-
 
 // 0x6
-uint8_t exe_cb_bit4b(){
-    checkBit(&registers.b, 4);
-    return 0;
+uint8_t exe_cb_bit4b() {
+  checkBit(&registers.b, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit4c(){
-    checkBit(&registers.c, 4);
-    return 0;
+uint8_t exe_cb_bit4c() {
+  checkBit(&registers.c, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit4d(){
-    checkBit(&registers.d, 4);
-    return 0;
+uint8_t exe_cb_bit4d() {
+  checkBit(&registers.d, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit4e(){
-    checkBit(&registers.e, 4);
-    return 0;
+uint8_t exe_cb_bit4e() {
+  checkBit(&registers.e, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit4h(){
-    checkBit(&registers.h, 4);
-    return 0;
+uint8_t exe_cb_bit4h() {
+  checkBit(&registers.h, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit4l(){
-    checkBit(&registers.l, 4);
-    return 0;
+uint8_t exe_cb_bit4l() {
+  checkBit(&registers.l, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit4phl(){
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 4);
-    writeByte(registers.hl, temp);
-    return 0;
+uint8_t exe_cb_bit4phl() {
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 4);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
-uint8_t exe_cb_bit4a(){
-    checkBit(&registers.a, 4);
-    return 0;
+uint8_t exe_cb_bit4a() {
+  checkBit(&registers.a, 4);
+  return 0;
 }
 
-uint8_t exe_cb_bit5b(){
-    checkBit(&registers.b, 5);
-    return 0;
+uint8_t exe_cb_bit5b() {
+  checkBit(&registers.b, 5);
+  return 0;
 }
 
-uint8_t exe_cb_bit5c(){
-    checkBit(&registers.c, 5);
-    return 0;
+uint8_t exe_cb_bit5c() {
+  checkBit(&registers.c, 5);
+  return 0;
 }
 
-uint8_t exe_cb_bit5d(){
-    checkBit(&registers.d, 5);
-    return 0;
+uint8_t exe_cb_bit5d() {
+  checkBit(&registers.d, 5);
+  return 0;
 }
 
-uint8_t exe_cb_bit5e(){
-    checkBit(&registers.e, 5);
-    return 0;
+uint8_t exe_cb_bit5e() {
+  checkBit(&registers.e, 5);
+  return 0;
 }
 
-uint8_t exe_cb_bit5h(){
-    checkBit(&registers.h, 5);
-    return 0;
+uint8_t exe_cb_bit5h() {
+  checkBit(&registers.h, 5);
+  return 0;
 }
 
-uint8_t exe_cb_bit5l(){
-    checkBit(&registers.l, 5);
-    return 0;
+uint8_t exe_cb_bit5l() {
+  checkBit(&registers.l, 5);
+  return 0;
 }
 
-uint8_t exe_cb_bit5phl(){
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 5);
-    writeByte(registers.hl, temp);
-    return 0;
+uint8_t exe_cb_bit5phl() {
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 5);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
-uint8_t exe_cb_bit5a(){
-    checkBit(&registers.a, 5);
-    return 0;
+uint8_t exe_cb_bit5a() {
+  checkBit(&registers.a, 5);
+  return 0;
 }
-
 
 // 0x7
-uint8_t exe_cb_bit6b(){
-    checkBit(&registers.b, 6);
-    return 0;
+uint8_t exe_cb_bit6b() {
+  checkBit(&registers.b, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit6c(){
-    checkBit(&registers.c, 6);
-    return 0;
+uint8_t exe_cb_bit6c() {
+  checkBit(&registers.c, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit6d(){
-    checkBit(&registers.d, 6);
-    return 0;
+uint8_t exe_cb_bit6d() {
+  checkBit(&registers.d, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit6e(){
-    checkBit(&registers.e, 6);
-    return 0;
+uint8_t exe_cb_bit6e() {
+  checkBit(&registers.e, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit6h(){
-    checkBit(&registers.h, 6);
-    return 0;
+uint8_t exe_cb_bit6h() {
+  checkBit(&registers.h, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit6l(){
-    checkBit(&registers.l, 6);
-    return 0;
+uint8_t exe_cb_bit6l() {
+  checkBit(&registers.l, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit6phl(){
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 6);
-    writeByte(registers.hl, temp);
-    return 0;
+uint8_t exe_cb_bit6phl() {
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 6);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
-uint8_t exe_cb_bit6a(){
-    checkBit(&registers.a, 6);
-    return 0;
+uint8_t exe_cb_bit6a() {
+  checkBit(&registers.a, 6);
+  return 0;
 }
 
-uint8_t exe_cb_bit7b(){
-    checkBit(&registers.b, 7);
-    return 0;
+uint8_t exe_cb_bit7b() {
+  checkBit(&registers.b, 7);
+  return 0;
 }
 
-uint8_t exe_cb_bit7c(){
-    checkBit(&registers.c, 7);
-    return 0;
+uint8_t exe_cb_bit7c() {
+  checkBit(&registers.c, 7);
+  return 0;
 }
 
-uint8_t exe_cb_bit7d(){
-    checkBit(&registers.d, 7);
-    return 0;
+uint8_t exe_cb_bit7d() {
+  checkBit(&registers.d, 7);
+  return 0;
 }
 
-uint8_t exe_cb_bit7e(){
-    checkBit(&registers.e, 7);
-    return 0;
+uint8_t exe_cb_bit7e() {
+  checkBit(&registers.e, 7);
+  return 0;
 }
 
-uint8_t exe_cb_bit7h(){
-    checkBit(&registers.h, 7);
-    return 0;
+uint8_t exe_cb_bit7h() {
+  checkBit(&registers.h, 7);
+  return 0;
 }
 
-uint8_t exe_cb_bit7l(){
-    checkBit(&registers.l, 7);
-    return 0;
+uint8_t exe_cb_bit7l() {
+  checkBit(&registers.l, 7);
+  return 0;
 }
 
-uint8_t exe_cb_bit7phl(){
-    uint8_t temp = readByte(registers.hl);
-    checkBit(&temp, 7);
-    writeByte(registers.hl, temp);
-    return 0;
+uint8_t exe_cb_bit7phl() {
+  uint8_t temp = readByte(registers.hl);
+  checkBit(&temp, 7);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
-uint8_t exe_cb_bit7a(){
-    checkBit(&registers.a, 7);
-    return 0;
+uint8_t exe_cb_bit7a() {
+  checkBit(&registers.a, 7);
+  return 0;
 }
 
 // 0x8
-uint8_t exe_cb_res0b(){
-    reset(&registers.b, 0);
-    return 0;
+uint8_t exe_cb_res0b() {
+  reset(&registers.b, 0);
+  return 0;
 }
 
-uint8_t exe_cb_res0c(){
-    reset(&registers.c, 0);
-    return 0;
+uint8_t exe_cb_res0c() {
+  reset(&registers.c, 0);
+  return 0;
 }
 
-uint8_t exe_cb_res0d(){
-    reset(&registers.d, 0);
-    return 0;
+uint8_t exe_cb_res0d() {
+  reset(&registers.d, 0);
+  return 0;
 }
 
-uint8_t exe_cb_res0e(){
-    reset(&registers.e, 0);
-    return 0;
+uint8_t exe_cb_res0e() {
+  reset(&registers.e, 0);
+  return 0;
 }
 
-uint8_t exe_cb_res0h(){
-    reset(&registers.h, 0);
-    return 0;
+uint8_t exe_cb_res0h() {
+  reset(&registers.h, 0);
+  return 0;
 }
 
-uint8_t exe_cb_res0l(){
-    reset(&registers.l, 0);
-    return 0;
+uint8_t exe_cb_res0l() {
+  reset(&registers.l, 0);
+  return 0;
 }
 
 uint8_t exe_cb_res0phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 0);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 0);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res0a() {
-    reset(&registers.a, 0);
-    return 0;
+  reset(&registers.a, 0);
+  return 0;
 }
 
-uint8_t exe_cb_res1b(){
-    reset(&registers.b, 1);
-    return 0;
+uint8_t exe_cb_res1b() {
+  reset(&registers.b, 1);
+  return 0;
 }
 
-uint8_t exe_cb_res1c(){
-    reset(&registers.c, 1);
-    return 0;
+uint8_t exe_cb_res1c() {
+  reset(&registers.c, 1);
+  return 0;
 }
 
-uint8_t exe_cb_res1d(){
-    reset(&registers.d, 1);
-    return 0;
+uint8_t exe_cb_res1d() {
+  reset(&registers.d, 1);
+  return 0;
 }
 
-uint8_t exe_cb_res1e(){
-    reset(&registers.e, 1);
-    return 0;
+uint8_t exe_cb_res1e() {
+  reset(&registers.e, 1);
+  return 0;
 }
 
-uint8_t exe_cb_res1h(){
-    reset(&registers.h, 1);
-    return 0;
+uint8_t exe_cb_res1h() {
+  reset(&registers.h, 1);
+  return 0;
 }
 
-uint8_t exe_cb_res1l(){
-    reset(&registers.l, 1);
-    return 0;
+uint8_t exe_cb_res1l() {
+  reset(&registers.l, 1);
+  return 0;
 }
 
 uint8_t exe_cb_res1phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 1);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 1);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res1a() {
-    reset(&registers.a, 1);
-    return 0;
+  reset(&registers.a, 1);
+  return 0;
 }
 
 // 0x9
-uint8_t exe_cb_res2b(){
-    reset(&registers.b, 2);
-    return 0;
+uint8_t exe_cb_res2b() {
+  reset(&registers.b, 2);
+  return 0;
 }
 
-uint8_t exe_cb_res2c(){
-    reset(&registers.c, 2);
-    return 0;
+uint8_t exe_cb_res2c() {
+  reset(&registers.c, 2);
+  return 0;
 }
 
-uint8_t exe_cb_res2d(){
-    reset(&registers.d, 2);
-    return 0;
+uint8_t exe_cb_res2d() {
+  reset(&registers.d, 2);
+  return 0;
 }
 
-uint8_t exe_cb_res2e(){
-    reset(&registers.e, 2);
-    return 0;
+uint8_t exe_cb_res2e() {
+  reset(&registers.e, 2);
+  return 0;
 }
 
-uint8_t exe_cb_res2h(){
-    reset(&registers.h, 2);
-    return 0;
+uint8_t exe_cb_res2h() {
+  reset(&registers.h, 2);
+  return 0;
 }
 
-uint8_t exe_cb_res2l(){
-    reset(&registers.l, 2);
-    return 0;
+uint8_t exe_cb_res2l() {
+  reset(&registers.l, 2);
+  return 0;
 }
 
 uint8_t exe_cb_res2phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 2);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 2);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res2a() {
-    reset(&registers.a, 2);
-    return 0;
+  reset(&registers.a, 2);
+  return 0;
 }
 
-uint8_t exe_cb_res3b(){
-    reset(&registers.b, 3);
-    return 0;
+uint8_t exe_cb_res3b() {
+  reset(&registers.b, 3);
+  return 0;
 }
 
-uint8_t exe_cb_res3c(){
-    reset(&registers.c, 3);
-    return 0;
+uint8_t exe_cb_res3c() {
+  reset(&registers.c, 3);
+  return 0;
 }
 
-uint8_t exe_cb_res3d(){
-    reset(&registers.d, 3);
-    return 0;
+uint8_t exe_cb_res3d() {
+  reset(&registers.d, 3);
+  return 0;
 }
 
-uint8_t exe_cb_res3e(){
-    reset(&registers.e, 3);
-    return 0;
+uint8_t exe_cb_res3e() {
+  reset(&registers.e, 3);
+  return 0;
 }
 
-uint8_t exe_cb_res3h(){
-    reset(&registers.h, 3);
-    return 0;
+uint8_t exe_cb_res3h() {
+  reset(&registers.h, 3);
+  return 0;
 }
 
-uint8_t exe_cb_res3l(){
-    reset(&registers.l, 3);
-    return 0;
+uint8_t exe_cb_res3l() {
+  reset(&registers.l, 3);
+  return 0;
 }
 
 uint8_t exe_cb_res3phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 3);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 3);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res3a() {
-    reset(&registers.a, 3);
-    return 0;
+  reset(&registers.a, 3);
+  return 0;
 }
-
 
 // 0xA
-uint8_t exe_cb_res4b(){
-    reset(&registers.b, 4);
-    return 0;
+uint8_t exe_cb_res4b() {
+  reset(&registers.b, 4);
+  return 0;
 }
 
-uint8_t exe_cb_res4c(){
-    reset(&registers.c, 4);
-    return 0;
+uint8_t exe_cb_res4c() {
+  reset(&registers.c, 4);
+  return 0;
 }
 
-uint8_t exe_cb_res4d(){
-    reset(&registers.d, 4);
-    return 0;
+uint8_t exe_cb_res4d() {
+  reset(&registers.d, 4);
+  return 0;
 }
 
-uint8_t exe_cb_res4e(){
-    reset(&registers.e, 4);
-    return 0;
+uint8_t exe_cb_res4e() {
+  reset(&registers.e, 4);
+  return 0;
 }
 
-uint8_t exe_cb_res4h(){
-    reset(&registers.h, 4);
-    return 0;
+uint8_t exe_cb_res4h() {
+  reset(&registers.h, 4);
+  return 0;
 }
 
-uint8_t exe_cb_res4l(){
-    reset(&registers.l, 4);
-    return 0;
+uint8_t exe_cb_res4l() {
+  reset(&registers.l, 4);
+  return 0;
 }
 
 uint8_t exe_cb_res4phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 4);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 4);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res4a() {
-    reset(&registers.a, 4);
-    return 0;
+  reset(&registers.a, 4);
+  return 0;
 }
 
-uint8_t exe_cb_res5b(){
-    reset(&registers.b, 5);
-    return 0;
+uint8_t exe_cb_res5b() {
+  reset(&registers.b, 5);
+  return 0;
 }
 
-uint8_t exe_cb_res5c(){
-    reset(&registers.c, 5);
-    return 0;
+uint8_t exe_cb_res5c() {
+  reset(&registers.c, 5);
+  return 0;
 }
 
-uint8_t exe_cb_res5d(){
-    reset(&registers.d, 5);
-    return 0;
+uint8_t exe_cb_res5d() {
+  reset(&registers.d, 5);
+  return 0;
 }
 
-uint8_t exe_cb_res5e(){
-    reset(&registers.e, 5);
-    return 0;
+uint8_t exe_cb_res5e() {
+  reset(&registers.e, 5);
+  return 0;
 }
 
-uint8_t exe_cb_res5h(){
-    reset(&registers.h, 5);
-    return 0;
+uint8_t exe_cb_res5h() {
+  reset(&registers.h, 5);
+  return 0;
 }
 
-uint8_t exe_cb_res5l(){
-    reset(&registers.l, 5);
-    return 0;
+uint8_t exe_cb_res5l() {
+  reset(&registers.l, 5);
+  return 0;
 }
 
 uint8_t exe_cb_res5phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 5);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 5);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res5a() {
-    reset(&registers.a, 5);
-    return 0;
+  reset(&registers.a, 5);
+  return 0;
 }
 
 // 0xB
-uint8_t exe_cb_res6b(){
-    reset(&registers.b, 6);
-    return 0;
+uint8_t exe_cb_res6b() {
+  reset(&registers.b, 6);
+  return 0;
 }
 
-uint8_t exe_cb_res6c(){
-    reset(&registers.c, 6);
-    return 0;
+uint8_t exe_cb_res6c() {
+  reset(&registers.c, 6);
+  return 0;
 }
 
-uint8_t exe_cb_res6d(){
-    reset(&registers.d, 6);
-    return 0;
+uint8_t exe_cb_res6d() {
+  reset(&registers.d, 6);
+  return 0;
 }
 
-uint8_t exe_cb_res6e(){
-    reset(&registers.e, 6);
-    return 0;
+uint8_t exe_cb_res6e() {
+  reset(&registers.e, 6);
+  return 0;
 }
 
-uint8_t exe_cb_res6h(){
-    reset(&registers.h, 6);
-    return 0;
+uint8_t exe_cb_res6h() {
+  reset(&registers.h, 6);
+  return 0;
 }
 
-uint8_t exe_cb_res6l(){
-    reset(&registers.l, 6);
-    return 0;
+uint8_t exe_cb_res6l() {
+  reset(&registers.l, 6);
+  return 0;
 }
 
 uint8_t exe_cb_res6phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 6);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 6);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res6a() {
-    reset(&registers.a, 6);
-    return 0;
+  reset(&registers.a, 6);
+  return 0;
 }
 
-uint8_t exe_cb_res7b(){
-    reset(&registers.b, 7);
-    return 0;
+uint8_t exe_cb_res7b() {
+  reset(&registers.b, 7);
+  return 0;
 }
 
-uint8_t exe_cb_res7c(){
-    reset(&registers.c, 7);
-    return 0;
+uint8_t exe_cb_res7c() {
+  reset(&registers.c, 7);
+  return 0;
 }
 
-uint8_t exe_cb_res7d(){
-    reset(&registers.d, 7);
-    return 0;
+uint8_t exe_cb_res7d() {
+  reset(&registers.d, 7);
+  return 0;
 }
 
-uint8_t exe_cb_res7e(){
-    reset(&registers.e, 7);
-    return 0;
+uint8_t exe_cb_res7e() {
+  reset(&registers.e, 7);
+  return 0;
 }
 
-uint8_t exe_cb_res7h(){
-    reset(&registers.h, 7);
-    return 0;
+uint8_t exe_cb_res7h() {
+  reset(&registers.h, 7);
+  return 0;
 }
 
-uint8_t exe_cb_res7l(){
-    reset(&registers.l, 7);
-    return 0;
+uint8_t exe_cb_res7l() {
+  reset(&registers.l, 7);
+  return 0;
 }
 
 uint8_t exe_cb_res7phl() {
-    uint8_t temp = readByte(registers.hl);
-    reset(&temp, 7);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  reset(&temp, 7);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_res7a() {
-    reset(&registers.a, 7);
-    return 0;
+  reset(&registers.a, 7);
+  return 0;
 }
-
 
 // 0xC
-uint8_t exe_cb_set0b(){
-    set(&registers.b, 0);
-    return 0;
+uint8_t exe_cb_set0b() {
+  set(&registers.b, 0);
+  return 0;
 }
 
-uint8_t exe_cb_set0c(){
-    set(&registers.c, 0);
-    return 0;
+uint8_t exe_cb_set0c() {
+  set(&registers.c, 0);
+  return 0;
 }
 
-uint8_t exe_cb_set0d(){
-    set(&registers.d, 0);
-    return 0;
+uint8_t exe_cb_set0d() {
+  set(&registers.d, 0);
+  return 0;
 }
 
-uint8_t exe_cb_set0e(){
-    set(&registers.e, 0);
-    return 0;
+uint8_t exe_cb_set0e() {
+  set(&registers.e, 0);
+  return 0;
 }
 
-uint8_t exe_cb_set0h(){
-    set(&registers.h, 0);
-    return 0;
+uint8_t exe_cb_set0h() {
+  set(&registers.h, 0);
+  return 0;
 }
 
-uint8_t exe_cb_set0l(){
-    set(&registers.l, 0);
-    return 0;
+uint8_t exe_cb_set0l() {
+  set(&registers.l, 0);
+  return 0;
 }
 
 uint8_t exe_cb_set0phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 0);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 0);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set0a() {
-    set(&registers.a, 0);
-    return 0;
+  set(&registers.a, 0);
+  return 0;
 }
 
-uint8_t exe_cb_set1b(){
-    set(&registers.b, 1);
-    return 0;
+uint8_t exe_cb_set1b() {
+  set(&registers.b, 1);
+  return 0;
 }
 
-uint8_t exe_cb_set1c(){
-    set(&registers.c, 1);
-    return 0;
+uint8_t exe_cb_set1c() {
+  set(&registers.c, 1);
+  return 0;
 }
 
-uint8_t exe_cb_set1d(){
-    set(&registers.d, 1);
-    return 0;
+uint8_t exe_cb_set1d() {
+  set(&registers.d, 1);
+  return 0;
 }
 
-uint8_t exe_cb_set1e(){
-    set(&registers.e, 1);
-    return 0;
+uint8_t exe_cb_set1e() {
+  set(&registers.e, 1);
+  return 0;
 }
 
-uint8_t exe_cb_set1h(){
-    set(&registers.h, 1);
-    return 0;
+uint8_t exe_cb_set1h() {
+  set(&registers.h, 1);
+  return 0;
 }
 
-uint8_t exe_cb_set1l(){
-    set(&registers.l, 1);
-    return 0;
+uint8_t exe_cb_set1l() {
+  set(&registers.l, 1);
+  return 0;
 }
 
 uint8_t exe_cb_set1phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 1);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 1);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set1a() {
-    set(&registers.a, 1);
-    return 0;
+  set(&registers.a, 1);
+  return 0;
 }
-
 
 // 0xD
-uint8_t exe_cb_set2b(){
-    set(&registers.b, 2);
-    return 0;
+uint8_t exe_cb_set2b() {
+  set(&registers.b, 2);
+  return 0;
 }
 
-uint8_t exe_cb_set2c(){
-    set(&registers.c, 2);
-    return 0;
+uint8_t exe_cb_set2c() {
+  set(&registers.c, 2);
+  return 0;
 }
 
-uint8_t exe_cb_set2d(){
-    set(&registers.d, 2);
-    return 0;
+uint8_t exe_cb_set2d() {
+  set(&registers.d, 2);
+  return 0;
 }
 
-uint8_t exe_cb_set2e(){
-    set(&registers.e, 2);
-    return 0;
+uint8_t exe_cb_set2e() {
+  set(&registers.e, 2);
+  return 0;
 }
 
-uint8_t exe_cb_set2h(){
-    set(&registers.h, 2);
-    return 0;
+uint8_t exe_cb_set2h() {
+  set(&registers.h, 2);
+  return 0;
 }
 
-uint8_t exe_cb_set2l(){
-    set(&registers.l, 2);
-    return 0;
+uint8_t exe_cb_set2l() {
+  set(&registers.l, 2);
+  return 0;
 }
 
 uint8_t exe_cb_set2phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 2);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 2);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set2a() {
-    set(&registers.a, 2);
-    return 0;
+  set(&registers.a, 2);
+  return 0;
 }
 
-uint8_t exe_cb_set3b(){
-    set(&registers.b, 3);
-    return 0;
+uint8_t exe_cb_set3b() {
+  set(&registers.b, 3);
+  return 0;
 }
 
-uint8_t exe_cb_set3c(){
-    set(&registers.c, 3);
-    return 0;
+uint8_t exe_cb_set3c() {
+  set(&registers.c, 3);
+  return 0;
 }
 
-uint8_t exe_cb_set3d(){
-    set(&registers.d, 3);
-    return 0;
+uint8_t exe_cb_set3d() {
+  set(&registers.d, 3);
+  return 0;
 }
 
-uint8_t exe_cb_set3e(){
-    set(&registers.e, 3);
-    return 0;
+uint8_t exe_cb_set3e() {
+  set(&registers.e, 3);
+  return 0;
 }
 
-uint8_t exe_cb_set3h(){
-    set(&registers.h, 3);
-    return 0;
+uint8_t exe_cb_set3h() {
+  set(&registers.h, 3);
+  return 0;
 }
 
-uint8_t exe_cb_set3l(){
-    set(&registers.l, 3);
-    return 0;
+uint8_t exe_cb_set3l() {
+  set(&registers.l, 3);
+  return 0;
 }
 
 uint8_t exe_cb_set3phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 3);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 3);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set3a() {
-    set(&registers.a, 3);
-    return 0;
+  set(&registers.a, 3);
+  return 0;
 }
-
 
 // 0xE
-uint8_t exe_cb_set4b(){
-    set(&registers.b, 4);
-    return 0;
+uint8_t exe_cb_set4b() {
+  set(&registers.b, 4);
+  return 0;
 }
 
-uint8_t exe_cb_set4c(){
-    set(&registers.c, 4);
-    return 0;
+uint8_t exe_cb_set4c() {
+  set(&registers.c, 4);
+  return 0;
 }
 
-uint8_t exe_cb_set4d(){
-    set(&registers.d, 4);
-    return 0;
+uint8_t exe_cb_set4d() {
+  set(&registers.d, 4);
+  return 0;
 }
 
-uint8_t exe_cb_set4e(){
-    set(&registers.e, 4);
-    return 0;
+uint8_t exe_cb_set4e() {
+  set(&registers.e, 4);
+  return 0;
 }
 
-uint8_t exe_cb_set4h(){
-    set(&registers.h, 4);
-    return 0;
+uint8_t exe_cb_set4h() {
+  set(&registers.h, 4);
+  return 0;
 }
 
-uint8_t exe_cb_set4l(){
-    set(&registers.l, 4);
-    return 0;
+uint8_t exe_cb_set4l() {
+  set(&registers.l, 4);
+  return 0;
 }
 
 uint8_t exe_cb_set4phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 4);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 4);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set4a() {
-    set(&registers.a, 4);
-    return 0;
+  set(&registers.a, 4);
+  return 0;
 }
 
-uint8_t exe_cb_set5b(){
-    set(&registers.b, 5);
-    return 0;
+uint8_t exe_cb_set5b() {
+  set(&registers.b, 5);
+  return 0;
 }
 
-uint8_t exe_cb_set5c(){
-    set(&registers.c, 5);
-    return 0;
+uint8_t exe_cb_set5c() {
+  set(&registers.c, 5);
+  return 0;
 }
 
-uint8_t exe_cb_set5d(){
-    set(&registers.d, 5);
-    return 0;
+uint8_t exe_cb_set5d() {
+  set(&registers.d, 5);
+  return 0;
 }
 
-uint8_t exe_cb_set5e(){
-    set(&registers.e, 5);
-    return 0;
+uint8_t exe_cb_set5e() {
+  set(&registers.e, 5);
+  return 0;
 }
 
-uint8_t exe_cb_set5h(){
-    set(&registers.h, 5);
-    return 0;
+uint8_t exe_cb_set5h() {
+  set(&registers.h, 5);
+  return 0;
 }
 
-uint8_t exe_cb_set5l(){
-    set(&registers.l, 5);
-    return 0;
+uint8_t exe_cb_set5l() {
+  set(&registers.l, 5);
+  return 0;
 }
 
 uint8_t exe_cb_set5phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 5);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 5);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set5a() {
-    set(&registers.a, 5);
-    return 0;
+  set(&registers.a, 5);
+  return 0;
 }
 
 // 0xF
-uint8_t exe_cb_set6b(){
-    set(&registers.b, 5);
-    return 0;
+uint8_t exe_cb_set6b() {
+  set(&registers.b, 5);
+  return 0;
 }
 
-uint8_t exe_cb_set6c(){
-    set(&registers.c, 6);
-    return 0;
+uint8_t exe_cb_set6c() {
+  set(&registers.c, 6);
+  return 0;
 }
 
-uint8_t exe_cb_set6d(){
-    set(&registers.d, 6);
-    return 0;
+uint8_t exe_cb_set6d() {
+  set(&registers.d, 6);
+  return 0;
 }
 
-uint8_t exe_cb_set6e(){
-    set(&registers.e, 6);
-    return 0;
+uint8_t exe_cb_set6e() {
+  set(&registers.e, 6);
+  return 0;
 }
 
-uint8_t exe_cb_set6h(){
-    set(&registers.h, 6);
-    return 0;
+uint8_t exe_cb_set6h() {
+  set(&registers.h, 6);
+  return 0;
 }
 
-uint8_t exe_cb_set6l(){
-    set(&registers.l, 6);
-    return 0;
+uint8_t exe_cb_set6l() {
+  set(&registers.l, 6);
+  return 0;
 }
 
 uint8_t exe_cb_set6phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 6);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 6);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set6a() {
-    set(&registers.a, 6);
-    return 0;
+  set(&registers.a, 6);
+  return 0;
 }
 
-uint8_t exe_cb_set7b(){
-    set(&registers.b, 7);
-    return 0;
+uint8_t exe_cb_set7b() {
+  set(&registers.b, 7);
+  return 0;
 }
 
-uint8_t exe_cb_set7c(){
-    set(&registers.c, 7);
-    return 0;
+uint8_t exe_cb_set7c() {
+  set(&registers.c, 7);
+  return 0;
 }
 
-uint8_t exe_cb_set7d(){
-    set(&registers.d, 7);
-    return 0;
+uint8_t exe_cb_set7d() {
+  set(&registers.d, 7);
+  return 0;
 }
 
-uint8_t exe_cb_set7e(){
-    set(&registers.e, 7);
-    return 0;
+uint8_t exe_cb_set7e() {
+  set(&registers.e, 7);
+  return 0;
 }
 
-uint8_t exe_cb_set7h(){
-    set(&registers.h, 7);
-    return 0;
+uint8_t exe_cb_set7h() {
+  set(&registers.h, 7);
+  return 0;
 }
 
-uint8_t exe_cb_set7l(){
-    set(&registers.l, 7);
-    return 0;
+uint8_t exe_cb_set7l() {
+  set(&registers.l, 7);
+  return 0;
 }
 
 uint8_t exe_cb_set7phl() {
-    uint8_t temp = readByte(registers.hl);
-    set(&temp, 7);
-    writeByte(registers.hl, temp);
-    return 0;
+  uint8_t temp = readByte(registers.hl);
+  set(&temp, 7);
+  writeByte(registers.hl, temp);
+  return 0;
 }
 
 uint8_t exe_cb_set7a() {
-    set(&registers.a, 7);
-    return 0;
+  set(&registers.a, 7);
+  return 0;
 }
