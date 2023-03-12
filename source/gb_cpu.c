@@ -9,6 +9,10 @@ uint8_t IF;
 uint8_t stopped;
 uint8_t halted;
 uint8_t cycle;
+uint8_t divider_register;
+uint8_t timer_register;
+uint8_t timer_modulo;
+uint8_t timer_control;
 char dbg_msg[1024];
 int msg_size;
 

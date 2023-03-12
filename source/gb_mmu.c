@@ -144,7 +144,7 @@ uint8_t loadCartridge(char *path) {
 
   size_t size = ftell(cartridgePtr);
 
-  printf("File size: %d\n", size);
+  printf("File size: %ld\n", size);
 
   rewind(cartridgePtr);
 
@@ -254,7 +254,15 @@ uint8_t readByte(uint16_t addr) {
   }
   // 0xff04 - 07 Divider and timer
   //
-  else if (addr >= 0xff40 && addr <= 0xff69) {
+  else if (addr == 0xff04) {
+    return divider_register;
+  } else if (addr == 0xff05) {
+    return timer_register;
+  } else if (addr == 0xff06) {
+    return timer_modulo;
+  } else if (addr == 0xff07) {
+    return timer_control;
+  } else if (addr >= 0xff40 && addr <= 0xff69) {
     // return 0;
     return readPPU(addr);
   } else if (addr >= 0xff80 && addr <= 0xfffe) {
@@ -264,6 +272,8 @@ uint8_t readByte(uint16_t addr) {
   } else if (addr == 0xffff) {
     return IE;
   }
+
+  return 0;
 }
 
 uint16_t readWord(uint16_t addr) {
@@ -315,8 +325,15 @@ void writeByte(uint16_t addr, uint8_t val) {
     }
   }
   // 0xff04 - 07 Divider and timer
-  //
-  else if (addr >= 0xff40 && addr <= 0xff69) {
+  else if (addr == 0xff04) {
+    divider_register = 0;
+  } else if (addr == 0xff05) {
+
+  } else if (addr == 0xff06) {
+    timer_modulo = val;
+  } else if (addr == 0xff07) {
+    timer_control = val;
+  } else if (addr >= 0xff40 && addr <= 0xff69) {
     // OAM DMA
     if (addr == 0xff46) {
       // printf("DOING A DMA TRANSFER\n");

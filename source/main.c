@@ -85,7 +85,7 @@ int main() {
   PPU_init();
 
   uint8_t error = loadCartridge(
-      "/home/alex/workspace/gameboy_emu/GB-emu/roms/cpu_instr_7.gb");
+      "/home/alex/workspace/gameboy_emu/GB-emu/roms/cpu_instr_2.gb");
 
   // uint8_t error = loadCartridge(
   //     "/home/alex/workspace/gameboy_emu/GB-emu/roms/03-op-sp,hl.gb");

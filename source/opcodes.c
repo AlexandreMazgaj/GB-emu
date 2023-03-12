@@ -879,6 +879,8 @@ uint8_t exe_ldld8() {
 }
 
 uint8_t exe_cpl() {
+  SETNFLAG(1);
+  SETHFLAG(1);
   registers.a = ~registers.a;
   return 0;
 }
@@ -916,7 +918,7 @@ uint8_t exe_incsp() {
 
 uint8_t exe_incphl() {
   uint8_t val = readByte(registers.hl);
-  val++;
+  inc8bReg(&val);
   writeByte(registers.hl, val);
   return 0;
 }
@@ -1762,6 +1764,7 @@ uint8_t exe_adcad8() {
 }
 
 uint8_t exe_rst08h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x08 - 1;
   return 0;
 }
@@ -1817,6 +1820,7 @@ uint8_t exe_subad8() {
 }
 
 uint8_t exe_rst10h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x10 - 1;
   return 0;
 }
@@ -1864,6 +1868,7 @@ uint8_t exe_sbcad8() {
 }
 
 uint8_t exe_rst18h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x18 - 1;
   return 0;
 }
@@ -1883,7 +1888,7 @@ uint8_t exe_pophl() {
 }
 
 uint8_t exe_ldpca() {
-  writeByte(0xff00 + (uint16_t)GETCFLAG(), registers.a);
+  writeByte(0xff00 + (uint16_t)registers.c, registers.a);
   return 0;
 }
 
@@ -1898,6 +1903,7 @@ uint8_t exe_andad8() {
 }
 
 uint8_t exe_rst20h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x20 - 1;
   return 0;
 }
@@ -1924,6 +1930,7 @@ uint8_t exe_xorad8() {
 }
 
 uint8_t exe_rst28h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x28 - 1;
   return 0;
 }
@@ -1948,7 +1955,7 @@ uint8_t exe_popaf() {
 }
 
 uint8_t exe_ldapc() {
-  registers.a = readByte(0xff00 + (uint16_t)GETCFLAG());
+  registers.a = readByte(0xff00 + (uint16_t)registers.c);
   return 0;
 }
 
@@ -1968,6 +1975,7 @@ uint8_t exe_orad8() {
 }
 
 uint8_t exe_rst30h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x30 - 1;
   return 0;
 }
@@ -2001,6 +2009,7 @@ uint8_t exe_cpad8() {
 }
 
 uint8_t exe_rst38h() {
+  pushWordStack(registers.pc + 1);
   registers.pc = 0x38 - 1;
   return 0;
 }
@@ -2257,7 +2266,7 @@ uint8_t exe_cb_sraphl() {
 }
 
 uint8_t exe_cb_sraa() {
-  shiftRightMSB(&registers.l);
+  shiftRightMSB(&registers.a);
   return 0;
 }
 
@@ -3284,7 +3293,7 @@ uint8_t exe_cb_set5a() {
 
 // 0xF
 uint8_t exe_cb_set6b() {
-  set(&registers.b, 5);
+  set(&registers.b, 6);
   return 0;
 }
 

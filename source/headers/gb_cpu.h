@@ -53,6 +53,12 @@ extern uint8_t IF;
 extern uint8_t stopped;
 extern uint8_t halted;
 
+// Divider and timer
+extern uint8_t divider_register;
+extern uint8_t timer_register;
+extern uint8_t timer_modulo;
+extern uint8_t timer_control;
+
 struct registers {
   union {
     struct {
