@@ -9,6 +9,9 @@ uint8_t IF;
 uint8_t stopped;
 uint8_t halted;
 uint8_t cycle;
+int divider_clock_256;
+int divider_clock_timer_control;
+int divider_clock_timer;
 uint8_t divider_register;
 uint8_t timer_register;
 uint8_t timer_modulo;
@@ -36,6 +39,14 @@ void CPU_init() {
 
   stopped = 0;
   halted = 0;
+
+  divider_clock_256 = 0;
+  divider_clock_timer = 0;
+  divider_register = 0;
+  timer_register = 0;
+  timer_modulo = 0;
+  timer_control = 0;
+  setDividerClockTimer();
 
   for (int i = 0; i < 1024; i++)
     dbg_msg[i] = 0;
@@ -79,10 +90,42 @@ void CPU_init() {
 // -------------
 uint8_t CPU_clock() {
 
-  checkInterrupts();
+  if (divider_clock_256 >= 256) {
+    divider_register++;
+    divider_clock_256 = 0;
+  }
+  if (stopped) { // if the instruction stop is executed the divider register is
+                 // reset
+    divider_register = 0;
+  }
+
+  if (IS_TIMER_ENABLE()) {
+    if (timer_register == 0xff) {
+      timer_register = timer_modulo;
+      REQUEST_INTERRUPT(TIMER_BIT);
+    } else {
+      if (divider_clock_timer >= divider_clock_timer_control) {
+        timer_register++;
+        divider_clock_timer = 0;
+      }
+    }
+  }
+  divider_clock_256++;
+  divider_clock_timer++;
+
+  uint8_t isInterrupted = checkInterrupts();
+  if (isInterrupted) {
+    return 0;
+  }
 
   // if we have finished the
   if (cycle == 0) {
+
+    if (halted) {
+      // printf("THE CPU IS HALTED\n");
+      return 1;
+    }
+
     // uint8_t clock
     uint8_t op = readByte(registers.pc);
 
@@ -113,25 +156,20 @@ uint8_t CPU_clock() {
     printInstruction(instr, 2);
 
     // printing to stderr, do ./GB 2> output.txt
-    // dprintf(2,
-    //         "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X
-    //         " "PC:%04X PCMEM:%02X,%02X,%02X,%02X\n", registers.a,
-    //         registers.f, registers.b, registers.c, registers.d, registers.e,
-    //         registers.h, registers.l, registers.sp, registers.pc,
-    //         readByte(registers.pc), readByte(registers.pc + 1),
-    //         readByte(registers.pc + 2), readByte(registers.pc + 3));
+    /*    dprintf(2,
+                "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X
+       " "PC:%04X PCMEM:%02X,%02X,%02X,%02X\n", registers.a, registers.f,
+       registers.b, registers.c, registers.d, registers.e, registers.h,
+       registers.l, registers.sp, registers.pc, readByte(registers.pc),
+       readByte(registers.pc + 1), readByte(registers.pc + 2),
+       readByte(registers.pc + 3));  */
 
     // serial
-    // dbg_update();
-    // dbg_print();
+    dbg_update();
+    dbg_print();
 
     // executing the instruction
     cycle = instr.nb_cycles + instr.execute() + cb_cycle;
-
-    if (halted) {
-      // printf("THE CPU IS HALTED\n");
-      return 1;
-    }
 
     if (instr.size_operand == 2)
       registers.pc += 2;
@@ -152,11 +190,6 @@ uint8_t CPU_clock() {
     return 1;
   }
 
-  // if (cycle != 0)
-  //     printf("Still doing the op\n");
-
-  divider_register++;
-
   cycle--;
 
   return 0;
@@ -165,17 +198,15 @@ uint8_t CPU_clock() {
 // -------------------
 // INTERRUPT FUNCTIONS
 // -------------------
-void checkInterrupts() {
-  // printf("Checking for interrupts\n");
-  IE = readByte(0xffff);
-  IF = readByte(0xff0f);
+uint8_t checkInterrupts() {
 
-  if (IME || halted == 1) {
+  if (IE & IF) {
+    halted = 0;
+  }
+
+  if ((IME || (halted == 1))) {
     // this means that at least one interrupt has been triggered
-    if (IE & IF) {
-      // printf("THE CPU IS NOT HALTED\n");
-      halted = 0;
-    }
+
     // Checking if VBLANK enabled and if requested
     if ((IE & VBLANK_BIT) == VBLANK_BIT && (IF & VBLANK_BIT) == VBLANK_BIT) {
       pushWordStack(registers.pc);
@@ -185,6 +216,7 @@ void checkInterrupts() {
       // reset the IF flag for the interrupt
       IF ^= VBLANK_BIT;
       // printf("The request for the VBLANK!\n");
+      return 1;
     }
     // Checking if LCD_STAT enabled and if requested
     if ((IE & LCD_STAT_BIT) == LCD_STAT_BIT &&
@@ -198,6 +230,7 @@ void checkInterrupts() {
       // printf("Before lcd stat reset %X\n", IF);
       IF ^= LCD_STAT_BIT;
       // printf("After the lcd stat reset %X\n", IF);
+      return 1;
     }
     // Checking if TIMER enabled and if requested
     if ((IE & TIMER_BIT) == TIMER_BIT && (IF & TIMER_BIT) == TIMER_BIT) {
@@ -208,6 +241,7 @@ void checkInterrupts() {
       IME = 0;
       // reset the IF flag for the interrupt
       IF ^= TIMER_BIT;
+      return 1;
     }
     // Checking if SERIAL enabled and if requested
     if ((IE & SERIAL_BIT) == SERIAL_BIT && (IF & SERIAL_BIT) == SERIAL_BIT) {
@@ -217,6 +251,7 @@ void checkInterrupts() {
       IME = 0;
       // reset the IF flag for the interrupt
       IF ^= SERIAL_BIT;
+      return 1;
     }
     // Checking if JOYPAD enabled and if requested
     if ((IE & JOYPAD_BIT) == JOYPAD_BIT && (IF & JOYPAD_BIT) == JOYPAD_BIT) {
@@ -226,9 +261,25 @@ void checkInterrupts() {
       IME = 0;
       // reset the IF flag for the interrupt
       IF ^= JOYPAD_BIT;
+      return 1;
     }
-    // we reset the interrupt request flags
-    writeByte(0xff0f, IF);
+  }
+  return 0;
+}
+
+// ---------------
+// TIMER FUNCTIONS
+// ---------------
+void setDividerClockTimer() {
+  uint8_t timer_control_bit = timer_control & 0x3;
+  if (timer_control_bit == 0) {
+    divider_clock_timer_control = 1024;
+  } else if (timer_control_bit == 1) {
+    divider_clock_timer_control = 16;
+  } else if (timer_control_bit == 2) {
+    divider_clock_timer_control = 64;
+  } else if (timer_control_bit == 3) {
+    divider_clock_timer_control = 256;
   }
 }
 

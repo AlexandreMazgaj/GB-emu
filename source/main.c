@@ -79,8 +79,8 @@ int main() {
   MMU_init();
   PPU_init();
 
-  uint8_t error =
-      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Tetris.gb");
+  uint8_t error = loadCartridge(
+      "/home/alex/workspace/gameboy_emu/GB-emu/roms/cpu_instr_2.gb");
 
   if (error)
     return 9;
@@ -201,7 +201,7 @@ int main() {
       }
     }
 
-    if (emuRun && ppu.video_ram[0x300] != 0 && draw_tick % 10 == 0) {
+    if (!emuRun && ppu.video_ram[0x300] != 0 && draw_tick % 10 == 0) {
       //   SDL_BlitScaled(gameboyGraphics, NULL, scaledGraphics, NULL);
 
       SDL_RenderClear(renderer);

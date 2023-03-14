@@ -295,7 +295,7 @@ void writeByte(uint16_t addr, uint8_t val) {
       MBC3_writeToRom(addr, val);
     }
   } else if (addr >= 0x8000 && addr <= 0x9fff) {
-    printf("write to the ppu addr: %X, val: %X\n", addr, val);
+    // printf("write to the ppu addr: %X, val: %X\n", addr, val);
     ppu.video_ram[addr - 0x8000] = val;
   } else if (addr >= 0xa000 && addr <= 0xbfff) {
     if (mmu.mbc_type == 1)
@@ -332,6 +332,9 @@ void writeByte(uint16_t addr, uint8_t val) {
     timer_modulo = val;
   } else if (addr == 0xff07) {
     timer_control = val;
+    setDividerClockTimer();
+  } else if (addr == 0xff0f) {
+    IF = val;
   } else if (addr >= 0xff40 && addr <= 0xff69) {
     // OAM DMA
     if (addr == 0xff46) {
@@ -349,8 +352,6 @@ void writeByte(uint16_t addr, uint8_t val) {
     //     printf("Writing: %X at 0xff83\n", val);
     // }
     mmu.high_ram[addr - 0xff80] = val;
-  } else if (addr == 0xff0f) {
-    IF = val;
   } else if (addr == 0xffff) {
     IE = val;
   }

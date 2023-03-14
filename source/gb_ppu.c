@@ -168,8 +168,8 @@ uint8_t readPPU(uint16_t addr) {
     return ppu.scrollX;
   }
   if (addr == 0xff44) {
-    // return 0x90;
-    return ppu.scanline;
+    return 0x90;
+    // return ppu.scanline;
   }
   if (addr == 0xff45) {
     return ppu.LYC;

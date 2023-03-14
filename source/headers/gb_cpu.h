@@ -23,6 +23,9 @@
 #define GETHFLAG() ((registers.f & (1 << 5)) >> 5)
 #define GETCFLAG() ((registers.f & (1 << 4)) >> 4)
 
+// Definition of macros for timer
+#define IS_TIMER_ENABLE() ((timer_control >> 2) & 0x1)
+
 // Definition of macros for interrupts
 #define REQUEST_INTERRUPT(bit) (IF |= (uint8_t)bit)
 
@@ -54,11 +57,15 @@ extern uint8_t stopped;
 extern uint8_t halted;
 
 // Divider and timer
+extern int divider_clock_256;
+extern int divider_clock_timer_control;
+extern int divider_clock_timer;
 extern uint8_t divider_register;
 extern uint8_t timer_register;
 extern uint8_t timer_modulo;
 extern uint8_t timer_control;
 
+// registers
 struct registers {
   union {
     struct {
@@ -104,7 +111,10 @@ uint8_t CPU_clock();
 extern uint8_t cycle;
 
 // interrupt functions
-void checkInterrupts();
+uint8_t checkInterrupts();
+
+// timer functions
+void setDividerClockTimer();
 
 // Math functions
 // --------------
