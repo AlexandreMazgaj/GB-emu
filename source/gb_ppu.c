@@ -19,12 +19,7 @@ void PPU_init() {
   ppu.scrollY = 0;
   ppu.scanline = 0;
 
-  for (int i = 0; i < TILE_SET_SIZE; i++) {
-    for (int x = 0; x < 8; x++) {
-      for (int y = 0; y < 8; y++)
-        ppu.tileSet[i][x][y] = 0;
-    }
-  }
+  ppu.canDraw = 0;
 
   ppu.bgPixelFifo = 0;
   ppu.spritePixelFifo = 0;
@@ -52,18 +47,19 @@ void PPU_clock() {
   // mode 3 Reading OAM and VRAM to draw the picture
   if (ppu.mode == PPU_MODE_OAM_SCAN) {
     // printf("PPU OAM_SCAN\n");
-    if (ppu.ticks >= 40) {
+    if (ppu.ticks >= 80) {
       ppu.ticks = 0;
       ppu.mode = PPU_MODE_DRAWING;
     }
   } else if (ppu.mode == PPU_MODE_DRAWING) {
     // printf("PPU_MODE_DRAWING\n");
-    if (ppu.ticks >= 160) {
+    if (ppu.ticks >= 172) {
       ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
       ppu.ticks = 0;
     }
-    clockBGPixelFetch();
-    pushPixelsToLCD();
+    // clockBGPixelFetch();
+    // pushPixelsToLCD();
+    renderBackgroundScanline();
   } else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
     // A full scanline takes 456 ticks to complete. At the end of a
     // scanline, the PPU goes back to the initial OAM Search state.
@@ -71,7 +67,9 @@ void PPU_clock() {
     // HBlank happens when all 160 pixels in a scanline have been output to the
     // screen
     // printf("PPU HORIZONTAL BLANKING\n");
-    if (ppu.ticks >= 456) {
+    if (ppu.ticks >= 204) {
+
+      ppu.canDraw = 1;
       ppu.scanline++;
       ppu.ticks = 0;
       if (ppu.scanline == 144) {
@@ -86,8 +84,8 @@ void PPU_clock() {
     // screen
     // printf("PPU VERTICAL BLANKING");
     REQUEST_INTERRUPT(VBLANK_BIT);
+
     if (ppu.ticks >= 456) {
-      ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
       ppu.scanline++;
       if (ppu.scanline >= 153) {
         // restart scanning modes
@@ -168,8 +166,8 @@ uint8_t readPPU(uint16_t addr) {
     return ppu.scrollX;
   }
   if (addr == 0xff44) {
-    return 0x90;
-    // return ppu.scanline;
+    // return 0x90;
+    return ppu.scanline;
   }
   if (addr == 0xff45) {
     return ppu.LYC;
@@ -216,33 +214,66 @@ uint16_t getWindowTileMapArea() {
 
 // Functions for the pixel fetcher and pixel fifo
 
-uint8_t getBGTileId() {
+uint8_t getBGTileId(uint8_t x) {
   uint16_t area = 0;
   uint16_t xOffset = 0;
   uint16_t yOffset = 0;
   if (LCDC_GET_WINDOW_ENABLE()) {
     printf("Fetching window maps\n");
-    xOffset = (uint16_t)pixelFetcher.x;
+    xOffset = (uint16_t)x;
     yOffset = (uint16_t)32 * ((uint16_t)pixelFetcher.WLY / (uint16_t)8);
   } else {
     area = getBGTileMapArea();
-    xOffset =
-        (((uint16_t)ppu.scrollX / (uint16_t)8) + (uint16_t)pixelFetcher.x) &
-        0x1F;
+    xOffset = ((((uint16_t)ppu.scrollX + (uint16_t)x) / (uint16_t)8)) & 0x1F;
     yOffset = (uint16_t)32 *
               (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) & 0x00FF) /
               (uint16_t)8;
   }
 
-  uint16_t tileIdAddress = area + (xOffset + yOffset) & 0x03FF;
+  uint16_t tileIdAddress = area + ((xOffset + yOffset) & 0x03FF);
 
-  // printf("tile id address: %X\n", tileIdAddress);
+  // printf("tileIdAddress: %X\n", tileIdAddress);
 
-  return ppu.video_ram[tileIdAddress];
+  return readByte(tileIdAddress);
 }
 
-uint8_t getBGTileDataLo(uint8_t tileId) {
-  // printf("Tile id: %X\n", tileId);
+// uint8_t getBGTileDataLo(uint8_t tileId) {
+//   // printf("Tile id: %X\n", tileId);
+//   uint16_t offset = 0;
+//   if (LCDC_GET_WINDOW_ENABLE()) {
+//     offset = pixelFetcher.WLY % 8;
+//   } else {
+//     offset = 2 * (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
+//   }
+
+//   uint8_t loByte = 0;
+//   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
+//     loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
+//   } else {
+//     loByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16];
+//   }
+//   return loByte;
+// }
+
+// uint8_t getBGTileDataHi(uint8_t tileId) {
+//   uint16_t offset = 0;
+//   if (LCDC_GET_WINDOW_ENABLE()) {
+//     offset = pixelFetcher.WLY % 8;
+//   } else {
+//     offset = 2 * (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
+//   }
+
+//   uint8_t hiByte = 0;
+//   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
+//     hiByte = ppu.video_ram[offset + (uint16_t)tileId * 16 + 1];
+//   } else {
+//     hiByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16 +
+//     1];
+//   }
+//   return hiByte;
+// }
+
+uint16_t getBGTileData(uint8_t tileId) {
   uint16_t offset = 0;
   if (LCDC_GET_WINDOW_ENABLE()) {
     offset = pixelFetcher.WLY % 8;
@@ -251,110 +282,53 @@ uint8_t getBGTileDataLo(uint8_t tileId) {
   }
 
   uint8_t loByte = 0;
-  if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
-    loByte = ppu.video_ram[offset + (uint16_t)tileId];
-  } else {
-    loByte = ppu.video_ram[offset + (int16_t)tileId];
-  }
-  return loByte;
-}
-
-uint8_t getBGTileDataHi(uint8_t tileId) {
-  uint16_t offset = 0;
-  if (LCDC_GET_WINDOW_ENABLE()) {
-    offset = pixelFetcher.WLY % 8;
-  } else {
-    offset = 2 * (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
-  }
-
   uint8_t hiByte = 0;
   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
-    hiByte = ppu.video_ram[offset + (uint16_t)tileId] + 1;
+    loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
+    hiByte = ppu.video_ram[offset + (uint16_t)tileId * 16 + 1];
   } else {
-    hiByte = ppu.video_ram[offset + (int16_t)tileId + 1];
+    hiByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16 + 1];
+    loByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16];
   }
-  return hiByte;
+  return (uint16_t)hiByte << 8 | (uint16_t)loByte;
 }
 
-void clockBGPixelFetch() {
-  // every mode takes two ticks
-  if (++pixelFetcher.ticks % 2 != 0)
-    return;
+uint32_t getColor(uint8_t bit) {
+  if (bit == 0x3)
+    return 0;
+  if (bit == 0x2)
+    return 0xff555555;
+  if (bit == 0x1)
+    return 0xffaaaaaa;
 
-  // for (int i = 0; i < VIDEO_RAM_SIZE; i++) {
-  //   printf("video ram [%X] = %X\n", i, ppu.video_ram[i]);
-  // }
-
-  switch (pixelFetcher.mode) {
-  case FETCH_TILE_NO: {
-    // printf("FETCH TILE NO\n");
-    pixelFetcher.tileId = getBGTileId();
-    // printf("Tile ID: %X\n", pixelFetcher.tileId);
-    pixelFetcher.mode = FETCH_TILE_DATA_LO;
-    break;
-  }
-  case FETCH_TILE_DATA_LO: {
-    // printf("FETCH TILE DATA LO\n");
-    pixelFetcher.loByte = getBGTileDataLo(pixelFetcher.tileId);
-    pixelFetcher.mode = FETCH_TILE_DATA_HI;
-    break;
-  }
-  case FETCH_TILE_DATA_HI: {
-    // printf("FETCH TILE DATA HI\n");
-    pixelFetcher.hiByte = getBGTileDataHi(pixelFetcher.tileId);
-    pixelFetcher.mode = PUSH_PIXELS;
-    break;
-  }
-  case PUSH_PIXELS: {
-    // TODO
-    // printf("pixelFetcher loByte: %X, hiByte: %X\n", pixelFetcher.loByte,
-    // pixelFetcher.hiByte);
-    pixelFetcher.x++;
-
-    // if (ppu.bgPixelFifo == 0) {
-    ppu.bgPixelFifo = (uint16_t)((uint16_t)pixelFetcher.hiByte << 8) |
-                      ((uint16_t)pixelFetcher.loByte);
-    pixelFetcher.mode = FETCH_TILE_NO;
-    // }
-    break;
-  }
-  }
+  return 0xffffff;
 }
 
-void pushPixelsToLCD() {
-  if (ppu.bgPixelFifo != 0) {
-    // decoding the two bytes for the pixel
-    uint8_t hiByte = (uint8_t)((ppu.bgPixelFifo & (0xFF00)) >> 8);
-    uint8_t loByte = (uint8_t)(ppu.bgPixelFifo & (0x00FF));
+void renderBackgroundScanline() {
 
-    // printf("hiByte: %X\n", hiByte);
-    // printf("loByte: %X\n", loByte);
-    for (uint8_t i = 0; i < 8; i++) {
-      uint8_t bit;
-      if (i == 0) {
-        bit = (uint8_t)(((hiByte & 0x1) << 1) | (loByte & 0x1));
-      } else {
-        bit = (uint8_t)(((hiByte & (0x1 << i)) >> (i - 1)) |
-                        ((loByte & (0x1 << i)) >> i));
-      }
+  for (int x = 0; x < SCREEN_WIDTH; x++) {
 
-      if (pixelFetcher.x + i >= SCREEN_WIDTH) {
-        pixelFetcher.x = -8;
-        break;
-      }
-      ppu.screen[ppu.scanline * SCREEN_WIDTH + pixelFetcher.x] = bit;
-    }
-    pixelFetcher.x += 8;
-    ppu.bgPixelFifo = 0;
+    uint8_t tileId = getBGTileId(x);
+
+    // if (tileId != 0 && tileId != 0xFF)
+    //   printf("Tile id: %X\n", tileId);
+
+    uint16_t tileData = getBGTileData(tileId);
+    uint8_t loByte = (uint8_t)((0x00ff) & tileData);
+    uint8_t hiByte = (uint8_t)(((0xff00) & tileData) >> 8);
+
+    uint8_t j = 7 - (x % 8);
+
+    uint8_t bit = (((hiByte >> j) & 0x1) << 1) | ((loByte >> j) & 0x1);
+
+    ppu.screen[SCREEN_WIDTH * ppu.scanline + x] = bit;
   }
 }
-
-void renderBackgroundScanline() { uint8_t tileId = getBGTileId(); }
 
 // debugging functions
 
 void displayVram() {
-  for (unsigned int i = 0; i < 10; i++) {
+  for (unsigned int i = 0x9800; i < 0xA000; i++) {
     printf("vram[%d] = %X\n", i, ppu.video_ram[i]);
   }
 }

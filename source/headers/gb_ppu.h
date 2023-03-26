@@ -49,8 +49,6 @@ struct ppu {
   uint8_t oam[OAM_SIZE];
   uint8_t video_ram[VIDEO_RAM_SIZE];
 
-  uint8_t tileSet[TILE_SET_SIZE][8][8];
-
   uint8_t reg_lcdc;
   uint8_t reg_stat;
 
@@ -83,6 +81,8 @@ struct ppu {
   uint16_t bgPixelFifo;
   uint16_t spritePixelFifo;
 
+  uint8_t canDraw;
+
 } extern ppu;
 
 struct pixelFetcher {
@@ -114,17 +114,15 @@ uint8_t readPPU(uint16_t addr);
 
 uint8_t getGBColorFromValue(uint8_t val);
 
-uint16_t getTileMapRange();
+uint16_t getWindowTileMapArea();
 
-uint8_t getTileId();
+uint16_t getBGTileMapArea();
 
-uint8_t getTileDataLo(uint8_t tileId);
+uint8_t getBGTileId(uint8_t x);
 
-uint8_t getTileDataHi(uint8_t tileId);
+uint16_t getBGTileData(uint8_t tileId);
 
-void pushPixelsToLCD();
-
-void clockBGPixelFetch();
+uint32_t getColor(uint8_t bit);
 
 void renderBackgroundScanline();
 

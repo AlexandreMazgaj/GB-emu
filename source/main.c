@@ -6,17 +6,6 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 
-uint32_t getColor(uint8_t bit) {
-  if (bit == 0x3)
-    return 0;
-  if (bit == 0x2)
-    return 0xff555555;
-  if (bit == 0x1)
-    return 0xffaaaaaa;
-
-  return 0xffffff;
-}
-
 void drawScreen(SDL_Surface *surface) {
   SDL_LockSurface(surface);
   uint32_t *pixels = (uint32_t *)surface->pixels;
@@ -119,7 +108,7 @@ int main() {
   gameboyGraphics =
       SDL_CreateRGBSurface(0, DISPLAY_WIDTH, DISPLAY_HEIGHT, 32, 0, 0, 0, 0);
   scaledGraphics =
-      SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT + 1, 32, 0, 0, 0, 0);
+      SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0, 0, 0, 0);
 
   SDL_RenderPresent(renderer);
 
@@ -141,27 +130,11 @@ int main() {
   SDL_Event e;
 
   printf("Everything is ready, lauching emulator\n");
-
-  printf("surface height: %d, width: %d\n", scaledGraphics->h,
-         scaledGraphics->w);
   Uint32 *pixels = (Uint32 *)(scaledGraphics->pixels);
-  printf("surface pixel: %d\n", pixels[160 * 144 - 1]);
-
-  // printf("rom[0x7ff3] = %X\n", mmu.rom[0x7ff3]);
-
-  // FILE *file = fopen("output_rom.txt", "w");
-
-  // for (int i = 0; i < 1000; i++) {
-  //     fprintf(file, "rom[%X] = %X\n", i, mmu.rom[i]);
-  // }
-
-  // fclose(file);
-
-  int draw_tick = 0;
 
   while (1) {
 
-    t1 = SDL_GetTicks();
+    // t1 = SDL_GetTicks();
 
     if (emuRun) {
       if (CPU_clock() == 220) {
@@ -201,14 +174,14 @@ int main() {
       }
     }
 
-    if (!emuRun && ppu.video_ram[0x300] != 0 && draw_tick % 10 == 0) {
+    if (emuRun && ppu.canDraw) {
       //   SDL_BlitScaled(gameboyGraphics, NULL, scaledGraphics, NULL);
 
       SDL_RenderClear(renderer);
       // renderTileChatGPT(renderer);
 
-      drawFirstTile(scaledGraphics);
-      // drawScreen(scaledGraphics);
+      // drawFirstTile(scaledGraphics);
+      drawScreen(scaledGraphics);
 
       SDL_UpdateTexture(texture, NULL, scaledGraphics->pixels,
                         SCREEN_WIDTH * 4);
@@ -220,16 +193,16 @@ int main() {
       //   if (SDL_UpdateWindowSurface(window) < 0) {
       //     printf("ERROR WITH THE WINDOW\n");
       //   }
+      ppu.canDraw = 0;
     }
 
-    t2 = SDL_GetTicks();
-    elapsed = t2 - t1;
-    remaining = interval - elapsed;
-    if (remaining > 0) {
-      // SDL_Delay(remaining/2);
-      elapsed = interval;
-    }
-    draw_tick++;
+    // t2 = SDL_GetTicks();
+    // elapsed = t2 - t1;
+    // remaining = interval - elapsed;
+    // if (remaining > 0) {
+    //   // SDL_Delay(remaining/2);
+    //   elapsed = interval;
+    // }
   }
 
   SDL_DestroyWindow(window);

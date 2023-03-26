@@ -1,5 +1,6 @@
 #include "headers/gb_cpu.h"
 #include "headers/gb_mmu.h"
+#include "headers/gb_ppu.h"
 #include <stdio.h>
 
 struct registers registers;
@@ -151,10 +152,11 @@ uint8_t CPU_clock() {
       instr = instructions[op];
     }
 
+#if INSTRUCTION_PRINT
     // debugging
     printRegisters(2);
     printInstruction(instr, 2);
-
+#endif
     // printing to stderr, do ./GB 2> output.txt
     /*    dprintf(2,
                 "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X SP:%04X
@@ -164,9 +166,11 @@ uint8_t CPU_clock() {
        readByte(registers.pc + 1), readByte(registers.pc + 2),
        readByte(registers.pc + 3));  */
 
+#if SERIAL_PRINT
     // serial
     dbg_update();
     dbg_print();
+#endif
 
     // executing the instruction
     cycle = instr.nb_cycles + instr.execute() + cb_cycle;
