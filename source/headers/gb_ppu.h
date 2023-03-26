@@ -111,6 +111,7 @@ uint8_t readPPU(uint16_t addr);
 
 uint8_t getGBColorFromValue(uint8_t val);
 
+// functions to render background and window
 uint16_t getWindowTileMapArea();
 
 uint16_t getBGTileMapArea();
@@ -122,6 +123,9 @@ uint16_t getBGTileData(uint8_t tileId);
 uint32_t getColor(uint8_t bit);
 
 void renderBackgroundScanline();
+
+// functions to render sprites
+uint8_t getSpriteTileId(uint8_t x);
 
 // debugging functions
 void displayVram();

@@ -207,7 +207,7 @@ uint16_t getWindowTileMapArea() {
   return LCDC_GET_WINDOW_TILEMAP_AREA() == 1 ? 0x9C00 : 0x9800;
 }
 
-// Functions for the pixel fetcher and pixel fifo
+// Functions to render the background and window
 
 uint8_t getBGTileId(uint8_t x) {
   uint16_t area = 0;
@@ -277,6 +277,20 @@ void renderBackgroundScanline() {
 
     ppu.screen[SCREEN_WIDTH * ppu.scanline + x] = bit;
   }
+}
+
+// functions to render the sprites
+
+uint8_t getSpriteTileId(uint8_t x) {
+  for (unsigned int i = 0; i < OAM_SIZE; i += 4) {
+    uint8_t x_position = ppu.oam[i + 1];
+    uint8_t tileId = ppu.oam[i + 2];
+
+    if (x_position + 8 > x) {
+      return tileId;
+    }
+  }
+  return 0;
 }
 
 // debugging functions
