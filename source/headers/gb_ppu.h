@@ -78,9 +78,6 @@ struct ppu {
   uint8_t ob_pal0Value;
   uint8_t ob_pal1Value;
 
-  uint16_t bgPixelFifo;
-  uint16_t spritePixelFifo;
-
   uint8_t canDraw;
 
 } extern ppu;

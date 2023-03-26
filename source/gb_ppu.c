@@ -21,9 +21,6 @@ void PPU_init() {
 
   ppu.canDraw = 0;
 
-  ppu.bgPixelFifo = 0;
-  ppu.spritePixelFifo = 0;
-
   pixelFetcher.mode = FETCH_TILE_NO;
   pixelFetcher.ticks = 0;
   pixelFetcher.WLY = 0;
@@ -56,10 +53,9 @@ void PPU_clock() {
     if (ppu.ticks >= 172) {
       ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
       ppu.ticks = 0;
+      renderBackgroundScanline();
+      ppu.canDraw = 1;
     }
-    // clockBGPixelFetch();
-    // pushPixelsToLCD();
-    renderBackgroundScanline();
   } else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
     // A full scanline takes 456 ticks to complete. At the end of a
     // scanline, the PPU goes back to the initial OAM Search state.
@@ -68,8 +64,6 @@ void PPU_clock() {
     // screen
     // printf("PPU HORIZONTAL BLANKING\n");
     if (ppu.ticks >= 204) {
-
-      ppu.canDraw = 1;
       ppu.scanline++;
       ppu.ticks = 0;
       if (ppu.scanline == 144) {
@@ -86,6 +80,7 @@ void PPU_clock() {
     REQUEST_INTERRUPT(VBLANK_BIT);
 
     if (ppu.ticks >= 456) {
+      ppu.ticks = 0;
       ppu.scanline++;
       if (ppu.scanline >= 153) {
         // restart scanning modes
@@ -219,59 +214,20 @@ uint8_t getBGTileId(uint8_t x) {
   uint16_t xOffset = 0;
   uint16_t yOffset = 0;
   if (LCDC_GET_WINDOW_ENABLE()) {
-    printf("Fetching window maps\n");
     xOffset = (uint16_t)x;
     yOffset = (uint16_t)32 * ((uint16_t)pixelFetcher.WLY / (uint16_t)8);
   } else {
     area = getBGTileMapArea();
     xOffset = ((((uint16_t)ppu.scrollX + (uint16_t)x) / (uint16_t)8)) & 0x1F;
     yOffset = (uint16_t)32 *
-              (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) & 0x00FF) /
-              (uint16_t)8;
+              ((((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) & 0x00FF) /
+               (uint16_t)8);
   }
 
   uint16_t tileIdAddress = area + ((xOffset + yOffset) & 0x03FF);
 
-  // printf("tileIdAddress: %X\n", tileIdAddress);
-
   return readByte(tileIdAddress);
 }
-
-// uint8_t getBGTileDataLo(uint8_t tileId) {
-//   // printf("Tile id: %X\n", tileId);
-//   uint16_t offset = 0;
-//   if (LCDC_GET_WINDOW_ENABLE()) {
-//     offset = pixelFetcher.WLY % 8;
-//   } else {
-//     offset = 2 * (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
-//   }
-
-//   uint8_t loByte = 0;
-//   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
-//     loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
-//   } else {
-//     loByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16];
-//   }
-//   return loByte;
-// }
-
-// uint8_t getBGTileDataHi(uint8_t tileId) {
-//   uint16_t offset = 0;
-//   if (LCDC_GET_WINDOW_ENABLE()) {
-//     offset = pixelFetcher.WLY % 8;
-//   } else {
-//     offset = 2 * (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
-//   }
-
-//   uint8_t hiByte = 0;
-//   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
-//     hiByte = ppu.video_ram[offset + (uint16_t)tileId * 16 + 1];
-//   } else {
-//     hiByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16 +
-//     1];
-//   }
-//   return hiByte;
-// }
 
 uint16_t getBGTileData(uint8_t tileId) {
   uint16_t offset = 0;
@@ -284,11 +240,12 @@ uint16_t getBGTileData(uint8_t tileId) {
   uint8_t loByte = 0;
   uint8_t hiByte = 0;
   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
+
     loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
     hiByte = ppu.video_ram[offset + (uint16_t)tileId * 16 + 1];
   } else {
-    hiByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16 + 1];
     loByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16];
+    hiByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16 + 1];
   }
   return (uint16_t)hiByte << 8 | (uint16_t)loByte;
 }
@@ -309,9 +266,6 @@ void renderBackgroundScanline() {
   for (int x = 0; x < SCREEN_WIDTH; x++) {
 
     uint8_t tileId = getBGTileId(x);
-
-    // if (tileId != 0 && tileId != 0xFF)
-    //   printf("Tile id: %X\n", tileId);
 
     uint16_t tileData = getBGTileData(tileId);
     uint8_t loByte = (uint8_t)((0x00ff) & tileData);

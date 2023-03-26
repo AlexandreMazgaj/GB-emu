@@ -372,8 +372,6 @@ uint16_t popWordStack() {
 }
 
 void pushWordStack(uint16_t val) {
-  if (val == 0x3040)
-    printf("PUSHING 0x3040\n");
   registers.sp -= 2;
   writeWord(registers.sp, val);
 }

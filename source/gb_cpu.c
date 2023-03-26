@@ -154,8 +154,8 @@ uint8_t CPU_clock() {
 
 #if INSTRUCTION_PRINT
     // debugging
-    printRegisters(2);
-    printInstruction(instr, 2);
+    // printRegisters(2);
+    // printInstruction(instr, 2);
 #endif
     // printing to stderr, do ./GB 2> output.txt
     /*    dprintf(2,

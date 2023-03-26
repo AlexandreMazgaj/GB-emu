@@ -68,8 +68,8 @@ int main() {
   MMU_init();
   PPU_init();
 
-  uint8_t error = loadCartridge(
-      "/home/alex/workspace/gameboy_emu/GB-emu/roms/cpu_instr_2.gb");
+  uint8_t error =
+      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Dr_Mario.gb");
 
   if (error)
     return 9;
