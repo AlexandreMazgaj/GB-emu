@@ -54,6 +54,7 @@ void PPU_clock() {
       ppu.mode = PPU_MODE_HORIZONTAL_BLANKING;
       ppu.ticks = 0;
       renderBackgroundScanline();
+      renderSpriteScanline();
       ppu.canDraw = 1;
     }
   } else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
@@ -234,6 +235,8 @@ uint16_t getBGTileData(uint8_t tileId) {
   if (LCDC_GET_WINDOW_ENABLE()) {
     offset = pixelFetcher.WLY % 8;
   } else {
+    // for a tile, 2 bytes make one line (see 2bpp format), that is why we
+    // multiply by 2 the modulo
     offset = 2 * (((uint16_t)ppu.scanline + (uint16_t)ppu.scrollY) % 8);
   }
 
@@ -281,16 +284,73 @@ void renderBackgroundScanline() {
 
 // functions to render the sprites
 
-uint8_t getSpriteTileId(uint8_t x) {
+uint8_t getSpriteTileId(uint8_t current_x, uint8_t *returnTileId,
+                        uint8_t *returnSpriteAttributes) {
   for (unsigned int i = 0; i < OAM_SIZE; i += 4) {
-    uint8_t x_position = ppu.oam[i + 1];
+    uint8_t y_position = ppu.oam[i];
+    // we remove 8 to take into account the fact that 0 hides the sprite,
+    // and 8 displays it in it's entirety
+    uint8_t x_position = ppu.oam[i + 1] - 8;
     uint8_t tileId = ppu.oam[i + 2];
 
-    if (x_position + 8 > x) {
-      return tileId;
+    if (x_position + 8 > current_x && current_x >= x_position &&
+        x_position > 0) {
+      if ((ppu.scanline + 16 >= y_position) &&
+          (ppu.scanline + 16 <= y_position + 8)) {
+        // printf("pos y: %X, pos x: %X, tileId: %X\n", y_position, x_position,
+        //        tileId);
+        *(returnSpriteAttributes) = ppu.oam[i + 3];
+        *(returnTileId) = tileId;
+        return 1;
+      }
     }
   }
   return 0;
+}
+
+uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes) {
+  uint16_t offset = 0;
+
+  if (IS_FLIP_Y(spriteAttributes)) {
+    offset = (uint16_t)(16 - 2 * ((int16_t)ppu.scanline % 8));
+  } else {
+    offset = 2 * ((uint16_t)ppu.scanline % 8);
+  }
+
+  uint8_t loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
+  uint8_t hiByte = ppu.video_ram[offset + (uint16_t)tileId * 16 + 1];
+
+  return (uint16_t)hiByte << 8 | (uint16_t)loByte;
+}
+
+void renderSpriteScanline() {
+  for (int x = 0; x < SCREEN_WIDTH; x++) {
+    uint8_t spriteAttributes = 0;
+    uint8_t spriteTileId = 0;
+    uint8_t foundSprite = getSpriteTileId(x, &spriteTileId, &spriteAttributes);
+
+    if (IS_BG_OVER_SPRITE(spriteAttributes))
+      continue;
+
+    // we found a sprite
+    if (foundSprite != 0) {
+      // printf("tile id : %X, sprite attributes: %X\n", spriteTileId,
+      //        spriteAttributes);
+      uint16_t tileData = getSpriteTileData(spriteTileId, spriteAttributes);
+      uint8_t loByte = (uint8_t)((0x00ff) & tileData);
+      uint8_t hiByte = (uint8_t)(((0xff00) & tileData) >> 8);
+
+      uint8_t j;
+      if (IS_FLIP_X(spriteAttributes)) {
+        j = (x % 8);
+      } else {
+        j = 7 - (x % 8);
+      }
+      uint8_t bit = (((hiByte >> j) & 0x1) << 1) | ((loByte >> j) & 0x1);
+
+      ppu.screen[SCREEN_WIDTH * ppu.scanline + x] = bit;
+    }
+  }
 }
 
 // debugging functions

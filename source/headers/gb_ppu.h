@@ -3,11 +3,6 @@
 #include "constants.h"
 #include <stdint.h>
 
-// 2BPP processing macros
-#define GET_PIXEL_COLOR(hiByte, loByte, pixel)                                 \
-  ((uint8_t)(((hiByte) & (1 << pixel)) >> (pixel - 1) |                        \
-             ((loByte & (1 << pixel)) >> (pixel))))
-
 // 0xFF40
 #define LCDC_GET_LCDPPU_ENABLE() ((ppu.reg_lcdc & (1 << 7)) >> 7)
 #define LCDC_GET_WINDOW_TILEMAP_AREA()                                         \
@@ -22,6 +17,11 @@
 #define LCDC_GET_OBJ_SIZE() ((ppu.reg_lcdc & (1 << 2)) >> 2)
 #define LCDC_GET_OBJ_ENABLE() ((ppu.reg_lcdc & (1 << 1)) >> 1)
 #define LCDC_GET_BGWINDOW_PRIORITY() (ppu.reg_lcdc & 1)
+
+// for the attributes of a sprite
+#define IS_BG_OVER_SPRITE(sprite_attr) ((sprite_attr * (1 << 7)) >> 7)
+#define IS_FLIP_Y(sprite_attr) ((sprite_attr * (1 << 6)) >> 6)
+#define IS_FLIP_X(sprite_attr) ((sprite_attr * (1 << 5)) >> 5)
 
 // 0xFF41
 // #define STAT_GET
@@ -125,7 +125,12 @@ uint32_t getColor(uint8_t bit);
 void renderBackgroundScanline();
 
 // functions to render sprites
-uint8_t getSpriteTileId(uint8_t x);
+uint8_t getSpriteTileId(uint8_t current_x, uint8_t *returnTileId,
+                        uint8_t *returnSpriteAttributes);
+
+uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes);
+
+void renderSpriteScanline();
 
 // debugging functions
 void displayVram();

@@ -213,8 +213,7 @@ uint8_t loadCartridge(char *path) {
 void oam_dma(uint8_t hi) {
   for (uint16_t i = 0x00; i < 0x9f + 1; i++) {
     uint16_t readAddr = ((uint16_t)hi << 8) | i;
-    uint16_t oamAddr = ((uint16_t)0xfe << 8) | i;
-    writeByte(oamAddr, readByte(readAddr));
+    ppu.oam[i] = readByte(readAddr);
   }
 }
 
