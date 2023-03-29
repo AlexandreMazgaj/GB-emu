@@ -17,7 +17,7 @@ void MMU_init() {
   serial.control = 0x0;
   serial.data = 0x0;
 
-  srand(2022);
+  srand(2023);
 
   for (int i = 0; i < MAX_CARTRIDGE_SIZE; i++) {
     mmu.rom[i] = 0;
@@ -34,6 +34,10 @@ void MMU_init() {
 
   for (int i = 0; i < HIGH_RAM_SIZE; i++) {
     mmu.high_ram[i] = (uint8_t)rand() % 256;
+  }
+
+  for (int i = 0; i < INPUTS_SIZE; i++) {
+    mmu.inputs[i] = 1;
   }
 }
 
@@ -228,7 +232,6 @@ uint8_t readByte(uint16_t addr) {
       return MBC2_readRom(addr);
     if (mmu.mbc_type == 3)
       return MBC3_readRom(addr);
-
     // if no memory bank, then we just read from rom with no switch
     return mmu.rom[addr];
   } else if (addr >= 0x8000 && addr <= 0x9fff) {
@@ -242,6 +245,15 @@ uint8_t readByte(uint16_t addr) {
     return ppu.oam[addr - 0xfe00];
   }
   // 0xff00 controller
+  else if (addr == 0xff00) {
+    uint8_t val = 0;
+    for (int i = 1; i < INPUTS_SIZE; i++) {
+      val |= (mmu.inputs[i]) << i;
+    }
+    val |= mmu.inputs[0];
+    printf("Val inputs returned: %X\n", val);
+    return val;
+  }
   // 0xff01 - 02 communication
   else if (addr == 0xff01) {
     printf("Returning %X from serial\n", serial.data);
@@ -309,6 +321,12 @@ void writeByte(uint16_t addr, uint8_t val) {
     ppu.oam[addr - 0xfe00] = val;
   }
   // 0xff00 controller
+  else if (addr == 0xff00) {
+    for (int i = 4; i < INPUTS_SIZE - 2; i++) {
+      mmu.inputs[i] = (val & (1 << i)) >> i;
+      printf("Writing to inputs[%d]: %X\n", i, mmu.inputs[i]);
+    }
+  }
   // 0xff01 - 02 communication
   else if (addr == 0xff01) {
     // printf("Writing %X to serial\n", val);

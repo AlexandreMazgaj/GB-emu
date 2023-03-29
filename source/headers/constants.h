@@ -13,6 +13,7 @@
 #define DISPLAY_HEIGHT 32
 #define DISPLAY_WIDTH 64
 #define TICKS 60
+#define INPUTS_SIZE 8
 
 // definitions for conditional compilation for logs
 #define SERIAL_PRINT 0

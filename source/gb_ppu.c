@@ -243,12 +243,13 @@ uint16_t getBGTileData(uint8_t tileId) {
   uint8_t loByte = 0;
   uint8_t hiByte = 0;
   if (LCDC_GET_BGWINDOW_TILEDATA_AREA()) {
-
     loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
     hiByte = ppu.video_ram[offset + (uint16_t)tileId * 16 + 1];
   } else {
-    loByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16];
-    hiByte = ppu.video_ram[0x800 + offset + ((int16_t)tileId + 128) * 16 + 1];
+    // printf("address: %X\n", ((uint8_t)tileId));
+    loByte = ppu.video_ram[(int16_t)0x1000 + (int16_t)offset +
+                           ((int16_t)tileId) * 16];
+    hiByte = ppu.video_ram[0x1000 + offset + ((int16_t)tileId) * 16 + 1];
   }
   return (uint16_t)hiByte << 8 | (uint16_t)loByte;
 }
