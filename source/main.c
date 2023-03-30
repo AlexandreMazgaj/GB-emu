@@ -68,8 +68,8 @@ int main() {
   MMU_init();
   PPU_init();
 
-  uint8_t error =
-      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Tetris.gb");
+  uint8_t error = loadCartridge(
+      "/home/alex/workspace/gameboy_emu/GB-emu/roms/TimerTests/div_write.gb");
 
   if (error)
     return 9;
@@ -170,50 +170,37 @@ int main() {
           printRegisters(1);
           break;
         case SDLK_RIGHT:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[RIGHT_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_q:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
           mmu.inputs[A_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_LEFT:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[LEFT_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_w:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
           mmu.inputs[B_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_UP:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[UP_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_s:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
+
           mmu.inputs[SELECT_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_DOWN:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
+
           mmu.inputs[DOWN_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
         case SDLK_a:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
+
           mmu.inputs[START_BUTTON] = 0;
           REQUEST_INTERRUPT(JOYPAD_BIT);
           break;
@@ -223,43 +210,27 @@ int main() {
       else if (e.type == SDL_KEYUP) {
         switch (e.key.keysym.sym) {
         case SDLK_RIGHT:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[RIGHT_BUTTON] = 1;
           break;
         case SDLK_q:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
           mmu.inputs[A_BUTTON] = 1;
           break;
         case SDLK_LEFT:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[LEFT_BUTTON] = 1;
           break;
         case SDLK_w:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
           mmu.inputs[B_BUTTON] = 1;
           break;
         case SDLK_UP:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[UP_BUTTON] = 1;
           break;
         case SDLK_s:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
           mmu.inputs[SELECT_BUTTON] = 1;
           break;
         case SDLK_DOWN:
-          // mmu.inputs[ACTION_BUTTON] = 1;
-          // mmu.inputs[DIRECTION_BUTTON] = 0;
           mmu.inputs[DOWN_BUTTON] = 1;
           break;
         case SDLK_a:
-          // mmu.inputs[ACTION_BUTTON] = 0;
-          // mmu.inputs[DIRECTION_BUTTON] = 1;
           mmu.inputs[START_BUTTON] = 1;
           break;
         }

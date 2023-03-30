@@ -4,18 +4,18 @@
 #include <stdint.h>
 
 // macros for the inputs
-#define IS_ACTION_BUTTON_SELECTED() (!(mmu.inputs[5]))
-#define IS_DIRECTION_BUTTON_SELECTED() (!(mmu.inputs[4]))
-#define ACTION_BUTTON 5
-#define DIRECTION_BUTTON 4
-#define RIGHT_BUTTON 0
+
+#define IS_ACTION_BUTTON_SELECTED() (((mmu.inputs_data & (0x1 << 5)) == 0))
+#define IS_DIRECTION_BUTTON_SELECTED() (((mmu.inputs_data & (0x1 << 4)) == 0))
+
 #define A_BUTTON 0
 #define B_BUTTON 1
-#define LEFT_BUTTON 1
-#define UP_BUTTON 2
 #define SELECT_BUTTON 2
-#define DOWN_BUTTON 3
 #define START_BUTTON 3
+#define RIGHT_BUTTON 4
+#define LEFT_BUTTON 5
+#define UP_BUTTON 6
+#define DOWN_BUTTON 7
 
 struct mmu {
   uint8_t rom[MAX_CARTRIDGE_SIZE];
@@ -26,6 +26,8 @@ struct mmu {
 
   // in this array, 0 means pressed, 1 means not pressed
   uint8_t inputs[INPUTS_SIZE];
+
+  uint8_t inputs_data;
 
   // mbc attributes
   uint8_t mbc_type;

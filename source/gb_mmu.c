@@ -17,6 +17,8 @@ void MMU_init() {
   serial.control = 0x0;
   serial.data = 0x0;
 
+  mmu.inputs_data = 0xff;
+
   srand(2023);
 
   for (int i = 0; i < MAX_CARTRIDGE_SIZE; i++) {
@@ -247,11 +249,27 @@ uint8_t readByte(uint16_t addr) {
   // 0xff00 controller
   else if (addr == 0xff00) {
     uint8_t val = 0;
-    for (int i = 1; i < INPUTS_SIZE; i++) {
-      val |= (mmu.inputs[i]) << i;
+    for (int i = 0; i < INPUTS_SIZE; i++) {
+      printf("inputs[%d]: %X\n", i, mmu.inputs[i]);
     }
-    val |= mmu.inputs[0];
-    printf("Val inputs returned: %X\n", val);
+
+    if (IS_ACTION_BUTTON_SELECTED()) {
+      val |= mmu.inputs[A_BUTTON];
+      val |= mmu.inputs[B_BUTTON] << B_BUTTON;
+      val |= mmu.inputs[SELECT_BUTTON] << SELECT_BUTTON;
+      val |= mmu.inputs[START_BUTTON] << START_BUTTON;
+      // printf("action button: Val inputs returned: %X\n", val);
+      return val;
+    }
+
+    val = 0;
+    if (IS_DIRECTION_BUTTON_SELECTED()) {
+      val |= mmu.inputs[RIGHT_BUTTON];
+      val |= mmu.inputs[LEFT_BUTTON] << 1;
+      val |= mmu.inputs[UP_BUTTON] << 2;
+      val |= mmu.inputs[DOWN_BUTTON] << 3;
+      // printf("direction button: Val inputs returned: %X\n", val);
+    }
     return val;
   }
   // 0xff01 - 02 communication
@@ -322,10 +340,7 @@ void writeByte(uint16_t addr, uint8_t val) {
   }
   // 0xff00 controller
   else if (addr == 0xff00) {
-    for (int i = 4; i < INPUTS_SIZE - 2; i++) {
-      mmu.inputs[i] = (val & (1 << i)) >> i;
-      printf("Writing to inputs[%d]: %X\n", i, mmu.inputs[i]);
-    }
+    mmu.inputs_data = val;
   }
   // 0xff01 - 02 communication
   else if (addr == 0xff01) {
