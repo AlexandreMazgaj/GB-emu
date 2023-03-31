@@ -19,9 +19,9 @@
 #define LCDC_GET_BGWINDOW_PRIORITY() (ppu.reg_lcdc & 1)
 
 // for the attributes of a sprite
-#define IS_BG_OVER_SPRITE(sprite_attr) ((sprite_attr * (1 << 7)) >> 7)
-#define IS_FLIP_Y(sprite_attr) ((sprite_attr * (1 << 6)) >> 6)
-#define IS_FLIP_X(sprite_attr) ((sprite_attr * (1 << 5)) >> 5)
+#define IS_BG_OVER_SPRITE(sprite_attr) (((sprite_attr & (1 << 7)) == 1))
+#define IS_FLIP_Y(sprite_attr) ((sprite_attr & (1 << 6)) >> 6)
+#define IS_FLIP_X(sprite_attr) ((sprite_attr & (1 << 5)) >> 5)
 
 // 0xFF41
 // #define STAT_GET
