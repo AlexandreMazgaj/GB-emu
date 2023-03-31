@@ -68,8 +68,8 @@ int main() {
   MMU_init();
   PPU_init();
 
-  uint8_t error = loadCartridge(
-      "/home/alex/workspace/gameboy_emu/GB-emu/roms/TimerTests/div_write.gb");
+  uint8_t error =
+      loadCartridge("/home/alex/workspace/gameboy_emu/GB-emu/roms/Tetris.gb");
 
   if (error)
     return 9;
@@ -144,12 +144,12 @@ int main() {
 
       PPU_clock();
     } else {
-      if (oneByOne) {
-        while (!CPU_clock())
-          ;
-        PPU_clock();
-        oneByOne = 0;
-      }
+      // if (oneByOne) {
+      //   while (!CPU_clock())
+      //     ;
+      //   PPU_clock();
+      //   oneByOne = 0;
+      // }
     }
 
     if ((SDL_PollEvent(&e)) != 0) {

@@ -91,13 +91,17 @@ void CPU_init() {
 // -------------
 uint8_t CPU_clock() {
 
-  if (divider_clock_256 >= 256) {
-    divider_register++;
+  // dprintf(2, "divider register: %X\n", divider_register);
+  // dprintf(2, "timer register: %X\n", timer_register);
+
+  if (divider_clock_256 >= 256 / 2) {
+    divider_register += cycle;
     divider_clock_256 = 0;
   }
   if (stopped) { // if the instruction stop is executed the divider register is
                  // reset
     divider_register = 0;
+    divider_clock_256 = 0;
   }
 
   if (IS_TIMER_ENABLE()) {
@@ -106,18 +110,21 @@ uint8_t CPU_clock() {
       REQUEST_INTERRUPT(TIMER_BIT);
     } else {
       if (divider_clock_timer >= divider_clock_timer_control) {
-        timer_register++;
+        timer_register += cycle;
         divider_clock_timer = 0;
       }
     }
   }
-  divider_clock_256++;
-  divider_clock_timer++;
+  divider_clock_256 += cycle;
+  if (IS_TIMER_ENABLE())
+    divider_clock_timer++;
 
   uint8_t isInterrupted = checkInterrupts();
   if (isInterrupted) {
     return 0;
   }
+
+  cycle = 0;
 
   // if we have finished the
   if (cycle == 0) {
@@ -154,8 +161,9 @@ uint8_t CPU_clock() {
 
 #if INSTRUCTION_PRINT
     // debugging
-    // printRegisters(2);
-    // printInstruction(instr, 2);
+    printRegisters(2);
+    // dprintf(2, "\n");
+    printInstruction(instr, 2);
 #endif
     // printing to stderr, do ./GB 2> output.txt
     /*    dprintf(2,
@@ -182,6 +190,8 @@ uint8_t CPU_clock() {
 
     registers.pc += cb_operand;
 
+    cycle--;
+
     // if (registers.pc == 0x020B) { // 0xC252 c772 call for c16b ret, then goes
     // to 100
     //     int i = 0;
@@ -194,7 +204,7 @@ uint8_t CPU_clock() {
     return 1;
   }
 
-  cycle--;
+  // cycle--;
 
   return 0;
 }
@@ -277,13 +287,13 @@ uint8_t checkInterrupts() {
 void setDividerClockTimer() {
   uint8_t timer_control_bit = timer_control & 0x3;
   if (timer_control_bit == 0) {
-    divider_clock_timer_control = 1024;
+    divider_clock_timer_control = 1024 / 2;
   } else if (timer_control_bit == 1) {
-    divider_clock_timer_control = 16;
+    divider_clock_timer_control = 16 / 2;
   } else if (timer_control_bit == 2) {
-    divider_clock_timer_control = 64;
+    divider_clock_timer_control = 64 / 2;
   } else if (timer_control_bit == 3) {
-    divider_clock_timer_control = 256;
+    divider_clock_timer_control = 256 / 2;
   }
 }
 
@@ -407,7 +417,7 @@ void or_a(uint8_t reg) {
 }
 
 void cp_a(uint8_t reg) {
-  int cp_val = registers.a - reg; //- GETCFLAG();
+  int8_t cp_val = (int8_t)(registers.a - reg); //- GETCFLAG();
 
   SETZFLAG(cp_val == 0);
   SETNFLAG(1);
@@ -514,8 +524,8 @@ void printBinary(uint8_t hex) {
 }
 
 void printRegisters(int pipe) {
-  dprintf(pipe, "A: %X; ", registers.a);
-  dprintf(pipe, "F: ");
+  dprintf(pipe, "A:%02X ", registers.a);
+  dprintf(pipe, "F:");
   if (GETZFLAG())
     dprintf(pipe, "Z");
   else
@@ -529,13 +539,14 @@ void printRegisters(int pipe) {
   else
     dprintf(pipe, "-");
   if (GETCFLAG())
-    dprintf(pipe, "C; ");
+    dprintf(pipe, "C ");
   else
-    dprintf(pipe, "-; ");
-  dprintf(pipe, "BC: %X; ", registers.bc);
-  dprintf(pipe, "DE: %X; ", registers.de);
-  dprintf(pipe, "HL: %X; ", registers.hl);
-  dprintf(pipe, "SP: %X; ", registers.sp);
+    dprintf(pipe, "- ");
+  dprintf(pipe, "BC:%04X ", registers.bc);
+  dprintf(pipe, "DE:%04X ", registers.de);
+  dprintf(pipe, "HL:%04X ", registers.hl);
+  dprintf(pipe, "SP:%04X ", registers.sp);
+  dprintf(pipe, "PC:%04X ", registers.pc);
 }
 
 void dbg_update() {
@@ -555,17 +566,17 @@ void dbg_print() {
 
 void printInstruction(struct instruction instr, int pipe) {
   if (instr.size_operand == 0) {
-    dprintf(pipe, "pc: %X instruction: %s\n", registers.pc, instr.mnemonic);
+    dprintf(pipe, "instruction: %s\n", instr.mnemonic);
   } else if (instr.size_operand == 1) {
     char mnemonic_with_data[256];
     snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic,
              readByte(registers.pc + 1));
-    dprintf(pipe, "pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
+    dprintf(pipe, "instruction: %s\n", mnemonic_with_data);
   } else if (instr.size_operand == 2) {
     char mnemonic_with_data[256];
     snprintf(mnemonic_with_data, sizeof(mnemonic_with_data), instr.mnemonic,
              ((uint16_t)readByte(registers.pc + 2) << 8) |
                  (uint16_t)readByte(registers.pc + 1));
-    dprintf(pipe, "pc: %X instruction: %s\n", registers.pc, mnemonic_with_data);
+    dprintf(pipe, "instruction: %s\n", mnemonic_with_data);
   }
 }

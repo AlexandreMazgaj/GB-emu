@@ -1,5 +1,7 @@
 BUILDDIR = ./build/
 SOURCEDIR = ./source/
+HEADER_DIR=./source/headers/
+
 
 SDL_INCLUDE = -I/usr/include/SDL2 #-I/Library/Frameworks/SDL2.framework/Headers -F/Library/Frameworks
 SDL_LIB = -lSDL2main -lSDL2 -lSDL2_ttf #-framework SDL2 -framework SDL2_ttf
@@ -44,7 +46,7 @@ TARGET = GB
 all: $(TARGET)
 
 
-$(TARGET) : $(BUILDDIR)main.o $(OBJ)
+$(TARGET) : $(BUILDDIR)main.o $(OBJ) 
 	$(CC) $(HEADERS) -o $(TARGET) $(OBJ) $(BUILDDIR)main.o $(CFLAGS) $(SDL_INCLUDE) $(SDL_LIB) $(LIBS)
 
 

@@ -34,7 +34,7 @@ void PPU_init() {
 // There are 144 visible scanlines
 void PPU_clock() {
   // ppu.ticks += cycle;
-  ppu.ticks++;
+  ppu.ticks += cycle;
   // displayVram();
   // printf("ppu ticks: %d\n", ppu.ticks);
   // 4 modes
@@ -55,7 +55,6 @@ void PPU_clock() {
       ppu.ticks = 0;
       renderBackgroundScanline();
       renderSpriteScanline();
-      ppu.canDraw = 1;
     }
   } else if (ppu.mode == PPU_MODE_HORIZONTAL_BLANKING) {
     // A full scanline takes 456 ticks to complete. At the end of a
@@ -84,6 +83,7 @@ void PPU_clock() {
       ppu.ticks = 0;
       ppu.scanline++;
       if (ppu.scanline >= 153) {
+        ppu.canDraw = 1;
         // restart scanning modes
         ppu.mode = PPU_MODE_OAM_SCAN;
         ppu.scanline = 0;

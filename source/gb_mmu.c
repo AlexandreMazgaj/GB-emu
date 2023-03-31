@@ -35,7 +35,7 @@ void MMU_init() {
   }
 
   for (int i = 0; i < HIGH_RAM_SIZE; i++) {
-    mmu.high_ram[i] = (uint8_t)rand() % 256;
+    mmu.high_ram[i] = (uint8_t)(rand() % 256);
   }
 
   for (int i = 0; i < INPUTS_SIZE; i++) {
@@ -249,9 +249,9 @@ uint8_t readByte(uint16_t addr) {
   // 0xff00 controller
   else if (addr == 0xff00) {
     uint8_t val = 0;
-    for (int i = 0; i < INPUTS_SIZE; i++) {
-      printf("inputs[%d]: %X\n", i, mmu.inputs[i]);
-    }
+    // for (int i = 0; i < INPUTS_SIZE; i++) {
+    //   printf("inputs[%d]: %X\n", i, mmu.inputs[i]);
+    // }
 
     if (IS_ACTION_BUTTON_SELECTED()) {
       val |= mmu.inputs[A_BUTTON];
@@ -358,8 +358,9 @@ void writeByte(uint16_t addr, uint8_t val) {
   // 0xff04 - 07 Divider and timer
   else if (addr == 0xff04) {
     divider_register = 0;
+    divider_clock_256 = 0;
   } else if (addr == 0xff05) {
-
+    timer_register = val;
   } else if (addr == 0xff06) {
     timer_modulo = val;
   } else if (addr == 0xff07) {
