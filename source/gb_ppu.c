@@ -292,7 +292,7 @@ void renderBackgroundScanline() {
            -> y_position
            -> spriteAttributes
 */
-uint8_t getSpritesToRender(uint8_t sprites[40][4]) {
+uint8_t getSpritesToRender(uint8_t sprites[10][4]) {
   uint8_t sprite_index = 0;
   for (unsigned int i = 0; i < OAM_SIZE; i += 4) {
     uint8_t y_position = ppu.oam[i] - 16;
@@ -302,32 +302,40 @@ uint8_t getSpritesToRender(uint8_t sprites[40][4]) {
     uint8_t tileId = ppu.oam[i + 2];
     uint8_t spriteAttributes = ppu.oam[i + 3];
 
-    if (ppu.scanline < y_position || ppu.scanline >= y_position + 8) {
-      printf("GOING THERE\n");
+    // if (0x80 > tileId || tileId > 0x8f) {
+    //   continue;
+    // }
+
+    if ((ppu.scanline < y_position) ||
+        ppu.scanline >= (y_position + LCDC_GET_OBJ_SIZE())) {
       continue;
     }
 
-    if ((int8_t)x_position > 0) {
+    if (ppu.oam[i + 1] > 8) {
       sprites[sprite_index][0] = tileId;
       sprites[sprite_index][1] = x_position;
       sprites[sprite_index][2] = y_position;
       sprites[sprite_index][3] = spriteAttributes;
+
       sprite_index++;
+      if (sprite_index == 10)
+        return sprite_index;
     }
   }
-  if (sprite_index > 0)
+  if (sprite_index > 0) {
     return sprite_index;
+  }
   return 0;
 }
 
 uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes,
-                           uint8_t line) {
+                           uint8_t line, uint8_t y_position) {
   uint16_t offset = 0;
 
   if (IS_FLIP_Y(spriteAttributes)) {
-    offset = (uint16_t)(16 - 2 * ((int16_t)(line) % 8));
+    offset = (uint16_t)(16 - 2 * ((int16_t)(line - y_position) % 8));
   } else {
-    offset = 2 * ((uint16_t)(line) % 8);
+    offset = 2 * ((uint16_t)(line - y_position) % 8);
   }
 
   uint8_t loByte = ppu.video_ram[offset + (uint16_t)tileId * 16];
@@ -336,13 +344,12 @@ uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes,
   return (uint16_t)hiByte << 8 | (uint16_t)loByte;
 }
 
-void renderSprites(uint8_t sprites_to_render[40][4],
+void renderSprites(uint8_t sprites_to_render[10][4],
                    uint8_t numberOfSpritesToRender) {
   if (!LCDC_GET_OBJ_ENABLE())
     return;
 
   if (numberOfSpritesToRender == 0) {
-    // printf("Did not find any sprites to render\n");
     return;
   } // we did not find any sprites in the oam
 
@@ -352,35 +359,35 @@ void renderSprites(uint8_t sprites_to_render[40][4],
     uint8_t y_position = sprites_to_render[i][2];
     uint8_t spriteAttributes = sprites_to_render[i][3];
 
-    if (IS_BG_OVER_SPRITE(spriteAttributes)) {
+    if (IS_BG_OVER_SPRITE(spriteAttributes) &&
+        ppu.screen[ppu.scanline * SCREEN_WIDTH + x_position] != 0) {
       continue;
     }
 
-    for (int line = 0; line < 8; line++) {
-      if (line + y_position > SCREEN_HEIGHT)
+    if (ppu.scanline > SCREEN_HEIGHT) {
+      break;
+    }
+
+    uint16_t tileData = getSpriteTileData(spriteTileId, spriteAttributes,
+                                          ppu.scanline, y_position);
+    uint8_t loByte = (uint8_t)((0x00ff) & tileData);
+    uint8_t hiByte = (uint8_t)(((0xff00) & tileData) >> 8);
+
+    for (int x_pixel = 0; x_pixel < 8; x_pixel++) {
+      if (x_pixel + x_position > SCREEN_WIDTH) {
         break;
-
-      uint16_t tileData =
-          getSpriteTileData(spriteTileId, spriteAttributes, line);
-      uint8_t loByte = (uint8_t)((0x00ff) & tileData);
-      uint8_t hiByte = (uint8_t)(((0xff00) & tileData) >> 8);
-
-      for (int x_pixel = 0; x_pixel < 8; x_pixel++) {
-        if (x_pixel + x_position > SCREEN_WIDTH)
-          break;
-
-        uint8_t j;
-        if (IS_FLIP_X(spriteAttributes)) {
-          j = (x_pixel % 8);
-        } else {
-          j = 7 - (x_pixel % 8);
-        }
-
-        uint8_t bit = (((hiByte >> j) & 0x1) << 1) | ((loByte >> j) & 0x1);
-
-        ppu.screen[SCREEN_WIDTH * (y_position + line) + x_position + x_pixel] =
-            bit;
       }
+
+      uint8_t j;
+      if (IS_FLIP_X(spriteAttributes)) {
+        j = (x_pixel % 8);
+      } else {
+        j = 7 - (x_pixel % 8);
+      }
+
+      uint8_t bit = (((hiByte >> j) & 0x1) << 1) | ((loByte >> j) & 0x1);
+
+      ppu.screen[SCREEN_WIDTH * ppu.scanline + x_position + x_pixel] = bit;
     }
   }
 }

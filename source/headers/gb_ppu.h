@@ -14,7 +14,7 @@
 #define LCDC_GET_BG_TILEMAP_AREA()                                             \
   ((ppu.reg_lcdc & (1 << 3)) >>                                                \
    3) // select which area in the memory to fetch bg map from
-#define LCDC_GET_OBJ_SIZE() ((((ppu.reg_lcdc & (1 << 2)) >> 2) ? 8 : 16))
+#define LCDC_GET_OBJ_SIZE() (((((ppu.reg_lcdc & (1 << 2)) >> 2) == 1) ? 16 : 8))
 #define LCDC_GET_OBJ_ENABLE() ((ppu.reg_lcdc & (1 << 1)) >> 1)
 #define LCDC_GET_BGWINDOW_PRIORITY() (ppu.reg_lcdc & 1)
 
@@ -127,12 +127,12 @@ void renderBackgroundScanline();
 
 // functions to render sprites
 
-uint8_t getSpritesToRender(uint8_t sprites[40][4]);
+uint8_t getSpritesToRender(uint8_t sprites[10][4]);
 
 uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes,
-                           uint8_t line);
+                           uint8_t line, uint8_t y_position);
 
-void renderSprites(uint8_t sprites_to_render[40][4],
+void renderSprites(uint8_t sprites_to_render[10][4],
                    uint8_t numberOfSpritesToRender);
 
 // debugging functions
