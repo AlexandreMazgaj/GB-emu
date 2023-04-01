@@ -94,7 +94,7 @@ uint8_t CPU_clock() {
   // dprintf(2, "divider register: %X\n", divider_register);
   // dprintf(2, "timer register: %X\n", timer_register);
 
-  if (divider_clock_256 >= 256 / 2) {
+  if (divider_clock_256 >= 256) {
     divider_register += cycle;
     divider_clock_256 = 0;
   }

@@ -14,14 +14,14 @@
 #define LCDC_GET_BG_TILEMAP_AREA()                                             \
   ((ppu.reg_lcdc & (1 << 3)) >>                                                \
    3) // select which area in the memory to fetch bg map from
-#define LCDC_GET_OBJ_SIZE() ((ppu.reg_lcdc & (1 << 2)) >> 2)
+#define LCDC_GET_OBJ_SIZE() ((((ppu.reg_lcdc & (1 << 2)) >> 2) ? 8 : 16))
 #define LCDC_GET_OBJ_ENABLE() ((ppu.reg_lcdc & (1 << 1)) >> 1)
 #define LCDC_GET_BGWINDOW_PRIORITY() (ppu.reg_lcdc & 1)
 
 // for the attributes of a sprite
-#define IS_BG_OVER_SPRITE(sprite_attr) (((sprite_attr & (1 << 7)) == 1))
-#define IS_FLIP_Y(sprite_attr) ((sprite_attr & (1 << 6)) >> 6)
-#define IS_FLIP_X(sprite_attr) ((sprite_attr & (1 << 5)) >> 5)
+#define IS_BG_OVER_SPRITE(sprite_attr) ((((sprite_attr & (1 << 7)) >> 7) == 1))
+#define IS_FLIP_Y(sprite_attr) ((((sprite_attr & (1 << 6)) >> 6) == 1))
+#define IS_FLIP_X(sprite_attr) ((((sprite_attr & (1 << 5)) >> 5) == 1))
 
 // 0xFF41
 // #define STAT_GET
@@ -49,6 +49,9 @@ struct ppu {
   uint8_t oam[OAM_SIZE];
   uint8_t video_ram[VIDEO_RAM_SIZE];
 
+  // uint8_t spritesToRender[40][4];
+  // uint8_t numberOfSpritesToRender;
+
   uint8_t reg_lcdc;
   uint8_t reg_stat;
 
@@ -70,7 +73,7 @@ struct ppu {
 
   // Color palettes
 
-  uint8_t bg_pal[3];
+  uint32_t bg_pal[3];
   uint8_t ob_pal0[3];
   uint8_t ob_pal1[3];
 
@@ -109,8 +112,6 @@ void writePPU(uint16_t addr, uint8_t val);
 
 uint8_t readPPU(uint16_t addr);
 
-uint8_t getGBColorFromValue(uint8_t val);
-
 // functions to render background and window
 uint16_t getWindowTileMapArea();
 
@@ -125,12 +126,14 @@ uint32_t getColor(uint8_t bit);
 void renderBackgroundScanline();
 
 // functions to render sprites
-uint8_t getSpriteTileId(uint8_t current_x, uint8_t *returnTileId,
-                        uint8_t *returnSpriteAttributes);
 
-uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes);
+uint8_t getSpritesToRender(uint8_t sprites[40][4]);
 
-void renderSpriteScanline();
+uint16_t getSpriteTileData(uint8_t tileId, uint8_t spriteAttributes,
+                           uint8_t line);
+
+void renderSprites(uint8_t sprites_to_render[40][4],
+                   uint8_t numberOfSpritesToRender);
 
 // debugging functions
 void displayVram();

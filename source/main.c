@@ -11,6 +11,7 @@ void drawScreen(SDL_Surface *surface) {
   uint32_t *pixels = (uint32_t *)surface->pixels;
   for (int i = 0; i < SCREEN_HEIGHT; i++) {
     for (int j = 0; j < SCREEN_WIDTH; j++) {
+      // printf("Color: %X\n", ppu.screen[i * SCREEN_WIDTH + j]);
       pixels[i * SCREEN_WIDTH + j] = getColor(ppu.screen[i * SCREEN_WIDTH + j]);
     }
   }
